@@ -1,0 +1,134 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+//上传命令gradlew uploadArchives
+//maven-信息
+ext {// ext is a gradle closure allowing the declaration of global properties
+    //上传构件的信息
+    PUBLISH_GROUP_ID = 'com.sjl.module'
+    PUBLISH_ARTIFACT_ID = 'base-adapter'
+    PUBLISH_VERSION = '1.0.0' //在项目配置文件中（无论是build.gradle还是pom.xml）指定的版本号带有’-SNAPSHOT’后缀，比如版本号为’Junit-4.10-SNAPSHOT’，那么打出的包就是一个快照版本,重复上传加时间戳
+    PUBLISH_DESCRIPTION = '通用适配器类库'
+
+    //上传的目标仓库地址
+    PUBLISH_SNAPSHOT_REPOSITORY_URL="http://127.0.0.1:8081/nexus/content/repositories/song-snapshots/"
+
+    PUBLISH_RELEASE_REPOSITORY_URL="http://127.0.0.1:8081/nexus/content/repositories/song-releases/"
+
+    //Nexus 的私服的用户名称和密码
+    NEXUS_USERNAME='admin'
+    NEXUS_PASSWORD='admin123'
+}
+
+
+
+def isReleaseBuild() {
+    return  project.PUBLISH_VERSION.contains("SNAPSHOT") == false
+}
+
+
+def getReleaseRepositoryUrl() {
+    return project.PUBLISH_RELEASE_REPOSITORY_URL
+}
+
+def getSnapshotRepositoryUrl() {
+    return project.PUBLISH_SNAPSHOT_REPOSITORY_URL
+}
+
+
+// 用户名
+def getRepositoryUsername() {
+    return project.NEXUS_USERNAME
+}
+// 用户密码
+def getRepositoryPassword() {
+    return project.NEXUS_PASSWORD
+}
+
+
+
+afterEvaluate { project ->
+    uploadArchives {
+
+        signing {
+            required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+            sign configurations.archives
+        }
+
+        repositories {
+            mavenDeployer {
+                pom.groupId = project.PUBLISH_GROUP_ID
+                pom.artifactId = project.PUBLISH_ARTIFACT_ID
+                pom.version = project.PUBLISH_VERSION
+                //正式包
+                repository(url: getReleaseRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                }
+                //测试包
+                snapshotRepository(url: getSnapshotRepositoryUrl()) {
+                    authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                }
+
+
+
+                pom.project {
+                    description project.PUBLISH_DESCRIPTION
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'songjiali'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'songjiali'
+                            name 'SongJia Li'
+                            email 'kelly.168.163@163.com'
+                        }
+                    }
+                }
+                //修复Error:Failed to resolve:lib:unspecified
+                pom.whenConfigured { pom ->
+                    pom.dependencies.forEach { dep ->
+                        if (dep.getVersion() == "unspecified") {
+                            println("--modify the dependenies module in pom.xml--->>" + dep.getArtifactId())
+                            dep.setGroupId(project.PUBLISH_GROUP_ID)
+                            dep.setVersion(project.PUBLISH_VERSION)
+                        }
+                    }
+                }
+            }
+
+
+        }
+    }
+    
+    // type显示指定任务类型或任务, 这里指定要执行Javadoc这个task,这个task在gradle中已经定义
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    }
+    // 生成javadoc.jar
+    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        classifier = 'javadoc'
+        from androidJavadocs.destinationDir
+    }
+    // 生成sources.jar
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.sourceFiles
+    }
+
+    //解决 JavaDoc 中文注释生成失败的问题
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        options.addStringOption('charSet', 'UTF-8')
+    }
+    // 产生相关配置文件的任务
+    artifacts {
+        archives androidSourcesJar
+        archives androidJavadocsJar
+    }
+}

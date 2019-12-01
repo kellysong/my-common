@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Used for set whether the view should be skin enable-->
+    <attr name="enable" format="boolean"/>
+
+    <!--自定义圆形图片属性-->
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+        <attr name="border_overlay" format="boolean" />
+    </declare-styleable>
+
+
+    <!--圆角ImageView-->
+    <declare-styleable name="Custom_Round_Image_View">
+        <attr name="radius" format="dimension"/>
+        <attr name="left_top_radius" format="dimension"/>
+        <attr name="right_top_radius" format="dimension"/>
+        <attr name="right_bottom_radius" format="dimension"/>
+        <attr name="left_bottom_radius" format="dimension"/>
+    </declare-styleable>
+
+    <!--快速定位侧边栏-->
+    <declare-styleable name="IndexBar">
+        <attr name="indexTextSize" format="dimension" />
+        <attr name="indexTextColor" format="color" />
+    </declare-styleable>
+
+    <!--刷新Layout-->
+    <declare-styleable name="RefreshLayout">
+        <attr name="layout_refresh_empty" format="reference"/>
+        <attr name="layout_refresh_error" format="reference"/>
+        <attr name="layout_refresh_loading" format="reference"/>
+    </declare-styleable>
+
+    <!--星星评分控件-->
+    <declare-styleable name="EasyRatingBar">
+        <attr name="rateNum" format="integer"/>
+        <attr name="rating" format="integer"/>
+        <attr name="rateNormal" format="reference"/>
+        <attr name="rateSelect" format="reference"/>
+        <attr name="rateInterval" format="dimension"/>
+        <attr name="isIndicator" format="boolean"/>
+    </declare-styleable>
+
+</resources>
