@@ -103,18 +103,30 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
 
 
 # ButterKnife 7.0.1
+#-keep class butterknife.** { *; }
+#-dontwarn butterknife.internal.**
+#-keep class **$$ViewBinder { *; }
+#
+#-keepclasseswithmembernames class * {
+#    @butterknife.* <fields>;
+#}
+#
+#-keepclasseswithmembernames class * {
+#    @butterknife.* <methods>;
+#}
 
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
+# ButterKnife 8.0.4
+-keep public class * implements butterknife.Unbinder {
+    public <init>(**, android.view.View);
+}
+-keep class butterknife.*
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
 -keepclasseswithmembernames class * {
     @butterknife.* <fields>;
 }
 
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
 
 
 

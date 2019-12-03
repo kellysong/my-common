@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import com.anthonycr.grant.PermissionsManager;
 import com.sjl.core.net.RxLifecycleUtils;
 import com.sjl.core.net.RxManager;
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.TUtils;
 import com.sjl.core.util.ToastUtils;
 import com.uber.autodispose.AutoDisposeConverter;

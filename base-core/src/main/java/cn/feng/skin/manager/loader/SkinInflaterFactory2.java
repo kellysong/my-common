@@ -10,7 +10,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

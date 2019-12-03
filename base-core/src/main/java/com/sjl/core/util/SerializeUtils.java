@@ -3,6 +3,7 @@ package com.sjl.core.util;
 import android.os.Environment;
 
 import com.sjl.core.app.BaseApplication;
+import com.sjl.core.util.log.LogUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

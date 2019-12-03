@@ -4,6 +4,8 @@ package com.sjl.core.util;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.sjl.core.util.log.LogUtils;
+
 /**
  * 
  * Android资源id获取工具类，通过反射获取所在项目包下的资源文件id

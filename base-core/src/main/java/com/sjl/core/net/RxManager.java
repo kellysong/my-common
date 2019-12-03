@@ -1,6 +1,6 @@
 package com.sjl.core.net;
 
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;

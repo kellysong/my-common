@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.sjl.core.app.BaseApplication;
+import com.sjl.core.util.log.LogUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 

@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;

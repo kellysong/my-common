@@ -4,8 +4,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 
-import com.sjl.core.util.LogUtils;
-import com.sjl.core.util.LoggerUtils;
+import com.sjl.core.util.log.LogUtils;
+import com.sjl.core.util.log.LogWriter;
+import com.sjl.core.util.log.LoggerUtils;
 import com.sjl.core.util.ResourcesUtils;
 
 import cn.feng.skin.manager.base.BaseSkinApplication;
@@ -60,8 +61,9 @@ public class BaseApplication extends BaseSkinApplication {
     protected void initLogConfig(boolean isLogEnable) {
         this.LOG_DEBUG_MODE = isLogEnable;
         L.setDebug(LOG_DEBUG_MODE);
-        LoggerUtils.init(LOG_TAG,LOG_DEBUG_MODE);
+        LoggerUtils.init(LOG_TAG, LOG_DEBUG_MODE);
         LogUtils.init(LOG_TAG, LOG_DEBUG_MODE);//初始化日志
+        LogWriter.init(LOG_TAG, true, true);
     }
 
     /**

@@ -2,7 +2,7 @@ package com.sjl.core.net.filedownload;
 
 
 import com.sjl.core.net.RxManager;
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.text.TextUtils;
 
 
+import com.sjl.core.util.log.LogUtils;
+
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;

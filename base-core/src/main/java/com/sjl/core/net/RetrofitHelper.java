@@ -15,8 +15,8 @@ import com.sjl.core.R;
 import com.sjl.core.app.BaseApplication;
 import com.sjl.core.util.AppUtils;
 import com.sjl.core.util.JsonUtils;
-import com.sjl.core.util.LogUtils;
-import com.sjl.core.util.LoggerUtils;
+import com.sjl.core.util.log.LogUtils;
+import com.sjl.core.util.log.LoggerUtils;
 import com.sjl.core.util.ToastUtils;
 
 import java.io.File;

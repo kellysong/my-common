@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sjl.core.app.BaseApplication;
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -1,6 +1,6 @@
 package com.sjl.core.util.datetime;
 
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -35,14 +35,37 @@ public class TimeUtils {
      */
     private static final int SECONDS_OF_30DAYS = SECONDS_OF_1DAY * 30;
 
+    /**
+     * 指定日期格式 yyyy-MM-dd HH:mm:ss
+     */
+    public static final String DATE_FORMAT_1 = "yyyy-MM-dd HH:mm:ss";
+    /**
+     * 指定日期格式 yyyy-MM-dd HH:mm
+     */
+    public static final String DATE_FORMAT_2 = "yyyy-MM-dd HH:mm";
+    /**
+     * 指定日期格式 HH:mm
+     */
+    public static final String DATE_FORMAT_3 = "HH:mm";
+    /**
+     * 指定日期格式 yyyy-MM-dd
+     */
+    public static final String DATE_FORMAT_4 = "yyyy-MM-dd";
 
-    public static final String DATEFORMAT_1 = "yyyy-MM-dd HH:mm:ss";
-    public static final String DATEFORMAT_2 = "yyyy-MM-dd HH:mm";
-    public static final String DATEFORMAT_3 = "HH:mm";
-    public static final String DATEFORMAT_4 = "yyyy-MM-dd";
-    public static final String DATEFORMAT_5 = "MM-dd HH:mm";
+    /**
+     * 指定日期格式 MM-dd HH:mm
+     */
+    public static final String DATE_FORMAT_5 = "MM-dd HH:mm";
 
-    public static final String FORMAT_BOOK_DATE = "yyyy-MM-dd'T'HH:mm:ss";
+    /**
+     * 指定日期格式 yyyy-MM-dd HH:mm:ss:SSS
+     */
+    public static final String DATE_FORMAT_6 = "yyyy-MM-dd HH:mm:ss:SSS";
+
+    /**
+     * 指定日期格式 yyyy-MM-dd'T'HH:mm:ss
+     */
+    public static final String DATE_FORMAT_7 = "yyyy-MM-dd'T'HH:mm:ss";
 
     private static final int HOUR_OF_DAY = 24;
     private static final int DAY_OF_YESTERDAY = 2;
@@ -165,7 +188,7 @@ public class TimeUtils {
      * @return
      */
     public static String getRangeByStringTime(String startTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATEFORMAT_1);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_1);
         Date date = null;
         try {
             date = sdf.parse(startTime);
@@ -205,7 +228,7 @@ public class TimeUtils {
             return elapsedTime / SECONDS_OF_1DAY + "天前";
         }
 
-        return formatDateToStr(startTime, DATEFORMAT_4);
+        return formatDateToStr(startTime, DATE_FORMAT_4);
     }
 
 

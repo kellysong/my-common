@@ -1,4 +1,4 @@
-package com.sjl.core.util;
+package com.sjl.core.util.log;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;

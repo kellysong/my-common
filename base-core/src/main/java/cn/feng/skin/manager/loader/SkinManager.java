@@ -10,6 +10,9 @@ import android.content.res.Resources.NotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 
+import com.sjl.core.util.log.LogWriter;
+import com.sjl.core.util.ToastUtils;
+
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -128,16 +131,28 @@ public class SkinManager implements ISkinLoader {
         notifySkinUpdate();
     }
 
+    /**
+     * 加载当前设置的皮肤
+     */
     public void load() {
         String skin = SkinConfig.getCustomSkinPath(context);
+        File file = new File(skin);
+        if (!file.exists() || !file.isFile()) {
+            return;
+        }
         load(skin, null);
     }
 
+    /**
+     * 加载皮肤
+     *
+     * @param callback
+     */
     public void load(ILoaderListener callback) {
-        String skin = SkinConfig.getCustomSkinPath(context);
         if (SkinConfig.isDefaultSkin(context)) {
             return;
         }
+        String skin = SkinConfig.getCustomSkinPath(context);
         load(skin, callback);
     }
 
@@ -188,7 +203,7 @@ public class SkinManager implements ISkinLoader {
                     }
                     return null;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LogWriter.e("换肤失败：isDefaultSkin=" + isDefaultSkin, e);
                     return null;
                 }
             }
@@ -204,6 +219,8 @@ public class SkinManager implements ISkinLoader {
                 } else {
                     isDefaultSkin = true;
                     if (callback != null) callback.onFailed();
+                    LogWriter.w("换肤失败");
+                    ToastUtils.showShort(context, "换肤失败");
                 }
             }
 

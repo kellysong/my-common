@@ -5,7 +5,7 @@ import android.net.ParseException;
 import com.google.gson.JsonParseException;
 import com.sjl.core.app.BaseApplication;
 import com.sjl.core.util.AppUtils;
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import org.json.JSONException;
 

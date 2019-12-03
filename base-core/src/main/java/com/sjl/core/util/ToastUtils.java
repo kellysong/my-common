@@ -11,7 +11,7 @@ import android.widget.Toast;
  * @version 1.0.0
  * @filename ToastUtils.java
  * @time 2018/10/18 11:23
- * @copyright(C) 2018 深圳市海恒智能科技有限公司
+ * @copyright(C) 2018 song
  */
 public class ToastUtils {
 	/**

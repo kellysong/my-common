@@ -2,7 +2,7 @@ package com.sjl.core.util.security;
 
 import android.util.Base64;
 
-import com.sjl.core.util.LogUtils;
+import com.sjl.core.util.log.LogUtils;
 
 import java.security.Key;
 
