@@ -15,9 +15,9 @@ import com.sjl.core.R;
 import com.sjl.core.app.BaseApplication;
 import com.sjl.core.util.AppUtils;
 import com.sjl.core.util.JsonUtils;
+import com.sjl.core.util.ToastUtils;
 import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.log.LoggerUtils;
-import com.sjl.core.util.ToastUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,10 +62,6 @@ public class RetrofitHelper {
      */
     private static final String DOMAIN_NAME = "Domain-Name";
 
-    private BaseUrlAdapter mBaseUrlAdapter;
-    private  static Map<String, String> mBaseUrlMap;
-
-
 
     private RetrofitHelper() {
 
@@ -82,18 +78,17 @@ public class RetrofitHelper {
         return sInstance;
     }
 
+
     /**
      * 初始化配置
      *
-     * @param baseUrlAdapter
+     * @param retrofitParams
      */
-    public void init(BaseUrlAdapter baseUrlAdapter) {
-        if (baseUrlAdapter == null) {
-            throw new NullPointerException("baseUrlAdapter is null");
+    public void init(RetrofitParams retrofitParams) {
+        if (retrofitParams == null) {
+            throw new NullPointerException("retrofitParams is null");
         }
-        this.mBaseUrlAdapter = baseUrlAdapter;
-        this.mBaseUrlMap = mBaseUrlAdapter.getAppendBaseUrl();
-
+        BaseUrlAdapter baseUrlAdapter = retrofitParams.getBaseUrlAdapter();
         //Gson解析时间时的问题,gson默认可能无法识别这种字符串数字日期格式，需要写个转换适配器才行
         // Creates the json object which will manage the information received
         GsonBuilder builder = new GsonBuilder();
@@ -104,9 +99,8 @@ public class RetrofitHelper {
             }
         });
         Gson gson = builder.create();
-
-        mRetrofit = new Retrofit.Builder().client(getOkHttpClient())
-                .baseUrl(mBaseUrlAdapter.getDefaultBaseUrl())
+        mRetrofit = new Retrofit.Builder().client(getOkHttpClient(retrofitParams))
+                .baseUrl(baseUrlAdapter.getDefaultBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
@@ -114,9 +108,50 @@ public class RetrofitHelper {
 
 
     /**
+     * 获取OkHttpClient实例
+     *
+     * @param retrofitParams
+     * @return
+     */
+    private OkHttpClient getOkHttpClient(RetrofitParams retrofitParams) {
+        RetrofitLogAdapter retrofitLogAdapter = retrofitParams.getRetrofitLogAdapter();
+
+        Cache cache = new Cache(new File(BaseApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 100);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.cache(cache)
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(new BaseUrlInterceptor(retrofitParams.getBaseUrlAdapter().getAppendBaseUrl()))
+                .addInterceptor(new RewriteCacheControlInterceptor(retrofitLogAdapter));
+        List<Interceptor> interceptorList = retrofitParams.getInterceptorList();
+        if (interceptorList != null) {
+            //添加自定义的拦截器
+            for (Interceptor interceptor : interceptorList) {
+                builder.addInterceptor(interceptor);
+            }
+        }
+        //不开启日志拦截器，调试太卡
+        if (retrofitLogAdapter != null && retrofitLogAdapter.printHttpLog()) {
+            // 拦截okHttp的日志，如果开启了会导致上传回调被调用两次
+            HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+            logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//必须设置级别，否则没有日志产生
+            builder.addNetworkInterceptor(logInterceptor);
+        }
+
+        OkHttpClient okHttpClient = builder.build();
+        return okHttpClient;
+    }
+
+    /**
      * baseurl拦截器,支持多个baseurl
      */
-    private static final Interceptor mBaseUrlInterceptor = new Interceptor() {
+    private static final class BaseUrlInterceptor implements Interceptor {
+        private Map<String, String> baseUrlMap;
+
+        public BaseUrlInterceptor(Map<String, String> appendBaseUrl) {
+            this.baseUrlMap = appendBaseUrl;
+        }
 
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -126,11 +161,11 @@ public class RetrofitHelper {
             Request.Builder builder = request.newBuilder();
             //从request中获取headers，通过给定的键url_name
             List<String> headerValues = request.headers(DOMAIN_NAME);
-            if ((headerValues != null && headerValues.size() > 0) && mBaseUrlMap != null && mBaseUrlMap.size() > 0) {
+            if ((headerValues != null && headerValues.size() > 0) && baseUrlMap != null && baseUrlMap.size() > 0) {
                 //匹配获得新的BaseUrl
                 HttpUrl newBaseUrl;
                 String headerValue = headerValues.get(0);
-                String baseUrl = mBaseUrlMap.get(headerValue);
+                String baseUrl = baseUrlMap.get(headerValue);
                 if (!TextUtils.isEmpty(baseUrl)) {
                     //如果有这个header，先将配置的header删除，因此header仅用作app和okhttp之间使用
                     builder.removeHeader(DOMAIN_NAME);
@@ -155,19 +190,26 @@ public class RetrofitHelper {
                 return chain.proceed(request);
             }
         }
-    };
+    }
 
 
     /**
      * 云端响应头拦截器，用来配置缓存策略
      * Dangerous interceptor that rewrites the server's cache-control header.
      */
-    private static final Interceptor mRewriteCacheControlInterceptor = new Interceptor() {
+    private static final class RewriteCacheControlInterceptor implements Interceptor {
+        private RetrofitLogAdapter retrofitLogAdapter;
+
+        public RewriteCacheControlInterceptor(RetrofitLogAdapter retrofitLogAdapter) {
+            this.retrofitLogAdapter = retrofitLogAdapter;
+        }
+
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-//            LogUtils.i("intercept url: "+request.url().toString());
-
+            if (retrofitLogAdapter != null && retrofitLogAdapter.printRequestUrl()) {
+                LogUtils.i("intercept url: " + request.url().toString());
+            }
             if (!AppUtils.isConnected(BaseApplication.getContext())) {
                 Handler mainHandler = new Handler(Looper.getMainLooper());
                 mainHandler.post(new Runnable() {
@@ -204,33 +246,9 @@ public class RetrofitHelper {
                         .build();
             }
         }
-    };
-
-
-    /**
-     * 获取OkHttpClient实例
-     *
-     * @return
-     */
-    private OkHttpClient getOkHttpClient() {
-        Cache cache = new Cache(new File(BaseApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 100);
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.cache(cache)
-                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
-                .addInterceptor(mBaseUrlInterceptor)
-                .addInterceptor(mRewriteCacheControlInterceptor);
-        //不开启日志拦截器，调试太卡
-      /*  if (BuildConfig.DEBUG) {
-            // 拦截okHttp的日志，如果开启了会导致上传回调被调用两次
-            HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
-            logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//必须设置级别，否则没有日志产生
-            builder.addNetworkInterceptor(logInterceptor);
-        }*/
-        OkHttpClient okHttpClient = builder.build();
-        return okHttpClient;
     }
+
+    ;
 
     /**
      * http日志拦截器

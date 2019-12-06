@@ -1,7 +1,5 @@
 package com.sjl.core.util;
 
-import android.os.Build;
-
 import com.sjl.core.util.log.LogUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -32,15 +30,11 @@ public class TUtils {
         try {
             // 获取当前运行类泛型父类类型，即为参数化类型，有所有类型公用的高级接口Type接收!
             Type type = o.getClass().getGenericSuperclass();
-            if (Build.VERSION.SDK_INT >= 28) {
-                LogUtils.i("父类类型名称:" + type.getTypeName());
-            }
-
             if (!(type instanceof ParameterizedType)) {
                 return null;
             }
-            String string = type.toString();
-            LogUtils.e("当前泛型T:" + string);
+ /*           String string = type.toString();
+            LogUtils.e("当前泛型T:" + string);*/
             // 强转为“参数化类型”，ParameterizedType参数化类型，即泛型
             ParameterizedType pt = (ParameterizedType) type;
             // 获取参数化类型中，实际类型的定义

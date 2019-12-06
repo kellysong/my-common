@@ -3,7 +3,6 @@ package cn.feng.skin.manager.loader;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.support.v4.util.ArrayMap;
-import android.support.v4.view.LayoutInflaterFactory;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.AttributeSet;
 import android.view.InflateException;
@@ -27,12 +26,11 @@ import cn.feng.skin.manager.util.L;
 import cn.feng.skin.manager.util.ListUtils;
 
 /**
- * 修复个别机型换肤失败，比如vivo x7
+ * 兼容9.0
  *
- * @author song 20190417
+ * @author song 20191206
  */
-@Deprecated
-public class SkinInflaterFactory2 implements LayoutInflaterFactory {
+public class SkinInflaterFactory3 implements LayoutInflater.Factory2 {
 
     private static final String TAG = "SkinInflaterFactory";
 
@@ -50,8 +48,13 @@ public class SkinInflaterFactory2 implements LayoutInflaterFactory {
     static final Class<?>[] sCreateViewSignature = new Class[]{View.class, String.class, Context.class, AttributeSet.class};
     private AppCompatDelegate delegate;
 
-    public SkinInflaterFactory2(AppCompatDelegate delegate) {
+    public SkinInflaterFactory3(AppCompatDelegate delegate) {
         this.delegate = delegate;
+    }
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return onCreateView(null, name, context, attrs);
     }
 
     @Override

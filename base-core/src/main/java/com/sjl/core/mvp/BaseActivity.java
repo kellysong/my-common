@@ -272,6 +272,23 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
             }
         }
     }
+    /**
+     * 销毁Activity，但不包括clz
+     * @param clz
+     */
+    protected void  killAllExcludeOneself(Class<?> clz){
+        synchronized (mActivities) {
+            Iterator<BaseActivity> it = mActivities.iterator();
+            while (it.hasNext()) {
+                BaseActivity next = it.next();
+                if (next.getClass() == clz) {
+                    continue;
+                }
+                next.finish();
+            }
+        }
+    }
+
 
     /**
      * 根据class获取实例

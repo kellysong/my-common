@@ -13,7 +13,7 @@ import java.util.List;
 import cn.feng.skin.manager.entity.DynamicAttr;
 import cn.feng.skin.manager.listener.IDynamicNewView;
 import cn.feng.skin.manager.listener.ISkinUpdate;
-import cn.feng.skin.manager.loader.SkinInflaterFactory2;
+import cn.feng.skin.manager.loader.SkinInflaterFactory3;
 import cn.feng.skin.manager.loader.SkinManager;
 import cn.feng.skin.manager.statusbar.StatusBarUtil;
 
@@ -34,15 +34,21 @@ public class BaseSkinActivity extends AppCompatActivity implements ISkinUpdate, 
     private boolean isResponseOnSkinChanging = true;
 
     //    private SkinInflaterFactory mSkinInflaterFactory;
-    private SkinInflaterFactory2 mSkinInflaterFactory;
+//    private SkinInflaterFactory2 mSkinInflaterFactory;
+    private SkinInflaterFactory3 mSkinInflaterFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //appcompat 创建view代码
+        //1.0
 //        mSkinInflaterFactory = new SkinInflaterFactory();
 //        getLayoutInflater().setFactory(mSkinInflaterFactory);
-        mSkinInflaterFactory = new SkinInflaterFactory2(getDelegate());
-        LayoutInflaterCompat.setFactory(getLayoutInflater(), mSkinInflaterFactory);
+        //2.0
+//        mSkinInflaterFactory = new SkinInflaterFactory2(getDelegate());
+//        LayoutInflaterCompat.setFactory(getLayoutInflater(), mSkinInflaterFactory);
+        //3.0
+        mSkinInflaterFactory = new SkinInflaterFactory3(getDelegate());
+        LayoutInflaterCompat.setFactory2(getLayoutInflater(), mSkinInflaterFactory);
         //必须在onCreate之前否则报错
         super.onCreate(savedInstanceState);
         changeStatusBarColor();
