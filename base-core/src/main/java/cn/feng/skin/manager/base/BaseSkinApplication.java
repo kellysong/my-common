@@ -1,6 +1,7 @@
 package cn.feng.skin.manager.base;
 
 import android.app.Application;
+import android.os.Build;
 
 import cn.feng.skin.manager.loader.SkinManager;
 
@@ -17,6 +18,10 @@ public class BaseSkinApplication extends Application {
      */
     private void initSkinLoader() {
         SkinManager.getInstance().init(this);
-        SkinManager.getInstance().load();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            SkinManager.getInstance().loadSync();//9.0同步换肤
+        } else {
+            SkinManager.getInstance().load();
+        }
     }
 }

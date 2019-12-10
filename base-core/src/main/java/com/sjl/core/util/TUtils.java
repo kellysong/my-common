@@ -33,7 +33,7 @@ public class TUtils {
             if (!(type instanceof ParameterizedType)) {
                 return null;
             }
- /*           String string = type.toString();
+/*            String string = type.toString();
             LogUtils.e("当前泛型T:" + string);*/
             // 强转为“参数化类型”，ParameterizedType参数化类型，即泛型
             ParameterizedType pt = (ParameterizedType) type;

@@ -13,13 +13,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.anthonycr.grant.PermissionsManager;
+import com.sjl.core.R;
 import com.sjl.core.net.RxLifecycleUtils;
 import com.sjl.core.net.RxManager;
-import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.TUtils;
 import com.sjl.core.util.ToastUtils;
+import com.sjl.core.util.log.LogUtils;
+import com.sjl.core.widget.loadingdialog.LoadingDialog;
 import com.uber.autodispose.AutoDisposeConverter;
 
 import java.util.Iterator;
@@ -45,6 +48,10 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
     protected T mPresenter;
     protected Context mContext;
     protected Unbinder unbind;
+
+    private LoadingDialog loadingDialog;
+    private Toast mToast;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,6 +215,21 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
 
 
     /**
+     * 显示Toast，不会重叠，会覆盖前面的
+     *
+     * @param msg
+     */
+    protected void showToast(String msg) {
+        if (mToast != null) {
+            mToast.setText(msg);
+        } else {
+            mToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        }
+        mToast.show();
+    }
+
+
+    /**
      * 短暂显示Toast提示(id)
      **/
     public void showShortToast(int resId) {
@@ -235,6 +257,47 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
     public void showLongToast(String text) {
         ToastUtils.showLong(this, text);
     }
+
+
+    /**
+     * 显示加载框
+     */
+    public void showLoadingDialog() {
+        if (loadingDialog == null) {
+            loadingDialog = new LoadingDialog(this, getString(R.string.text_loading_dialog));
+        }
+        if (!isFinishing()){
+            loadingDialog.show();
+        }
+    }
+
+    /**
+     * 显示加载框
+     *
+     * @param msg 加载信息
+     */
+    public void showLoadingDialog(String msg) {
+        if (loadingDialog == null) {
+            loadingDialog = new LoadingDialog(this, getString(R.string.text_loading_dialog));
+        }
+        if (!isFinishing()){
+            loadingDialog.setLoadingMsg(msg);
+            loadingDialog.show();
+        }
+
+    }
+
+    /**
+     * 隐藏加载框
+     */
+    public void hideLoadingDialog() {
+        if (loadingDialog == null) {
+            return;
+        }
+        loadingDialog.close();
+    }
+
+
 
     @Override
     protected void onDestroy() {

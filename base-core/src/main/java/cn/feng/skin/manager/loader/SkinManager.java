@@ -144,6 +144,26 @@ public class SkinManager implements ISkinLoader {
     }
 
     /**
+     * 同步换肤
+     */
+    public void loadSync() {
+        String skin = SkinConfig.getCustomSkinPath(context);
+        File file = new File(skin);
+        if (!file.exists() || !file.isFile()) {
+            return;
+        }
+        Map<String, Object> result = loadSkin(skin);
+        if (result != null) {
+            mResources = (Resources) result.get("skinResource");
+            skinPackageName = (String) result.get("skinPackageName");
+            notifySkinUpdate();
+        } else {
+            isDefaultSkin = true;
+        }
+    }
+
+
+    /**
      * 加载皮肤
      *
      * @param callback
@@ -174,36 +194,11 @@ public class SkinManager implements ISkinLoader {
 
             @Override
             protected Map<String, Object> doInBackground(String... params) {
-                try {
-                    if (params.length == 1) {
-                        String skinPkgPath = params[0];
-
-                        File file = new File(skinPkgPath);
-                        if (file == null || !file.exists()) {
-                            return null;
-                        }
-                        //核心代码，利用包管理进行加载资源文件
-                        PackageManager mPm = context.getPackageManager();
-                        PackageInfo mInfo = mPm.getPackageArchiveInfo(skinPkgPath, PackageManager.GET_ACTIVITIES);
-                        AssetManager assetManager = AssetManager.class.newInstance();
-                        Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
-                        addAssetPath.invoke(assetManager, skinPkgPath);
-
-                        Resources superRes = context.getResources();
-                        Resources skinResource = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
-
-                        SkinConfig.saveSkinPath(context, skinPkgPath);
-
-                        skinPath = skinPkgPath;
-                        isDefaultSkin = false;
-                        Map<String, Object> result = new HashMap<String, Object>();
-                        result.put("skinPackageName", mInfo.packageName);
-                        result.put("skinResource", skinResource);
-                        return result;
-                    }
-                    return null;
-                } catch (Exception e) {
-                    LogWriter.e("换肤失败：isDefaultSkin=" + isDefaultSkin, e);
+                if (params.length == 1) {
+                    String skinPkgPath = params[0];
+                    Map<String, Object> result = loadSkin(skinPkgPath);
+                    return result;
+                } else {
                     return null;
                 }
             }
@@ -219,13 +214,47 @@ public class SkinManager implements ISkinLoader {
                 } else {
                     isDefaultSkin = true;
                     if (callback != null) callback.onFailed();
-                    LogWriter.w("换肤失败");
-                    ToastUtils.showShort(context, "换肤失败");
                 }
             }
 
         }.execute(skinPackagePath);
     }
+
+
+    /**
+     * 加载皮肤包
+     *
+     * @param skinPkgPath
+     * @return
+     */
+    private Map<String, Object> loadSkin(String skinPkgPath) {
+        File file = new File(skinPkgPath);
+        if (file == null || !file.exists()) {
+            return null;
+        }
+        try {
+            //核心代码，利用包管理进行加载资源文件
+            PackageManager mPm = context.getPackageManager();
+            PackageInfo mInfo = mPm.getPackageArchiveInfo(skinPkgPath, PackageManager.GET_ACTIVITIES);
+            AssetManager assetManager = AssetManager.class.newInstance();
+            Method addAssetPath = assetManager.getClass().getMethod("addAssetPath", String.class);
+            addAssetPath.invoke(assetManager, skinPkgPath);
+
+            Resources superRes = context.getResources();
+            Resources skinResource = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
+            SkinConfig.saveSkinPath(context, skinPkgPath);
+            Map<String, Object> result = new HashMap<String, Object>();
+            result.put("skinPackageName", mInfo.packageName);
+            result.put("skinResource", skinResource);
+            skinPath = skinPkgPath;
+            isDefaultSkin = false;
+            return result;
+        } catch (Exception e) {
+            LogWriter.e("换肤失败：isDefaultSkin=" + isDefaultSkin, e);
+        }
+        return null;
+    }
+
 
     @Override
     public void attach(ISkinUpdate observer) {

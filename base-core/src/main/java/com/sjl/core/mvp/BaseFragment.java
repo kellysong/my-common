@@ -10,12 +10,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.sjl.core.R;
 import com.sjl.core.entity.EventBusDto;
 import com.sjl.core.net.RxLifecycleUtils;
 import com.sjl.core.util.ResourcesUtils;
 import com.sjl.core.util.TUtils;
 import com.sjl.core.util.ToastUtils;
+import com.sjl.core.widget.loadingdialog.LoadingDialog;
 import com.uber.autodispose.AutoDisposeConverter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,6 +46,8 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
     protected FragmentActivity mActivity;
     protected T mPresenter;
     protected Unbinder unbinder;
+    private LoadingDialog loadingDialog;
+    private Toast mToast;
 
     @Nullable
     @Override
@@ -295,6 +300,21 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
         startActivityForResult(intent, requestCode);
     }
 
+    /**
+     * 显示Toast，不会重叠，会覆盖前面的
+     *
+     * @param msg
+     */
+    protected void showToast(String msg) {
+        if (mToast != null) {
+            mToast.setText(msg);
+        } else {
+            mToast = Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT);
+        }
+        mToast.show();
+    }
+
+
 
     /**
      * 短暂显示Toast提示(id)
@@ -324,6 +344,47 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
     public void showLongToast(String text) {
         ToastUtils.showLong(mActivity, text);
     }
+
+
+    /**
+     * 显示加载框
+     */
+    public void showLoadingDialog() {
+        if (loadingDialog == null) {
+            loadingDialog = new LoadingDialog(mActivity, getString(R.string.text_loading_dialog));
+        }
+        if (!mActivity.isFinishing()){
+            loadingDialog.show();
+        }
+    }
+
+    /**
+     * 显示加载框
+     *
+     * @param msg 加载信息
+     */
+    public void showLoadingDialog(String msg) {
+        if (loadingDialog == null) {
+            loadingDialog = new LoadingDialog(mActivity, getString(R.string.text_loading_dialog));
+        }
+        if (!mActivity.isFinishing()){
+            loadingDialog.setLoadingMsg(msg);
+            loadingDialog.show();
+        }
+
+    }
+
+    /**
+     * 隐藏加载框
+     */
+    public void hideLoadingDialog() {
+        if (loadingDialog == null) {
+            return;
+        }
+        loadingDialog.close();
+    }
+
+
 
     /**
      * 子类需要覆写即可

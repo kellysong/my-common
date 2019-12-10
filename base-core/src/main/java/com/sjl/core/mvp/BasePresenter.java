@@ -24,10 +24,20 @@ public class BasePresenter<V extends BaseContract.IBaseView> implements BaseCont
     protected LifecycleOwner lifecycleOwner;
 
 
+
     @Override
     public void attachView(V view) {
         this.mView = view;
+        init();
     }
+
+    /**
+     * 用于初始化参数
+     */
+    public void init(){
+
+    }
+
 
     @Override
     public void detachView() {

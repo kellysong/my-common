@@ -144,9 +144,19 @@ public class ViewUtils {
      *
      * @param context
      */
-    private static void showKeyBoard(Context context) {
+    public static void showKeyBoard(Context context) {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    /**
+     * 显示密码键盘
+     *
+     * @param context
+     */
+    public static void showKeyBoard(Context context, EditText editText) {
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
     }
 
     /**

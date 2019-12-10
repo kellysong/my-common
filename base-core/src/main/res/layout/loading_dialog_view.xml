@@ -11,8 +11,8 @@
 
     <com.sjl.core.widget.loadingdialog.LVCircularRing
         android:id="@+id/lv_circularring"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
 
     <TextView
         android:id="@+id/loading_text"
@@ -20,6 +20,6 @@
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
         android:layout_marginTop="5dp"
-        android:textSize="14sp"/>
+        android:textSize="12sp"/>
 
 </LinearLayout>

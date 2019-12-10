@@ -2,6 +2,7 @@ package com.sjl.core.widget.loadingdialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -57,6 +58,11 @@ public class LoadingDialog {
      */
     public void setLoadingMsg(String loadingMsg) {
         if (loadingText != null) {
+            if (TextUtils.isEmpty(loadingMsg)) {
+                loadingText.setVisibility(View.GONE);
+            } else {
+                loadingText.setVisibility(View.VISIBLE);
+            }
             loadingText.setText(loadingMsg);
         }
     }
