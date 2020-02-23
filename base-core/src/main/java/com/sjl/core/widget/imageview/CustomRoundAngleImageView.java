@@ -52,12 +52,12 @@ public class CustomRoundAngleImageView extends AppCompatImageView {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
         // 读取配置
-        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.Custom_Round_Image_View);
-        radius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_radius, defaultRadius);
-        leftTopRadius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_left_top_radius, defaultRadius);
-        rightTopRadius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_right_top_radius, defaultRadius);
-        rightBottomRadius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_right_bottom_radius, defaultRadius);
-        leftBottomRadius = array.getDimensionPixelOffset(R.styleable.Custom_Round_Image_View_left_bottom_radius, defaultRadius);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomRoundAngleImageView);
+        radius = array.getDimensionPixelOffset(R.styleable.CustomRoundAngleImageView_radius, defaultRadius);
+        leftTopRadius = array.getDimensionPixelOffset(R.styleable.CustomRoundAngleImageView_left_top_radius, defaultRadius);
+        rightTopRadius = array.getDimensionPixelOffset(R.styleable.CustomRoundAngleImageView_right_top_radius, defaultRadius);
+        rightBottomRadius = array.getDimensionPixelOffset(R.styleable.CustomRoundAngleImageView_right_bottom_radius, defaultRadius);
+        leftBottomRadius = array.getDimensionPixelOffset(R.styleable.CustomRoundAngleImageView_left_bottom_radius, defaultRadius);
 
         //如果四个角的值没有设置，那么就使用通用的radius的值。
         if (defaultRadius == leftTopRadius) {
@@ -124,4 +124,20 @@ public class CustomRoundAngleImageView extends AppCompatImageView {
         this.rightTopRadius = radius;
         this.rightBottomRadius = radius;
     }
+
+    /**
+     * 设置圆角
+     * @param leftTopRadius
+     * @param rightTopRadius
+     * @param leftBottomRadius
+     * @param rightBottomRadius
+     */
+    public void resetRadius(int leftTopRadius,int rightTopRadius,int leftBottomRadius,int rightBottomRadius) {
+        this.leftTopRadius = leftTopRadius;
+        this.leftBottomRadius = leftBottomRadius;
+        this.rightTopRadius = rightTopRadius;
+        this.rightBottomRadius = rightBottomRadius;
+        invalidate();
+    }
+
 }

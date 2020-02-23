@@ -137,7 +137,8 @@ public class SkinManager implements ISkinLoader {
     public void load() {
         String skin = SkinConfig.getCustomSkinPath(context);
         File file = new File(skin);
-        if (!file.exists() || !file.isFile()) {
+        if (!file.exists()) {
+            LogWriter.e("换肤失败:" + skin + ",file.exists()=" + file.exists() + ",file.isFile()=" + file.isFile());
             return;
         }
         load(skin, null);
@@ -149,7 +150,8 @@ public class SkinManager implements ISkinLoader {
     public void loadSync() {
         String skin = SkinConfig.getCustomSkinPath(context);
         File file = new File(skin);
-        if (!file.exists() || !file.isFile()) {
+        if (!file.exists()) {
+            LogWriter.e("换肤失败:" + skin + ",file.exists()=" + file.exists() + ",file.isFile()=" + file.isFile());
             return;
         }
         Map<String, Object> result = loadSkin(skin);
@@ -229,7 +231,7 @@ public class SkinManager implements ISkinLoader {
      */
     private Map<String, Object> loadSkin(String skinPkgPath) {
         File file = new File(skinPkgPath);
-        if (file == null || !file.exists()) {
+        if (!file.exists()) {
             return null;
         }
         try {
@@ -250,7 +252,7 @@ public class SkinManager implements ISkinLoader {
             isDefaultSkin = false;
             return result;
         } catch (Exception e) {
-            LogWriter.e("换肤失败：isDefaultSkin=" + isDefaultSkin, e);
+            LogWriter.e("加载新换肤失败：isDefaultSkin=" + isDefaultSkin, e);
         }
         return null;
     }

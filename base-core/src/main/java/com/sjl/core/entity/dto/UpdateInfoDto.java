@@ -7,26 +7,32 @@ package com.sjl.core.entity.dto;
  *
  */
 public class UpdateInfoDto {
-	// 是否有新版本
-	private boolean hasUpdate;
-	// 是否静默下载：有新版本时不提示直接下载
-	private boolean isSilent;
-	// 是否强制安装：不安装无法使用app
-	private boolean isForce;
-	// 是否下载完成后自动安装
-	private boolean isAutoInstall;
-	// 是否可忽略该版本
-	private boolean isIgnorable;
 
+	/**
+	 * hasUpdate : true
+	 * versionCode : 1039
+	 * versionName : 3.6.3
+	 * updateContent : 1. 修复若干升级9.0后出现的若干bug ; 2. 加入异常机制.
+	 * url : nullbookmark_V3.6.3_release_2019-12-24.apk
+	 * md5 : 3ccc51f7862d8dfa9583c7bc8984b162
+	 * size : 12539630
+	 * silent : false
+	 * force : false
+	 * autoInstall : true
+	 * ignorable : false
+	 */
+
+	private boolean hasUpdate;
 	private int versionCode;
 	private String versionName;
 	private String updateContent;
-	// 下载url
 	private String url;
-	// 文件md5
 	private String md5;
-	// 文件大小
-	private long size;
+	private int size;
+	private boolean silent;
+	private boolean force;
+	private boolean autoInstall;
+	private boolean ignorable;
 
 	public boolean isHasUpdate() {
 		return hasUpdate;
@@ -34,38 +40,6 @@ public class UpdateInfoDto {
 
 	public void setHasUpdate(boolean hasUpdate) {
 		this.hasUpdate = hasUpdate;
-	}
-
-	public boolean isSilent() {
-		return isSilent;
-	}
-
-	public void setSilent(boolean isSilent) {
-		this.isSilent = isSilent;
-	}
-
-	public boolean isForce() {
-		return isForce;
-	}
-
-	public void setForce(boolean isForce) {
-		this.isForce = isForce;
-	}
-
-	public boolean isAutoInstall() {
-		return isAutoInstall;
-	}
-
-	public void setAutoInstall(boolean isAutoInstall) {
-		this.isAutoInstall = isAutoInstall;
-	}
-
-	public boolean isIgnorable() {
-		return isIgnorable;
-	}
-
-	public void setIgnorable(boolean isIgnorable) {
-		this.isIgnorable = isIgnorable;
 	}
 
 	public int getVersionCode() {
@@ -108,12 +82,60 @@ public class UpdateInfoDto {
 		this.md5 = md5;
 	}
 
-	public long getSize() {
+	public int getSize() {
 		return size;
 	}
 
-	public void setSize(long size) {
+	public void setSize(int size) {
 		this.size = size;
 	}
 
+	public boolean isSilent() {
+		return silent;
+	}
+
+	public void setSilent(boolean silent) {
+		this.silent = silent;
+	}
+
+	public boolean isForce() {
+		return force;
+	}
+
+	public void setForce(boolean force) {
+		this.force = force;
+	}
+
+	public boolean isAutoInstall() {
+		return autoInstall;
+	}
+
+	public void setAutoInstall(boolean autoInstall) {
+		this.autoInstall = autoInstall;
+	}
+
+	public boolean isIgnorable() {
+		return ignorable;
+	}
+
+	public void setIgnorable(boolean ignorable) {
+		this.ignorable = ignorable;
+	}
+
+	@Override
+	public String toString() {
+		return "UpdateInfoDto{" +
+				"hasUpdate=" + hasUpdate +
+				", versionCode=" + versionCode +
+				", versionName='" + versionName + '\'' +
+				", updateContent='" + updateContent + '\'' +
+				", url='" + url + '\'' +
+				", md5='" + md5 + '\'' +
+				", size=" + size +
+				", silent=" + silent +
+				", force=" + force +
+				", autoInstall=" + autoInstall +
+				", ignorable=" + ignorable +
+				'}';
+	}
 }

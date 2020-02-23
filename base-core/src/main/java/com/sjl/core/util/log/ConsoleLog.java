@@ -85,7 +85,6 @@ public class ConsoleLog extends LightLog {
         if (mDebuggable >= LEVEL_WARN && null != msg) {
 
             Log.w(mTag, createLog(msg), tr);
-
         }
 
     }

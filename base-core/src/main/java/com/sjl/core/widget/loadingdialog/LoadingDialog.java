@@ -47,8 +47,10 @@ public class LoadingDialog {
     }
 
     public void show() {
-        mLoadingDialog.show();
-        mLoadingView.startAnim();
+        if (mLoadingDialog != null && !mLoadingDialog.isShowing()) {
+            mLoadingDialog.show();
+            mLoadingView.startAnim();
+        }
     }
 
     /**
@@ -68,7 +70,7 @@ public class LoadingDialog {
     }
 
     public void close() {
-        if (mLoadingDialog != null) {
+        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingView.stopAnim();
             mLoadingDialog.dismiss();
         }

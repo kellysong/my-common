@@ -131,7 +131,7 @@ public class AppUtils {
 	}
 
 	/**
-	 * 字符串非空判断
+	 * 字符串空判断
 	 * 
 	 * @param str
 	 *            true为空
@@ -149,7 +149,18 @@ public class AppUtils {
 	}
 
 	/**
-	 * 集合非空判断
+	 * 字符串非空判断
+	 *
+	 * @param str
+	 *            true为空
+	 * @return
+	 */
+	public static boolean isNotEmpty(String str) {
+		return !isEmpty(str);
+	}
+
+	/**
+	 * 集合空判断
 	 *
 	 * @param str
 	 *            true为空
@@ -157,6 +168,17 @@ public class AppUtils {
 	 */
 	public static boolean isEmpty(Collection str) {
 		return str == null || str.isEmpty() ? true : false;
+	}
+
+	/**
+	 * 集合非空判断
+	 *
+	 * @param str
+	 *            true为空
+	 * @return
+	 */
+	public static boolean isNotEmpty(Collection str) {
+		return !isEmpty(str);
 	}
 
 	/**

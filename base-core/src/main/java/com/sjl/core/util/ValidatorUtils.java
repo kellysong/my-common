@@ -23,6 +23,7 @@ public class ValidatorUtils {
      * 正则表达式：验证邮箱
      */
     public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+
     /**
      * 校验手机号
      *
@@ -69,6 +70,7 @@ public class ValidatorUtils {
 
     /**
      * 校验ip地址
+     *
      * @param ip
      * @return
      */
@@ -78,6 +80,7 @@ public class ValidatorUtils {
 
     /**
      * 校验端口号
+     *
      * @param port
      * @return
      */
@@ -85,4 +88,40 @@ public class ValidatorUtils {
         return port.matches("^[1-9]$|(^[1-9][0-9]$)|(^[1-9][0-9][0-9]$)|(^[1-9][0-9][0-9][0-9]$)|(^[1-6][0-5][0-5][0-3][0-5]$)");
     }
 
+    /**
+     *判断一个字符串的首字符是否为字母
+     * @param s
+     * @return
+     */
+    public static boolean checkLetter(String s) {
+        char c = s.charAt(0);
+        int i = (int) c;
+        if ((i >= 65 && i <= 90) || (i >= 97 && i <= 122)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否是汉字
+     *
+     * @param c
+     * @return
+     */
+    public static boolean isChinese(char c) {
+        Pattern pattern = Pattern.compile("[\\u4e00-\\u9fa5]+");
+        Matcher matcher = pattern.matcher(String.valueOf(c));
+        return matcher.matches();
+    }
+
+    /**
+     * 判断是否是英文
+     *
+     * @param c
+     * @return
+     */
+    public static boolean isEnglish(char c) {
+        return String.valueOf(c).matches("^[a-zA-Z]*");
+    }
 }

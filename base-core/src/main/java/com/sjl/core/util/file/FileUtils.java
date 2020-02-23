@@ -99,7 +99,22 @@ public class FileUtils {
                     .getAbsolutePath();
         }
     }
-
+    /**
+     * 获取file文件夹,临时数据存放在cache目录下，持久化的数据存储在files
+     *
+     * @return
+     */
+    public static String getFilePath() {
+        if (isSdCardExist()) {//有SD卡的情况：应用的存储目录
+            return BaseApplication.getContext()
+                    .getExternalFilesDir(null)
+                    .getAbsolutePath();
+        } else {//无SD卡的情况：应用的存储目录
+            return BaseApplication.getContext()
+                    .getFilesDir()
+                    .getAbsolutePath();
+        }
+    }
 
     /**
      * 获取文件夹

@@ -1,15 +1,16 @@
 package com.sjl.core.app;
 
+import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 
+import com.sjl.core.util.ResourcesUtils;
 import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.log.LogWriter;
 import com.sjl.core.util.log.LoggerUtils;
-import com.sjl.core.util.ResourcesUtils;
 
-import cn.feng.skin.manager.base.BaseSkinApplication;
+import cn.feng.skin.manager.loader.SkinManager;
 import cn.feng.skin.manager.util.L;
 
 /**
@@ -21,7 +22,7 @@ import cn.feng.skin.manager.util.L;
  * @time 2017年9月5日 下午5:41:39
  * @copyright(C) 2017 song
  */
-public class BaseApplication extends BaseSkinApplication {
+public class BaseApplication extends Application {
 
     private static BaseApplication mContext;
     private static int mainTid;
@@ -52,19 +53,29 @@ public class BaseApplication extends BaseSkinApplication {
             e.printStackTrace();
         }
         ResourcesUtils.init(this);
+        LogWriter.init(LOG_TAG, true, true);
     }
 
 
     /**
-     * 初始化日志
+     * 初始化日志（可选）
      */
     protected void initLogConfig(boolean isLogEnable) {
         this.LOG_DEBUG_MODE = isLogEnable;
         L.setDebug(LOG_DEBUG_MODE);
         LoggerUtils.init(LOG_TAG, LOG_DEBUG_MODE);
         LogUtils.init(LOG_TAG, LOG_DEBUG_MODE);//初始化日志
-        LogWriter.init(LOG_TAG, true, true);
     }
+
+
+    /**
+     * 初始化日志皮肤(可选)
+     */
+    protected void initSkinLoader() {
+        SkinManager.getInstance().init(this);
+        SkinManager.getInstance().load();
+    }
+
 
     /**
      * 获取主线程id h

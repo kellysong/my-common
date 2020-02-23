@@ -15,12 +15,18 @@ public class EventBusDto<T> {
     /**
      * 事件状态码
      */
-    private int eventCode = -1;
+    private int eventCode;
     private T data;
 
     public EventBusDto(int eventCode) {
         this(eventCode, null);
     }
+
+    /**
+     * EventBusDto实例
+     * @param eventCode 事件状态码，默认0
+     * @param data 传输数据
+     */
     public EventBusDto(int eventCode, T data) {
         this.eventCode = eventCode;
         this.data = data;
@@ -62,6 +68,13 @@ public class EventBusDto<T> {
                 "position=" + position +
                 ", eventCode=" + eventCode +
                 ", data=" + data +
+                '}';
+    }
+
+    public String toString2() {
+        return "EventBusDto{" +
+                "position=" + position +
+                ", eventCode=" + eventCode +
                 '}';
     }
 }

@@ -52,9 +52,9 @@ public class RetrofitHelper {
     private volatile static RetrofitHelper sInstance;//使线程共享一个实例
     private Retrofit mRetrofit;
 
-    private static final long CONNECT_TIMEOUT = 20L;
-    private static final long READ_TIMEOUT = 20L;
-    private static final long WRITE_TIMEOUT = 20L;
+    private static final long CONNECT_TIMEOUT = 30L;
+    private static final long READ_TIMEOUT = 30L;
+    private static final long WRITE_TIMEOUT = 30L;
     //设缓存有效期为7天
     private static final long CACHE_STALE_SEC = 60 * 60 * 24 * 7;
     /**

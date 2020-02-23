@@ -122,6 +122,16 @@ public class TimeUtils {
     }
 
     /**
+     * long转date
+     *
+     * @param date
+     * @return
+     */
+    public static Date longToDate(long date) {
+        return new Date(date);
+    }
+
+    /**
      * 计算时间差
      *
      * @param starTime 开始时间
@@ -394,5 +404,25 @@ public class TimeUtils {
         }
     }
 
+    /**
+     * 和当前日期进行比较
+     *
+     * @param date
+     * @param format
+     * @return true已经超出当前日期，false没有超出当前日期
+     */
+    public static boolean compareCurrentDate(String date, String format) {
+        DateFormat df = new SimpleDateFormat(format);
+        try {
+            Date dt1 = df.parse(date);
+            Date dt2 = new Date();
+            if (dt1.getTime() >= dt2.getTime()) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

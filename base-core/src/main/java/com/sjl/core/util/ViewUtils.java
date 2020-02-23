@@ -90,6 +90,16 @@ public class ViewUtils {
     }
 
     /**
+     * View延迟执行
+     *
+     * @param r
+     * @param delayMillis
+     */
+    public static void postDelayed(Runnable r, long delayMillis) {
+        BaseApplication.getHandler().postDelayed(r, delayMillis);
+    }
+
+    /**
      * 根据布局id获取填充的布局
      *
      * @param layoutId
@@ -264,22 +274,24 @@ public class ViewUtils {
 
     /**
      * dp转px
+     *
      * @param context
      * @param dpValue
      * @return
      */
-    public static int dp2px(Context context,int dpValue){
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,dpValue,context.getResources().getDisplayMetrics());
+    public static int dp2px(Context context, int dpValue) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, context.getResources().getDisplayMetrics());
     }
 
     /**
      * sp转px
+     *
      * @param context
      * @param spValue
      * @return
      */
-    public static int sp2px(Context context,int spValue){
-        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,spValue,context.getResources().getDisplayMetrics());
+    public static int sp2px(Context context, int spValue) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, context.getResources().getDisplayMetrics());
     }
 
 
@@ -354,5 +366,6 @@ public class ViewUtils {
         }
         return hasNavigationBar;
     }
+
 
 }

@@ -25,7 +25,7 @@ public class SkinConfig {
 	}
 	
 	public static void saveSkinPath(Context context, String path){
-		PreferencesHelper.getInstance(context).put(PREF_CUSTOM_SKIN_PATH, path);
+		PreferencesHelper.getInstance(context).putSync(PREF_CUSTOM_SKIN_PATH, path);
 	}
 	
 	public static boolean isDefaultSkin(Context context){

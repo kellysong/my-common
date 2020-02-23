@@ -12,7 +12,7 @@
 
 
     <!--圆角ImageView-->
-    <declare-styleable name="Custom_Round_Image_View">
+    <declare-styleable name="CustomRoundAngleImageView">
         <attr name="radius" format="dimension"/>
         <attr name="left_top_radius" format="dimension"/>
         <attr name="right_top_radius" format="dimension"/>

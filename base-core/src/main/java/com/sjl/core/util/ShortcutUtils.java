@@ -133,7 +133,7 @@ public class ShortcutUtils {
             try {
                 final Uri CONTENT_URI = Uri.parse(authority);
 
-                Cursor c = cr.query(CONTENT_URI, new String[]{"title", "iconResource"}, "title=?", new String[]{title.trim()},
+                Cursor c = cr.query(CONTENT_URI, new String[]{"title"}, "title=?", new String[]{title.trim()},
                         null);
 
                 // XXX表示应用名称。

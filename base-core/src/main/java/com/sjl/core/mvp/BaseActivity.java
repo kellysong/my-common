@@ -266,7 +266,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(this, getString(R.string.text_loading_dialog));
         }
-        if (!isFinishing()){
+        if (!isFinishing()) {
             loadingDialog.show();
         }
     }
@@ -280,7 +280,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(this, getString(R.string.text_loading_dialog));
         }
-        if (!isFinishing()){
+        if (!isFinishing()) {
             loadingDialog.setLoadingMsg(msg);
             loadingDialog.show();
         }
@@ -298,7 +298,6 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -311,7 +310,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
         if (rxManager != null) {
             rxManager.dispose();
         }
-        if (unbind != null){
+        if (unbind != null) {
             unbind.unbind();
         }
     }
@@ -335,11 +334,13 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
             }
         }
     }
+
     /**
      * 销毁Activity，但不包括clz
+     *
      * @param clz
      */
-    protected void  killAllExcludeOneself(Class<?> clz){
+    protected void killAllExcludeOneself(Class<?> clz) {
         synchronized (mActivities) {
             Iterator<BaseActivity> it = mActivities.iterator();
             while (it.hasNext()) {
@@ -348,6 +349,24 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
                     continue;
                 }
                 next.finish();
+            }
+        }
+    }
+
+    /**
+     * 销毁单个Activity
+     *
+     * @param clz
+     */
+    protected void killSingleActivity(Class<?> clz) {
+        synchronized (mActivities) {
+            Iterator<BaseActivity> it = mActivities.iterator();
+            while (it.hasNext()) {
+                BaseActivity next = it.next();
+                if (next.getClass() == clz) {
+                    next.finish();
+                    break;
+                }
             }
         }
     }
@@ -368,6 +387,23 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
             }
         }
         return null;
+    }
+
+
+
+
+    /**
+     * 根据class获取实例
+     *
+     * @param clz
+     * @return
+     */
+    protected boolean isTopActivity(Class<?> clz) {
+        BaseActivity baseActivity = mActivities.get(mActivities.size() - 1);
+        if (baseActivity != null && baseActivity.getClass() == clz) {
+            return true;
+        }
+        return false;
     }
 
     /**
