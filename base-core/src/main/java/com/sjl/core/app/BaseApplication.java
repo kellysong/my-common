@@ -53,7 +53,7 @@ public class BaseApplication extends Application {
             e.printStackTrace();
         }
         ResourcesUtils.init(this);
-        LogWriter.init(LOG_TAG, true, true);
+
     }
 
 
@@ -63,8 +63,9 @@ public class BaseApplication extends Application {
     protected void initLogConfig(boolean isLogEnable) {
         this.LOG_DEBUG_MODE = isLogEnable;
         L.setDebug(LOG_DEBUG_MODE);
-        LoggerUtils.init(LOG_TAG, LOG_DEBUG_MODE);
         LogUtils.init(LOG_TAG, LOG_DEBUG_MODE);//初始化日志
+        LoggerUtils.init(LOG_TAG, LOG_DEBUG_MODE);
+        LogWriter.init(LOG_TAG, true, true);
     }
 
 

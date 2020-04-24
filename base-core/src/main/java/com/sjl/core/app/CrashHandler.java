@@ -13,7 +13,8 @@ import com.sjl.core.util.log.LogWriter;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,14 +32,14 @@ public class CrashHandler implements UncaughtExceptionHandler {
     //程序的Context对象
     private Context mContext;
     //用来存储设备信息和异常信息
-    private Map<String, String> infos;
+    private Map<String, Object> infos;
 
 
     /**
      * 保证只有一个CrashHandler实例
      */
     private CrashHandler() {
-        infos = new HashMap<String, String>();
+        infos = new LinkedHashMap<String, Object>();
     }
 
     /**
@@ -141,11 +142,15 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * @return 返回文件名称, 便于将文件传送到服务器
      */
     private String saveCrashInfo2File(Throwable ex) {
-
         StringBuffer sb = new StringBuffer();
-        for (Map.Entry<String, String> entry : infos.entrySet()) {
+        for (Map.Entry<String, Object> entry : infos.entrySet()) {
             String key = entry.getKey();
-            String value = entry.getValue();
+            Object value = entry.getValue();
+            if ("SUPPORTED_32_BIT_ABIS".equals(key) ||
+                    "SUPPORTED_ABIS".equals(key) ||
+                    "SUPPORTED_64_BIT_ABIS".equals(key)) {
+                value = Arrays.toString((String[]) value);
+            }
             sb.append(key + "=" + value + "\n");
         }
         LogWriter.e("程序崩溃：" + sb.toString(), ex);
