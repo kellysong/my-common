@@ -2,11 +2,6 @@ package com.sjl.core.mvp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +20,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.lang.reflect.Field;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.feng.skin.manager.base.BaseSkinFragment;
@@ -83,7 +80,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
      * 初始化皮肤，不满足直接覆写重新定义
      */
     protected void initSkin() {
-        Toolbar toolbar = ButterKnife.findById(mActivity, ResourcesUtils.getViewId("common_toolbar"));
+        Toolbar toolbar = mActivity.findViewById(ResourcesUtils.getViewId("common_toolbar"));
         if (toolbar != null) {
             dynamicAddView(toolbar, "background", ResourcesUtils.getColorId("colorPrimary"));
         }
@@ -146,21 +143,23 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
 
     }
 
-    @Override
+  /*  @Override
     public void onDetach() {
         super.onDetach();
         // for bug ---> java.lang.IllegalStateException: Activity has been destroyed
         try {
+            if (getActivity() == null || getActivity().isFinishing()) {
+                return;
+            }
             Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
-
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
 
     /**
@@ -315,7 +314,6 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
     }
 
 
-
     /**
      * 短暂显示Toast提示(id)
      **/
@@ -353,7 +351,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(mActivity, getString(R.string.text_loading_dialog));
         }
-        if (!mActivity.isFinishing()){
+        if (!mActivity.isFinishing()) {
             loadingDialog.show();
         }
     }
@@ -367,7 +365,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(mActivity, getString(R.string.text_loading_dialog));
         }
-        if (!mActivity.isFinishing()){
+        if (!mActivity.isFinishing()) {
             loadingDialog.setLoadingMsg(msg);
             loadingDialog.show();
         }
@@ -383,7 +381,6 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
         }
         loadingDialog.close();
     }
-
 
 
     /**

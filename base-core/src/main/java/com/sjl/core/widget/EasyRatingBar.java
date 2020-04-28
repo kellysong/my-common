@@ -7,8 +7,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +15,9 @@ import com.sjl.core.R;
 import com.sjl.core.util.ViewUtils;
 
 import java.lang.ref.WeakReference;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 /**
  * 简单实现RatingBar效果

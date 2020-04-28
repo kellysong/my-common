@@ -1,10 +1,11 @@
 package com.zhy.adapter.viewpager;
 
-import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 /**
  * PagerAdapter基类,封装了内容为View的公共操作

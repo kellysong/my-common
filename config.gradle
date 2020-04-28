@@ -7,23 +7,23 @@
 ext {
     //Android
     compileSdkVersion = 28
-    buildToolsVersion = "28.0.2"
+    buildToolsVersion = "28.0.3"
     minSdkVersion = 14
     targetSdkVersion = 28
     versionCode = 100
     versionName = "1.0.0"
 
-//Version
-    supportLibrary = "28.0.0"
-    supportLibrary_constraint_layout = "1.1.3"
-//supportLibraries dependencies
-    supportDependencies = [
-            supportAppcompat   : "com.android.support:appcompat-v7:${supportLibrary}",
-            supportRecyclerview: "com.android.support:recyclerview-v7:${supportLibrary}",
-            supportCardview    : "com.android.support:cardview-v7:${supportLibrary}",
-            supportPalette     : "com.android.support:palette-v7:${supportLibrary}",
-            supportDesign      : "com.android.support:design:${supportLibrary}",
-            constraintLayout      : "com.android.support.constraint:constraint-layout:${supportLibrary_constraint_layout}"
+    //Version
+    androidx_constraint_layout = "1.1.3"
+    androidxLibrary = "1.0.0"
+    //AndroidX dependencies
+    adnroidxDependencies = [
+            androidxAppcompat   : "androidx.appcompat:appcompat:${androidxLibrary}",
+            androidxRecyclerview: "androidx.recyclerview:recyclerview:${androidxLibrary}",
+            androidxCardview    : "androidx.cardview:cardview:${androidxLibrary}",
+            androidxPalette     : "androidx.palette:palette:${androidxLibrary}",
+            androidxDesign      : "com.google.android.material:material:${androidxLibrary}",
+            constraintLayout   : "androidx.constraintlayout:constraintlayout:${androidx_constraint_layout}"
 
     ]
 

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ListView;
 
@@ -14,6 +13,7 @@ import com.sjl.core.net.RxManager;
 import com.sjl.core.util.TUtils;
 import com.sjl.core.util.ToastUtils;
 
+import androidx.annotation.Nullable;
 import cn.feng.skin.manager.base.BaseSkinPreferenceFragment;
 
 /**

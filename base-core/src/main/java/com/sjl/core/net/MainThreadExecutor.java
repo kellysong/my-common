@@ -2,7 +2,7 @@ package com.sjl.core.net;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * MainThreadExecutor

@@ -2,7 +2,7 @@ package cn.feng.skin.manager.loader;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
-import android.support.v4.view.LayoutInflaterFactory;
+import androidx.core.view.LayoutInflaterFactory;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;

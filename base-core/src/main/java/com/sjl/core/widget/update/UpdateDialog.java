@@ -18,8 +18,6 @@ package com.sjl.core.widget.update;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.View;
@@ -33,6 +31,9 @@ import com.sjl.core.entity.dto.UpdateInfoDto;
 import com.sjl.core.util.ColorUtils;
 import com.sjl.core.util.DrawableUtils;
 import com.sjl.core.util.ViewUtils;
+
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 
 
 /**

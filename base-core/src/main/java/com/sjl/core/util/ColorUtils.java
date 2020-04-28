@@ -18,7 +18,7 @@ package com.sjl.core.util;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 import java.util.Random;
 

@@ -2,14 +2,14 @@ package cn.feng.skin.manager.base;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.LayoutInflaterCompat;
 import cn.feng.skin.manager.entity.DynamicAttr;
 import cn.feng.skin.manager.listener.IDynamicNewView;
 import cn.feng.skin.manager.listener.ISkinUpdate;

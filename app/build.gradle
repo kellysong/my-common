@@ -9,7 +9,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // androidstudio3.0使用butterknife报错解决
         javaCompileOptions {
             annotationProcessorOptions {
@@ -23,14 +23,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    //base-core中的autodispose-android-archcomponents引入了java8的新特性，需要加
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation rootProject.ext.supportDependencies.supportAppcompat
-    implementation rootProject.ext.supportDependencies.constraintLayout
+    implementation rootProject.ext.adnroidxDependencies.androidxAppcompat
+    implementation rootProject.ext.adnroidxDependencies.constraintLayout
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation project(':base-core')
+    //必须要加，只对当前模块有效
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
 }

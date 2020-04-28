@@ -1,8 +1,8 @@
 package com.sjl.core.mvp;
 
-import android.arch.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleOwner;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.sjl.core.net.RxLifecycleUtils;
 import com.uber.autodispose.AutoDisposeConverter;

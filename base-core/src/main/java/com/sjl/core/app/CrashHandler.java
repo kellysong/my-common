@@ -13,7 +13,6 @@ import com.sjl.core.util.log.LogWriter;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -149,9 +148,10 @@ public class CrashHandler implements UncaughtExceptionHandler {
             if ("SUPPORTED_32_BIT_ABIS".equals(key) ||
                     "SUPPORTED_ABIS".equals(key) ||
                     "SUPPORTED_64_BIT_ABIS".equals(key)) {
-                value = Arrays.toString((String[]) value);
+               continue;
+            }else {
+                sb.append(key + "=" +  value + "\n");
             }
-            sb.append(key + "=" + value + "\n");
         }
         LogWriter.e("程序崩溃：" + sb.toString(), ex);
         return null;

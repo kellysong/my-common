@@ -2,8 +2,8 @@ package cn.feng.skin.manager.loader;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
-import android.support.v4.util.ArrayMap;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.collection.ArrayMap;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.util.AttributeSet;
 import android.view.InflateException;
 import android.view.LayoutInflater;
