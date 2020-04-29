@@ -20,5 +20,5 @@
 
     implementation 'com.github.kellysong.my-common:base-adapter:2.1.0'
     implementation 'com.github.kellysong.my-common:base-core:2.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
