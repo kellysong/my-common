@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 
 
 /**
- * TODO
+ * 圆角ImageView
  *
  * @author Kelly
  * @version 1.0.0
