@@ -58,7 +58,6 @@ public class ConsoleLog extends LightLog {
         if (mDebuggable >= LEVEL_INFO) {//5>3
 
             Log.i(mTag, createLog(msg));
-
         }
     }
 
