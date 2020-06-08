@@ -3,10 +3,11 @@ package com.sjl.core.util;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.TextUtils;
-
 
 import com.sjl.core.util.log.LogUtils;
 
@@ -100,6 +101,22 @@ public class AppUtils {
 	}
 
 
+	/**
+	 * 重启app
+	 * @param context
+	 */
+	public static void restartApp(Context context) {
+		PackageManager packageManager = context.getPackageManager();
+		if (null == packageManager) {
+			LogUtils.e("null == packageManager");
+			return;
+		}
+		final Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
+		if (intent != null) {
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			context.startActivity(intent);
+		}
+	}
 
 
 
