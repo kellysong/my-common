@@ -1,6 +1,9 @@
 package com.sjl.core.app;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -8,7 +11,9 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.sjl.core.manager.MyActivityManager;
 import com.sjl.core.net.MainThreadExecutor;
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.log.LogWriter;
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -18,7 +23,9 @@ import java.util.Map;
 
 /**
  * UncaughtException处理类,当程序发生Uncaught异常的时候,有该类来接管程序,并记录发送错误报告.
- *
+ *  1.优雅的退出应用
+ *  2.崩溃重启
+ *  3.异常收集
  * @author song
  */
 public class CrashHandler implements UncaughtExceptionHandler {
@@ -32,7 +39,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
     private Context mContext;
     //用来存储设备信息和异常信息
     private Map<String, Object> infos;
-
+    private boolean isRestartApp;
+    // 重启后跳转的Activity
+    private Class mRestartActivity;
 
     /**
      * 保证只有一个CrashHandler实例
@@ -46,6 +55,18 @@ public class CrashHandler implements UncaughtExceptionHandler {
      */
     public static CrashHandler getInstance() {
         return INSTANCE;
+    }
+
+    /**
+     * 初始化
+     * @param context
+     * @param isRestartApp    是否支持重启APP
+     * @param restartActivity 重启后跳转的 Activity，建议 SplashActivity
+     */
+    public void init(Context context, boolean isRestartApp, Class restartActivity) {
+        this.isRestartApp = isRestartApp;
+        this.mRestartActivity = restartActivity;
+        init(context);
     }
 
     /**
@@ -66,7 +87,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        if (handleException(ex) && mDefaultHandler != null) {
+        if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
@@ -76,7 +97,28 @@ public class CrashHandler implements UncaughtExceptionHandler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //退出程序
+            if (isRestartApp) { // 如果需要重启
+                Intent intent = new Intent(mContext.getApplicationContext(), mRestartActivity);
+                AlarmManager mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+                //重启应用，得使用PendingIntent
+                PendingIntent restartIntent = PendingIntent.getActivity(
+                        mContext.getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    //Android6.0以上，包含6.0
+//                    mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent); //解决Android6.0省电机制带来的不准时问题
+                    mAlarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent);
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    //Android4.4到Android6.0之间，包含4.4
+                    mAlarmManager.setExact(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent); // 解决set()在api19上不准时问题
+                } else {
+                    mAlarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent);// 1秒钟后重启应用
+                }
+                MyActivityManager.getInstance().finishActivityList();
+                LogUtils.i("准备重启应用");
+
+            }
+            //想要重新加载Application，必须杀死该进程
+            MyActivityManager.getInstance().finishActivityList();
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);
         }
@@ -89,6 +131,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
      * @return true:如果处理了该异常信息;否则返回false.
      */
     private boolean handleException(Throwable ex) {
+        if (ex == null) {
+            return false;
+        }
         //使用Toast来显示异常信息
         MainThreadExecutor.runMainThread(new Runnable() {
             @Override
@@ -148,9 +193,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
             if ("SUPPORTED_32_BIT_ABIS".equals(key) ||
                     "SUPPORTED_ABIS".equals(key) ||
                     "SUPPORTED_64_BIT_ABIS".equals(key)) {
-               continue;
-            }else {
-                sb.append(key + "=" +  value + "\n");
+                continue;
+            } else {
+                sb.append(key + "=" + value + "\n");
             }
         }
         LogWriter.e("程序崩溃：" + sb.toString(), ex);
