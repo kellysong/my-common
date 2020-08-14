@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 
 import com.sjl.core.util.log.LogWriter;
-import com.sjl.core.util.ToastUtils;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -263,7 +262,7 @@ public class SkinManager implements ISkinLoader {
         if (skinObservers == null) {
             skinObservers = new ArrayList<ISkinUpdate>();
         }
-        if (!skinObservers.contains(skinObservers)) {
+        if (!skinObservers.contains(observer)) {
             skinObservers.add(observer);
         }
     }

@@ -113,9 +113,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 } else {
                     mAlarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent);// 1秒钟后重启应用
                 }
-                MyActivityManager.getInstance().finishActivityList();
                 LogUtils.i("准备重启应用");
-
             }
             //想要重新加载Application，必须杀死该进程
             MyActivityManager.getInstance().finishActivityList();

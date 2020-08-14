@@ -52,9 +52,7 @@ public class RetrofitHelper {
     private volatile static RetrofitHelper sInstance;//使线程共享一个实例
     private Retrofit mRetrofit;
 
-    private static final long CONNECT_TIMEOUT = 30L;
-    private static final long READ_TIMEOUT = 30L;
-    private static final long WRITE_TIMEOUT = 30L;
+
     //设缓存有效期为7天
     private static final long CACHE_STALE_SEC = 60 * 60 * 24 * 7;
     /**
@@ -119,9 +117,9 @@ public class RetrofitHelper {
         Cache cache = new Cache(new File(BaseApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 100);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.cache(cache)
-                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(retrofitParams.getConnectTimeout(), TimeUnit.SECONDS)
+                .readTimeout(retrofitParams.getReadTimeout(), TimeUnit.SECONDS)
+                .writeTimeout(retrofitParams.getWriteTimeout(), TimeUnit.SECONDS)
                 .addInterceptor(new BaseUrlInterceptor(retrofitParams.getBaseUrlAdapter().getAppendBaseUrl()))
                 .addInterceptor(new RewriteCacheControlInterceptor(retrofitLogAdapter));
         List<Interceptor> interceptorList = retrofitParams.getInterceptorList();
@@ -274,6 +272,7 @@ public class RetrofitHelper {
                 if (message.startsWith("<-- END HTTP")) {
                     LoggerUtils.d(mMessage.toString());
                 }
+
             } catch (Exception e) {
                 LogUtils.e(e);
             }

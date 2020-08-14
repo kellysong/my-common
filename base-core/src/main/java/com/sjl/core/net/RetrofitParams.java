@@ -15,6 +15,7 @@ import okhttp3.Interceptor;
  * @copyright(C) 2019 song
  */
 public class RetrofitParams {
+
     /**
      * base url适配器
      */
@@ -28,17 +29,27 @@ public class RetrofitParams {
      */
     private List<Interceptor> interceptorList;
 
+    private int connectTimeout = 30;
+    private int readTimeout = 30;
+    private int writeTimeout = 30;
+
     public RetrofitParams(Builder builder) {
         this.baseUrlAdapter = builder.baseUrlAdapter;
-        this.retrofitLogAdapter =  builder.retrofitLogAdapter;
-        this.interceptorList =  builder.interceptorList;
+        this.retrofitLogAdapter = builder.retrofitLogAdapter;
+        this.interceptorList = builder.interceptorList;
+        this.connectTimeout = builder.connectTimeout;
+        this.readTimeout = builder.readTimeout;
+        this.writeTimeout = builder.writeTimeout;
     }
 
 
-    public static final class Builder{
+    public static final class Builder {
         private BaseUrlAdapter baseUrlAdapter;
         private RetrofitLogAdapter retrofitLogAdapter;
         private List<Interceptor> interceptorList = new ArrayList<>();
+        private int connectTimeout;
+        private int readTimeout;
+        private int writeTimeout;
 
         public Builder setBaseUrlAdapter(BaseUrlAdapter baseUrlAdapter) {
             if (baseUrlAdapter == null) {
@@ -57,9 +68,33 @@ public class RetrofitParams {
         }
 
         public Builder setInterceptor(Interceptor interceptor) {
-            if (interceptor != null){
+            if (interceptor != null) {
                 interceptorList.add(interceptor);
             }
+            return this;
+        }
+
+        public Builder setConnectTimeout(int connectTimeout) {
+            if (connectTimeout < 0) {
+                throw new IllegalArgumentException("connectTimeout cannot be zero.");
+            }
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        public Builder setReadTimeout(int readTimeout) {
+            if (readTimeout < 0) {
+                throw new IllegalArgumentException("readTimeout cannot be zero.");
+            }
+            this.readTimeout = readTimeout;
+            return this;
+        }
+
+        public Builder setWriteTimeout(int writeTimeout) {
+            if (writeTimeout < 0) {
+                throw new IllegalArgumentException("writeTimeout cannot be zero.");
+            }
+            this.writeTimeout = writeTimeout;
             return this;
         }
 
@@ -78,5 +113,17 @@ public class RetrofitParams {
 
     public List<Interceptor> getInterceptorList() {
         return interceptorList;
+    }
+
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public int getWriteTimeout() {
+        return writeTimeout;
     }
 }
