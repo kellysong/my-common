@@ -135,12 +135,12 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSkinFrag
         EventBus.getDefault().unregister(this);
         //这里不要解绑，真恶心，卧槽，解绑之后会空指针
 //        ButterKnife.unbind(this);
-//        unbinder.unbind();//未验证
+        if (unbinder != null){
+            unbinder.unbind();
+        }
         if (mPresenter != null) {
             mPresenter.detachView();
         }
-
-
     }
 
   /*  @Override

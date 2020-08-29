@@ -81,9 +81,6 @@ dependencies {
     /*日志*/
     api 'com.orhanobut:logger:2.1.1'
 
-    /*权限申请*/
-    api 'com.anthonycr.grant:permissions:1.0'
-
     /*强大的BaseRecyclerView适配器*/
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49'
 }

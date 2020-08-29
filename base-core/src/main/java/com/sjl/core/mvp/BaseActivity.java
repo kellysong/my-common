@@ -12,10 +12,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.anthonycr.grant.PermissionsManager;
 import com.sjl.core.R;
 import com.sjl.core.net.RxLifecycleUtils;
 import com.sjl.core.net.RxManager;
+import com.sjl.core.permission.PermissionsManager;
 import com.sjl.core.util.TUtils;
 import com.sjl.core.util.ToastUtils;
 import com.sjl.core.util.log.LogUtils;
