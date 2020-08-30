@@ -197,8 +197,17 @@ public class ViewUtils {
      * @param filePath
      */
     public static void saveBitmap(View view, String filePath) {
+        saveBitmap(view,view.getWidth(), view.getHeight(),filePath);
+    }
+    /**
+     * 保存view为文件
+     *
+     * @param view
+     * @param filePath
+     */
+    public static void saveBitmap(View view,int width, int height, String filePath) {
         // 创建对应大小的bitmap
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+        Bitmap bitmap = Bitmap.createBitmap(width,height,
                 Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
