@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.sjl.core.app.BaseApplication;
+import com.sjl.core.util.io.IOUtils;
 import com.sjl.core.util.log.LogUtils;
 
 import java.io.BufferedInputStream;
@@ -19,16 +20,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 文件操作工具类
+ *
+ * @author song
+ */
 public class FileUtils {
 
 
     /**
      * 保存bitmap为图片
+     *
      * @param context
      * @param bmp
      * @param saveResultCallback
@@ -72,6 +81,7 @@ public class FileUtils {
 
     /**
      * 获取SD卡路径
+     *
      * @return
      */
     public static File getSDPath() {
@@ -99,6 +109,7 @@ public class FileUtils {
                     .getAbsolutePath();
         }
     }
+
     /**
      * 获取file文件夹,临时数据存放在cache目录下，持久化的数据存储在files
      *
@@ -118,13 +129,14 @@ public class FileUtils {
 
     /**
      * 获取文件夹
+     *
      * @param filePath
      * @return
      */
-    public static File getFolder(String filePath){
+    public static File getFolder(String filePath) {
         File file = new File(filePath);
         //如果文件夹不存在，就创建它
-        if (!file.exists()){
+        if (!file.exists()) {
             file.mkdirs();
         }
         return file;
@@ -132,13 +144,14 @@ public class FileUtils {
 
     /**
      * 获取文件
+     *
      * @param filePath
      * @return
      */
-    public static synchronized File getFile(String filePath){
+    public static synchronized File getFile(String filePath) {
         File file = new File(filePath);
         try {
-            if (!file.exists()){
+            if (!file.exists()) {
                 //创建父类文件夹
                 getFolder(file.getParent());
                 //创建文件
@@ -152,10 +165,11 @@ public class FileUtils {
 
     /**
      * 统计目录大小
+     *
      * @param file
      * @return
      */
-    public static long getDirSize(File file){
+    public static long getDirSize(File file) {
         //判断文件是否存在
         if (file.exists()) {
             //如果是目录则递归计算其内容的总大小
@@ -175,6 +189,7 @@ public class FileUtils {
 
     /**
      * 格式化文件大小
+     *
      * @param size
      * @return
      */
@@ -201,33 +216,64 @@ public class FileUtils {
     }
 
     /**
-     * 递归删除文件夹下的数据
-     * /storage/emulated/0/Android/data/com.sjl.swimchat.test/cache/book_cache/5a589dbd46e30e144b871384
-     * @param filePath
+     * 递归删除文件夹下的文件
+     *
+     *
+     * @param dirPath
      */
-    public static synchronized void deleteFile(String filePath) {
-        File file = new File(filePath);
-        if (!file.exists()) return;
+    public static synchronized void deleteFile(String dirPath) throws IOException {
+        File file = new File(dirPath);
+        cleanDirectory(file);
 
+    }
+
+    /**
+     * 清空目录下的文件
+     * @param file
+     * @throws IOException
+     */
+    public static void cleanDirectory(File file) throws IOException {
+        if (!file.exists()) return;
         if (file.isDirectory()) {
             File[] files = file.listFiles();
+            if (files == null) {  // null if security restricted
+                throw new IOException("Failed to list contents of " + file);
+            }
             for (File subFile : files) {
-                String path = subFile.getPath();
-                deleteFile(path);
+                cleanDirectory(subFile);
             }
         }
         //删除文件
         file.delete();
     }
 
+
+    /**
+     * 删除目录和目录下的文件
+     * @param dir
+     * @throws IOException
+     */
+    public static void deleteDirectory(File dir) throws IOException {
+        if (!dir.exists()) {
+            return;
+        }
+        cleanDirectory(dir);
+        if (!dir.delete()) {
+            String message =
+                    "Unable to delete dir " + dir + ".";
+            throw new IOException(message);
+        }
+    }
+
     /**
      * 获取文件的编码格式
+     *
      * @param fileName
      * @return
      */
-    public static Charset getCharset(String fileName) {
+    public static CharsetEnum getCharset(String fileName) {
         BufferedInputStream bis = null;
-        Charset charset = Charset.GBK;
+        CharsetEnum charset = CharsetEnum.GBK;
         byte[] first3Bytes = new byte[3];
         try {
             boolean checked = false;
@@ -239,7 +285,7 @@ public class FileUtils {
             if (first3Bytes[0] == (byte) 0xEF
                     && first3Bytes[1] == (byte) 0xBB
                     && first3Bytes[2] == (byte) 0xBF) {
-                charset = Charset.UTF8;
+                charset = CharsetEnum.UTF8;
                 checked = true;
             }
             /*
@@ -272,7 +318,7 @@ public class FileUtils {
                         if (0x80 <= read && read <= 0xBF) {
                             read = bis.read();
                             if (0x80 <= read && read <= 0xBF) {
-                                charset = Charset.UTF8;
+                                charset = CharsetEnum.UTF8;
                                 break;
                             } else
                                 break;
@@ -284,7 +330,7 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (bis != null){
+            if (bis != null) {
                 try {
                     bis.close();
                 } catch (IOException e) {
@@ -298,10 +344,8 @@ public class FileUtils {
     /**
      * 使用NIO进行快速的文件拷贝
      *
-     * @param source
-     *            源文件
-     * @param target
-     *            目标文件
+     * @param source 源文件
+     * @param target 目标文件
      * @throws IOException
      */
     @SuppressWarnings("resource")
@@ -329,6 +373,7 @@ public class FileUtils {
 
     /**
      * 常规文件拷贝
+     *
      * @param in
      * @param target
      * @throws IOException
@@ -353,9 +398,91 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 复制url对象到指定文件，相当于网页另存为
+     *
+     * @param source
+     * @param destination
+     * @throws IOException
+     */
+    public static void copyURLToFile(URL source, File destination) throws IOException {
+        InputStream input = source.openStream();
+        fileCopy(input, destination);
+    }
+
     public interface SaveResultCallback {
         void onSavedSuccess();
 
         void onSavedFailed();
+    }
+
+    /**
+     * Reads the contents of a file
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static String readFileToString(File file) throws IOException {
+        return readFileToString(file, Charset.defaultCharset());
+    }
+
+    /**
+     * Reads the contents of a file into a String
+     *
+     * @param file
+     * @param encoding
+     * @return
+     * @throws IOException
+     */
+    public static String readFileToString(File file, String encoding) throws IOException {
+        return readFileToString(file, CharsetEnum.toCharset(encoding));
+    }
+
+    /**
+     * Reads the contents of a file into a String
+     *
+     * @param file
+     * @param encoding
+     * @return
+     * @throws IOException
+     */
+    public static String readFileToString(File file, Charset encoding) throws IOException {
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            return IOUtils.toString(in, CharsetEnum.toCharset(encoding));
+        } finally {
+            IOUtils.close(in);
+        }
+    }
+
+    /**
+     * 写入字节数组到文件
+     *
+     * @param file
+     * @param data
+     * @throws IOException
+     */
+    public static void writeByteArrayToFile(File file, byte[] data) throws IOException {
+        writeByteArrayToFile(file, data, false);
+    }
+    /**
+     * 写入字节数组到文件
+     *
+     * @param file
+     * @param data
+     * @param append true 追加写，false覆盖
+     * @throws IOException
+     */
+    public static void writeByteArrayToFile(File file, byte[] data, boolean append) throws IOException {
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(file, append);
+            out.write(data);
+            out.flush();
+        } finally {
+            IOUtils.close(out);
+        }
     }
 }
