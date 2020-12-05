@@ -1,7 +1,6 @@
 package com.sjl.core.util.log;
 
 import android.os.Environment;
-import android.util.Log;
 
 import com.sjl.core.app.BaseApplication;
 import com.sjl.core.util.datetime.TimeUtils;
@@ -18,6 +17,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import static com.sjl.core.util.log.ConsoleLog.LEVEL_ASSERT;
+import static com.sjl.core.util.log.ConsoleLog.LEVEL_DEBUG;
+import static com.sjl.core.util.log.ConsoleLog.LEVEL_ERROR;
+import static com.sjl.core.util.log.ConsoleLog.LEVEL_INFO;
+import static com.sjl.core.util.log.ConsoleLog.LEVEL_VERBOSE;
+import static com.sjl.core.util.log.ConsoleLog.LEVEL_WARN;
+import static com.sjl.core.util.log.ConsoleLog.LOG_STACK_TRACE_INDEX;
+import static com.sjl.core.util.log.ConsoleLog.mTimestamp;
+
 /**
  * 磁盘日志
  *
@@ -27,8 +35,8 @@ import java.util.List;
  * @time 2018/11/1 10:19
  * @copyright(C) 2018 song
  */
-public class DiskLog extends LightLog {
-
+public class DiskLog implements ILog {
+    private ConsoleLog lightLog;
     /**
      * 单个日志文件最大值 8M，理论上不会超出
      */
@@ -46,17 +54,8 @@ public class DiskLog extends LightLog {
     /**
      * 日志是否可写
      */
-    private boolean isCanWrite = true;
+    private boolean isCanWrite;
 
-    /**
-     * 初始化initFileWriter
-     *
-     * @param logDebugMode  日志打印标志，true打印日志，false不打印日志，包括写文件日志
-     * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
-     */
-    public DiskLog(boolean logDebugMode, boolean writeFileFlag) {
-        this(mTag, logDebugMode, writeFileFlag);
-    }
 
     /**
      * 初始化initFileWriter
@@ -66,9 +65,7 @@ public class DiskLog extends LightLog {
      * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
      */
     public DiskLog(String tag, boolean logDebugMode, boolean writeFileFlag) {
-        mTag = tag;
         if (!logDebugMode) {
-            mDebuggable = LEVEL_NONE;
             isCanWrite = false;
             return;
         }
@@ -90,111 +87,70 @@ public class DiskLog extends LightLog {
             boolean ret = checkLogFileSize(logFile);
             if (ret) {//超出文件大小,不再写
                 isCanWrite = false;
-            }else{
+            } else {
                 isCanWrite = true;
             }
         }
         deleteSDcardExpiredLog(logPath);
+        lightLog = new ConsoleLog(tag, true);
+        //纠正日志定位
+        lightLog.setStackTraceIndex(LOG_STACK_TRACE_INDEX + 1);
     }
 
     @Override
     public void v(String msg) {
-        if (mDebuggable >= LEVEL_VERBOSE) {//5>1
-            String logMsg = createLog(msg);
-            Log.v(mTag, logMsg);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_VERBOSE, logMsg));
-            }
-        }
+        lightLog.v(msg);
+        writeLogToFile(LEVEL_VERBOSE, msg);
+
     }
 
     @Override
     public void d(String msg) {
-        if (mDebuggable >= LEVEL_DEBUG) {//5>2
-            String logMsg = createLog(msg);
-            Log.d(mTag, logMsg);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_DEBUG, logMsg));
-            }
-        }
+        lightLog.d(msg);
+        writeLogToFile(LEVEL_DEBUG, msg);
     }
 
     @Override
     public void i(String msg) {
-        if (mDebuggable >= LEVEL_INFO) {//5>3
-            String logMsg = createLog(msg);
-            Log.i(mTag, logMsg);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_INFO, logMsg));
-            }
-        }
+        lightLog.i(msg);
+        writeLogToFile(LEVEL_INFO, msg);
+
     }
 
     @Override
     public void w(String msg) {
-        if (mDebuggable >= LEVEL_WARN) {//5>4
-            String logMsg = createLog(msg);
-            Log.w(mTag, logMsg);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_WARN, logMsg));
-            }
-        }
+        lightLog.w(msg);
+        writeLogToFile(LEVEL_WARN, msg);
     }
 
     @Override
     public void w(Throwable tr) {
-        if (mDebuggable >= LEVEL_WARN) {//5>4
-            Log.w(mTag, "", tr);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_WARN, "-->" + processCrashInfo(tr)));
-            }
-        }
+        lightLog.w(tr);
+        writeLogToFile(LEVEL_WARN,null,tr);
     }
 
     @Override
     public void w(String msg, Throwable tr) {
-
-        if (mDebuggable >= LEVEL_WARN && null != msg) {
-            String logMsg = createLog(msg);
-            Log.w(mTag, logMsg, tr);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_WARN, logMsg + "-->" + processCrashInfo(tr)));
-            }
-        }
+        lightLog.w(msg, tr);
+        writeLogToFile(LEVEL_WARN,msg,tr);
     }
 
     @Override
     public void e(String msg) {
-        if (mDebuggable >= LEVEL_ERROR) {
-            String logMsg = createLog(msg);
-            Log.e(mTag, logMsg);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_ERROR, logMsg));
-            }
-        }
+        lightLog.e(msg);
+        writeLogToFile(LEVEL_ERROR,msg,null);
     }
 
     @Override
     public void e(Throwable tr) {
-        if (mDebuggable >= LEVEL_ERROR) {
-            Log.e(mTag, "", tr);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_ERROR, "-->" + processCrashInfo(tr)));
-            }
-        }
+        lightLog.e(tr);
+        writeLogToFile(LEVEL_ERROR,null,tr);
     }
 
     @Override
     public void e(String msg, Throwable tr) {
-
-        if (mDebuggable >= LEVEL_ERROR && null != msg) {
-            String logMsg = createLog(msg);
-            Log.e(mTag, logMsg, tr);
-            if (isCanWrite) {
-                writeLogToFile(appendDescribe(LEVEL_ERROR, logMsg + "-->" + processCrashInfo(tr)));
-            }
-        }
-
+        lightLog.e(msg, tr);
+        writeLogToFile(LEVEL_ERROR,msg,tr);
     }
 
     @Override
@@ -206,6 +162,24 @@ public class DiskLog extends LightLog {
         mTimestamp = currentTime;
 
         e("[Elapsed：" + elapsedTime + "]" + msg);
+    }
+
+    @Override
+    public void wtf(String msg) {
+        lightLog.wtf(msg);
+        writeLogToFile(LEVEL_ASSERT,msg,null);
+    }
+
+    @Override
+    public void json(String json) {
+        lightLog.json(json);
+        writeLogToFile(LEVEL_DEBUG,json,null);
+    }
+
+    @Override
+    public void xml(String xml) {
+        lightLog.xml(xml);
+        writeLogToFile(LEVEL_DEBUG,xml,null);
     }
 
     /**
@@ -262,12 +236,29 @@ public class DiskLog extends LightLog {
         });
     }
 
-    /**
-     * 写日志内容到文件
-     *
-     * @param content 日志内容
-     */
-    private void writeLogToFile(String content) {
+
+    private void writeLogToFile(int logLevel, String msg) {
+        if (!isCanWrite) {
+            return;
+        }
+       writeLogToFile(logLevel,msg,null);
+    }
+
+
+    private void writeLogToFile(int logLevel, String msg,Throwable tr) {
+        if (!isCanWrite) {
+            return;
+        }
+        writeFile(logLevel,msg,tr);
+    }
+
+
+    private synchronized void writeFile(int logLevel, String msg,Throwable tr) {
+        String logMsg = lightLog.createLog(msg,LOG_STACK_TRACE_INDEX);
+        if (tr != null) {
+            logMsg +=  "-->" + processCrashInfo(tr);
+        }
+        String content = appendDescribe(logLevel, logMsg);
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(logFile, true);
@@ -279,33 +270,13 @@ public class DiskLog extends LightLog {
                 try {
                     fileWriter.flush();
                     fileWriter.close();
-                } catch (IOException e1) { /* TODO */ }
+                } catch (IOException e1) {
+
+                }
             }
         }
     }
 
-    /**
-     * 获取日志级别
-     *
-     * @param value
-     * @return
-     */
-    private String getLogLevel(int value) {
-        switch (value) {
-            case LEVEL_VERBOSE:
-                return "V";
-            case LEVEL_DEBUG:
-                return "D";
-            case LEVEL_INFO:
-                return "I";
-            case LEVEL_WARN:
-                return "W";
-            case LEVEL_ERROR:
-                return "E";
-            default:
-                return "UNKNOWN";
-        }
-    }
 
     /**
      * 追加输出日志描述
@@ -318,7 +289,7 @@ public class DiskLog extends LightLog {
         return new StringBuilder().
                 append(TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_6))
                 .append("/")
-                .append(getLogLevel(logLevel))
+                .append(lightLog.getLogLevel(logLevel))
                 .append("/")
                 .append(msg)
                 .append("\n").toString();
@@ -330,6 +301,9 @@ public class DiskLog extends LightLog {
      * @param tr
      */
     private String processCrashInfo(Throwable tr) {
+        if (tr == null) {
+            return "";
+        }
         Writer writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
         tr.printStackTrace(pw);

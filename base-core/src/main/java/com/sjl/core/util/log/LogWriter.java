@@ -4,14 +4,14 @@ package com.sjl.core.util.log;
  * 自定义轻量级写日志到文件工具类（目前只用于设备驱动，网络通信，其它不需要，控制台日志即可）
  *
  * @author songjiali
- * @version 3.0.0
+ * @version 4.0.0
  * @filename LogWriter.java
  * @time 2018/10/22 17:25
  * @copyright(C) 2018 song
  */
 public class LogWriter {
 
-    private static LightLog lightLog;
+    private static ILog log;
 
     private LogWriter() {
 
@@ -25,7 +25,7 @@ public class LogWriter {
      * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
      */
     public static void init(String tag, boolean logDebugMode, boolean writeFileFlag) {
-        lightLog = new DiskLog(tag, logDebugMode, writeFileFlag);
+        log = new DiskLog(tag, logDebugMode, writeFileFlag);
     }
 
 
@@ -35,7 +35,7 @@ public class LogWriter {
 
     public static void v(String msg) {
         checkLog();
-        lightLog.v(msg);
+        log.v(msg);
     }
 
     /**
@@ -44,7 +44,7 @@ public class LogWriter {
 
     public static void d(String msg) {
         checkLog();
-        lightLog.d(msg);
+        log.d(msg);
     }
 
     /**
@@ -53,7 +53,7 @@ public class LogWriter {
 
     public static void i(String msg) {
         checkLog();
-        lightLog.i(msg);
+        log.i(msg);
     }
 
     /**
@@ -62,7 +62,7 @@ public class LogWriter {
 
     public static void w(String msg) {
         checkLog();
-        lightLog.w(msg);
+        log.w(msg);
     }
 
     /**
@@ -71,7 +71,7 @@ public class LogWriter {
 
     public static void w(Throwable tr) {
         checkLog();
-        lightLog.w(tr);
+        log.w(tr);
     }
 
     /**
@@ -80,7 +80,7 @@ public class LogWriter {
 
     public static void w(String msg, Throwable tr) {
         checkLog();
-        lightLog.w(msg, tr);
+        log.w(msg, tr);
     }
 
     /**
@@ -89,7 +89,7 @@ public class LogWriter {
 
     public static void e(String msg) {
         checkLog();
-        lightLog.e(msg);
+        log.e(msg);
     }
 
     /**
@@ -98,7 +98,7 @@ public class LogWriter {
 
     public static void e(Throwable tr) {
         checkLog();
-        lightLog.e(tr);
+        log.e(tr);
     }
 
     /**
@@ -107,7 +107,7 @@ public class LogWriter {
 
     public static void e(String msg, Throwable tr) {
         checkLog();
-        lightLog.e(msg, tr);
+        log.e(msg, tr);
     }
 
     /**
@@ -116,12 +116,28 @@ public class LogWriter {
 
     public static void elapsed(String msg) {
         checkLog();
-        lightLog.elapsed(msg);
+        log.elapsed(msg);
     }
 
     private static void checkLog() {
-        if (lightLog == null) {
-            lightLog = new DiskLog(true, true);//初始化，如果需要开启写磁盘，调用init初始化
+        if (log == null) {
+            log = new DiskLog(ConsoleLog.mTag,true, true);//初始化，如果需要开启写磁盘，调用init初始化
         }
+    }
+
+    /**
+     * 打印json
+     */
+    public static void json(String json) {
+        checkLog();
+        log.json(json);
+    }
+
+    /**
+     *  打印xml
+     */
+    public static void xml(String xml) {
+        checkLog();
+        log.xml(xml);
     }
 }

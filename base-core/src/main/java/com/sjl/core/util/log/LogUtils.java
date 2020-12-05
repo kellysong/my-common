@@ -4,13 +4,13 @@ package com.sjl.core.util.log;
  * 控制台日志输出工具类
  *
  * @author songjiali
- * @version 3.0.0
+ * @version 4.0.0
  * @filename LogUtils.java
  * @time 2018/10/22 17:25
  * @copyright(C) 2018 song
  */
 public class LogUtils {
-    private static LightLog lightLog;
+    private static ILog log;
 
     private LogUtils() {
 
@@ -23,7 +23,7 @@ public class LogUtils {
      * @param logDebugMode true打印日志，false不打印日志
      */
     public static void init(String tag, boolean logDebugMode) {
-        lightLog = new ConsoleLog(tag, logDebugMode);
+        log = new ConsoleLog(tag, logDebugMode);
     }
 
     /**
@@ -32,7 +32,7 @@ public class LogUtils {
 
     public static void v(String msg) {
         checkLog();
-        lightLog.v(msg);
+        log.v(msg);
     }
 
 
@@ -42,7 +42,7 @@ public class LogUtils {
 
     public static void d(String msg) {
         checkLog();
-        lightLog.d(msg);
+        log.d(msg);
     }
 
     /**
@@ -51,7 +51,7 @@ public class LogUtils {
 
     public static void i(String msg) {
         checkLog();
-        lightLog.i(msg);
+        log.i(msg);
     }
 
     /**
@@ -60,7 +60,7 @@ public class LogUtils {
 
     public static void w(String msg) {
         checkLog();
-        lightLog.w(msg);
+        log.w(msg);
     }
 
     /**
@@ -69,7 +69,7 @@ public class LogUtils {
 
     public static void w(Throwable tr) {
         checkLog();
-        lightLog.w(tr);
+        log.w(tr);
     }
 
     /**
@@ -78,7 +78,7 @@ public class LogUtils {
 
     public static void w(String msg, Throwable tr) {
         checkLog();
-        lightLog.w(msg, tr);
+        log.w(msg, tr);
     }
 
     /**
@@ -87,7 +87,7 @@ public class LogUtils {
 
     public static void e(String msg) {
         checkLog();
-        lightLog.e(msg);
+        log.e(msg);
     }
 
     /**
@@ -96,7 +96,7 @@ public class LogUtils {
 
     public static void e(Throwable tr) {
         checkLog();
-        lightLog.e(tr);
+        log.e(tr);
     }
 
     /**
@@ -105,7 +105,7 @@ public class LogUtils {
 
     public static void e(String msg, Throwable tr) {
         checkLog();
-        lightLog.e(msg, tr);
+        log.e(msg, tr);
     }
 
     /**
@@ -114,12 +114,29 @@ public class LogUtils {
 
     public static void elapsed(String msg) {
         checkLog();
-        lightLog.elapsed(msg);
+        log.elapsed(msg);
     }
 
     private static void checkLog() {
-        if (lightLog == null) {
-            lightLog = new ConsoleLog(true);//初始化日志
+        if (log == null) {
+            log = new ConsoleLog(true);//初始化日志
         }
     }
+
+    /**
+     * 打印json
+     */
+    public static void json(String json) {
+        checkLog();
+        log.json(json);
+    }
+
+    /**
+     *  打印xml
+     */
+    public static void xml(String xml) {
+        checkLog();
+        log.xml(xml);
+    }
+
 }
