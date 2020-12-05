@@ -6,8 +6,10 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 时间转换工具类add by Kelly on 20170308.
@@ -66,6 +68,8 @@ public class TimeUtils {
      * 指定日期格式 yyyy-MM-dd'T'HH:mm:ss
      */
     public static final String DATE_FORMAT_7 = "yyyy-MM-dd'T'HH:mm:ss";
+
+    public static final String DATE_FORMAT_8 = "SSS";
 
     private static final int HOUR_OF_DAY = 24;
     private static final int DAY_OF_YESTERDAY = 2;
@@ -423,6 +427,37 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return false;
+    }
+
+
+    /**
+     * 获取过去或未来日期
+     *
+     * @param past 负数过去，正数未来
+     * @return
+     */
+    public static String getDate(int past) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String result = format.format(today);
+        return result;
+    }
+
+    /**
+     * 获取过去或未来日期
+     *
+     * @param past 负数过去，正数未来
+     * @return
+     */
+    public static List<String> getDateList(int past) {
+        List<String> dateList = new ArrayList<>();
+        for (int i = 0; i < Math.abs(past); i++) {
+            String date = getDate(past < 0 ? -i : i);
+            dateList.add(date);
+        }
+        return dateList;
     }
 
 }

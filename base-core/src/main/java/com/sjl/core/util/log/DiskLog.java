@@ -11,11 +11,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.sjl.core.util.log.ConsoleLog.LEVEL_ASSERT;
 import static com.sjl.core.util.log.ConsoleLog.LEVEL_DEBUG;
@@ -38,9 +42,9 @@ import static com.sjl.core.util.log.ConsoleLog.mTimestamp;
 public class DiskLog implements ILog {
     private ConsoleLog lightLog;
     /**
-     * 单个日志文件最大值 8M，理论上不会超出
+     * 单个日志文件最大值 10M，理论上不会超出
      */
-    private final int LOG_FILE_MAX_SIZE = 10 * 1024 * 1024;
+    private final int SINGLE_LOG_FILE_SIZE = 10 * 1024 * 1024;
     /**
      * 最多保存最近七天日志文件
      */
@@ -55,7 +59,7 @@ public class DiskLog implements ILog {
      * 日志是否可写
      */
     private boolean isCanWrite;
-
+    private String logPath;
 
     /**
      * 初始化initFileWriter
@@ -70,7 +74,7 @@ public class DiskLog implements ILog {
             return;
         }
         isCanWrite = writeFileFlag;
-        String logPath = Environment.getExternalStorageDirectory() + File.separator + BaseApplication.getContext().getPackageName() + File.separator + "Log";
+        logPath = Environment.getExternalStorageDirectory() + File.separator + BaseApplication.getContext().getPackageName() + File.separator + "Log";
         String logFileName = "log-" + TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4) + ".txt";
         File fileDir = new File(logPath);
         if (!fileDir.exists()) {
@@ -84,18 +88,22 @@ public class DiskLog implements ILog {
                 e.printStackTrace();
             }
         } else {
+            //检查是否超出文件大小,超出创建一个新的文件
             boolean ret = checkLogFileSize(logFile);
-            if (ret) {//超出文件大小,不再写
-                isCanWrite = false;
-            } else {
-                isCanWrite = true;
+            if (ret) {
+                try {
+                    createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-        deleteSDcardExpiredLog(logPath);
+        deleteSDCardExpiredLog(logPath);
         lightLog = new ConsoleLog(tag, true);
         //纠正日志定位
         lightLog.setStackTraceIndex(LOG_STACK_TRACE_INDEX + 1);
     }
+
 
     @Override
     public void v(String msg) {
@@ -126,31 +134,31 @@ public class DiskLog implements ILog {
     @Override
     public void w(Throwable tr) {
         lightLog.w(tr);
-        writeLogToFile(LEVEL_WARN,null,tr);
+        writeLogToFile(LEVEL_WARN, null, tr);
     }
 
     @Override
     public void w(String msg, Throwable tr) {
         lightLog.w(msg, tr);
-        writeLogToFile(LEVEL_WARN,msg,tr);
+        writeLogToFile(LEVEL_WARN, msg, tr);
     }
 
     @Override
     public void e(String msg) {
         lightLog.e(msg);
-        writeLogToFile(LEVEL_ERROR,msg,null);
+        writeLogToFile(LEVEL_ERROR, msg, null);
     }
 
     @Override
     public void e(Throwable tr) {
         lightLog.e(tr);
-        writeLogToFile(LEVEL_ERROR,null,tr);
+        writeLogToFile(LEVEL_ERROR, null, tr);
     }
 
     @Override
     public void e(String msg, Throwable tr) {
         lightLog.e(msg, tr);
-        writeLogToFile(LEVEL_ERROR,msg,tr);
+        writeLogToFile(LEVEL_ERROR, msg, tr);
     }
 
     @Override
@@ -167,19 +175,19 @@ public class DiskLog implements ILog {
     @Override
     public void wtf(String msg) {
         lightLog.wtf(msg);
-        writeLogToFile(LEVEL_ASSERT,msg,null);
+        writeLogToFile(LEVEL_ASSERT, msg, null);
     }
 
     @Override
     public void json(String json) {
         lightLog.json(json);
-        writeLogToFile(LEVEL_DEBUG,json,null);
+        writeLogToFile(LEVEL_DEBUG, json, null);
     }
 
     @Override
     public void xml(String xml) {
         lightLog.xml(xml);
-        writeLogToFile(LEVEL_DEBUG,xml,null);
+        writeLogToFile(LEVEL_DEBUG, xml, null);
     }
 
     /**
@@ -187,18 +195,43 @@ public class DiskLog implements ILog {
      *
      * @param logPath 日志目录路径
      */
-    private void deleteSDcardExpiredLog(String logPath) {
+    public void deleteSDCardExpiredLog(String logPath) {
         File file = new File(logPath);
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            if (files == null) {
+            if (files == null || files.length == 0) {
                 return;
             }
-            orderByName(files);//升序
-            int fileSize = files.length - LOG_FILE_SAVE_DAYS;
-            for (int i = 0; i < fileSize; i++) {  //"-7"保存最近的7个日志文件
-                File _file = files[i];
-                _file.delete();
+//            orderByName(files);//升序
+            //获取最近七天文件
+            List<String> dateList = TimeUtils.getDateList(-LOG_FILE_SAVE_DAYS);
+            Map<String, String> map = new LinkedHashMap<>();
+            for (String date : dateList) {
+                map.put("log-" + date, date);
+            }
+            int fileSize = files.length;
+            try {
+                List<File> deletes = new ArrayList<>();
+                //过滤出待删除的文件
+                for (int i = 0; i < fileSize; i++) {
+                    File _file = files[i];
+                    if (_file.exists() && _file.exists()) {
+                        String name = _file.getName();
+                        //log-2020-12-05
+                        String prefix = name.substring(0, 14);
+                        String s = map.get(prefix);
+                        if (s == null) {
+                            deletes.add(_file);
+                        }
+                    }
+                }
+                Iterator<File> it = deletes.iterator();
+                while (it.hasNext()) {
+                    File next = it.next();
+                    next.delete();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -210,7 +243,7 @@ public class DiskLog implements ILog {
      * @return
      */
     private boolean checkLogFileSize(File file) {
-        if (file.length() > LOG_FILE_MAX_SIZE) {
+        if (file.length() > SINGLE_LOG_FILE_SIZE) {
             return true;
         } else {
             return false;
@@ -241,31 +274,34 @@ public class DiskLog implements ILog {
         if (!isCanWrite) {
             return;
         }
-       writeLogToFile(logLevel,msg,null);
+        writeLogToFile(logLevel, msg, null);
     }
 
 
-    private void writeLogToFile(int logLevel, String msg,Throwable tr) {
+    private void writeLogToFile(int logLevel, String msg, Throwable tr) {
         if (!isCanWrite) {
             return;
         }
-        writeFile(logLevel,msg,tr);
+        writeFile(logLevel, msg, tr);
     }
 
 
-    private synchronized void writeFile(int logLevel, String msg,Throwable tr) {
-        String logMsg = lightLog.createLog(msg,LOG_STACK_TRACE_INDEX);
+    private synchronized void writeFile(int logLevel, String msg, Throwable tr) {
+        String logMsg = lightLog.createLog(msg, LOG_STACK_TRACE_INDEX);
         if (tr != null) {
-            logMsg +=  "-->" + processCrashInfo(tr);
+            logMsg += "-->" + processCrashInfo(tr);
         }
         String content = appendDescribe(logLevel, logMsg);
         FileWriter fileWriter = null;
         try {
+            if (logFile.length() >= SINGLE_LOG_FILE_SIZE) {
+                createNewFile();
+            }
             fileWriter = new FileWriter(logFile, true);
             fileWriter.append(content);
             fileWriter.flush();
             fileWriter.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             if (fileWriter != null) {
                 try {
                     fileWriter.flush();
@@ -275,6 +311,13 @@ public class DiskLog implements ILog {
                 }
             }
         }
+    }
+
+    private void createNewFile() throws Exception {
+        String s = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
+        String logFileName = "log-" + s + "_" + TimeUtils.formatDateToStr(new Date(),  TimeUtils.DATE_FORMAT_8) + ".txt";
+        logFile = new File(logPath, logFileName);
+        logFile.createNewFile();
     }
 
 
