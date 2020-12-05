@@ -28,7 +28,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,7 +50,7 @@ public class PermissionsManager {
 
     private final Set<String> mPendingRequests = new HashSet<>(1);
     private final Set<String> mPermissions = new HashSet<>(1);
-    private final List<WeakReference<PermissionsResultAction>> mPendingActions = new ArrayList<>(1);
+    private final List<SoftReference<PermissionsResultAction>> mPendingActions = new ArrayList<>(1);
 
     private static PermissionsManager mInstance = null;
 
@@ -132,7 +132,7 @@ public class PermissionsManager {
             return;
         }
         action.registerPermissions(permissions);
-        mPendingActions.add(new WeakReference<>(action));
+        mPendingActions.add(new SoftReference<>(action));
     }
 
     /**
@@ -144,9 +144,9 @@ public class PermissionsManager {
      * @param action the action to remove
      */
     private synchronized void removePendingAction(@Nullable PermissionsResultAction action) {
-        for (Iterator<WeakReference<PermissionsResultAction>> iterator = mPendingActions.iterator();
+        for (Iterator<SoftReference<PermissionsResultAction>> iterator = mPendingActions.iterator();
              iterator.hasNext(); ) {
-            WeakReference<PermissionsResultAction> weakRef = iterator.next();
+            SoftReference<PermissionsResultAction> weakRef = iterator.next();
             if (weakRef.get() == action || weakRef.get() == null) {
                 iterator.remove();
             }
@@ -311,7 +311,7 @@ public class PermissionsManager {
         if (results.length < size) {
             size = results.length;
         }
-        Iterator<WeakReference<PermissionsResultAction>> iterator = mPendingActions.iterator();
+        Iterator<SoftReference<PermissionsResultAction>> iterator = mPendingActions.iterator();
         while (iterator.hasNext()) {
             PermissionsResultAction action = iterator.next().get();
             for (int n = 0; n < size; n++) {
