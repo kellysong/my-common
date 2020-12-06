@@ -42,13 +42,32 @@ public class LogTestActivity extends BaseActivity {
         LogUtils.json(getJson(3));
         LogUtils.w("ww", new RuntimeException("出错了"));
         LoggerUtils.e("ww", new RuntimeException("出错了2"));
-
         LogUtils.i("==========================");
+
+
         LogWriter.i(getJson(1));
         LogWriter.json(getJson(3));
         LogWriter.w("ww", new RuntimeException("出错了"));
         LogWriter.json(getJson(1000));
+        LogWriter.xml(getXml());
+    }
 
+    private String getXml() {
+        String xml="<bookstore>\n" +
+                "<book category=\"CHILDREN\">\n" +
+                "  <title>Harry Potter</title> \n" +
+                "  <author>J K. Rowling</author> \n" +
+                "  <year>2005</year> \n" +
+                "  <price>29.99</price> \n" +
+                "</book>\n" +
+                "<book category=\"WEB\">\n" +
+                "  <title>Learning XML</title> \n" +
+                "  <author>Erik T. Ray</author> \n" +
+                "  <year>2003</year> \n" +
+                "  <price>39.95</price> \n" +
+                "</book>\n" +
+                "</bookstore> ";
+        return xml;
     }
 
     private String getJson(int i) {

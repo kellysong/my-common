@@ -274,7 +274,7 @@ public class DiskLog implements ILog {
         if (!isCanWrite) {
             return;
         }
-        writeLogToFile(logLevel, msg, null);
+        writeFile(logLevel, msg, null);
     }
 
 
@@ -287,7 +287,7 @@ public class DiskLog implements ILog {
 
 
     private synchronized void writeFile(int logLevel, String msg, Throwable tr) {
-        String logMsg = lightLog.createLog(msg, LOG_STACK_TRACE_INDEX);
+        String logMsg = lightLog.createLog(msg, LOG_STACK_TRACE_INDEX - 1);
         if (tr != null) {
             logMsg += "-->" + processCrashInfo(tr);
         }
@@ -315,7 +315,7 @@ public class DiskLog implements ILog {
 
     private void createNewFile() throws Exception {
         String s = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
-        String logFileName = "log-" + s + "_" + TimeUtils.formatDateToStr(new Date(),  TimeUtils.DATE_FORMAT_8) + ".txt";
+        String logFileName = "log-" + s + "_" + TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_8) + ".txt";
         logFile = new File(logPath, logFileName);
         logFile.createNewFile();
     }
