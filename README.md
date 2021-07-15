@@ -1,6 +1,9 @@
 
 ## 基本说明
-一个基于MVP快速开发框架，封装了MVP、网络、日志、常用工具类、集成了最常用最基础类库(设置、插件换肤、沉寂式)、官方库、第三方依赖库（Rxjava、Retrofit等框架）
+
+base-core: 一个基于MVP快速开发框架，封装了MVP、网络、日志、常用工具类、集成了最常用最基础类库(设置、插件换肤、沉寂式)、官方库、第三方依赖库（Rxjava、Retrofit等框架）
+
+base-core-ktx: 一个基于base-core构建的kotlin MVVM快速开发框架，使用kotlin协程、 retrofit、Jetpack全家桶等组件，基于androidx(appcompat 1.2.0)编译
 
 ## 基于android support 26.0.2编译
 
@@ -21,3 +24,15 @@
     implementation 'com.github.kellysong.my-common:base-core:2.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+
+
+## 基于androidx(appcompat 1.2.0)编译(开始支持Kotlin MVVM)
+
+    implementation 'com.github.kellysong.my-common:base-adapter:2.3.0'
+    implementation 'com.github.kellysong.my-common:base-core:2.3.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+     // optional - Kotlin MVVM support for Room :base-core-ktx
+    implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.0'

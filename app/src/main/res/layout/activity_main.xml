@@ -8,9 +8,49 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="hello world！ my-common-lib"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="日志测试"
-        android:onClick="btnTestLog"/>
+<!--    类测试-->
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+       <Button
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="日志测试"
+           android:onClick="btnTestLog"/>
+       <Button
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="AdbUtils测试"
+           android:onClick="btnTestAdbUtils"/>
+       <Button
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:onClick="btnTime"
+           android:text="方法耗时计算"
+           />
+   </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="baseFragment封装"
+            android:onClick="btnBseFragment"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="网络请求测试(协程)"
+            android:onClick="btnTestNet"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="savedstate测试"
+            android:onClick="btnTestSavedState"/>
+
+    </LinearLayout>
 </LinearLayout>

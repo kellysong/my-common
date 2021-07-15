@@ -65,17 +65,11 @@ public abstract class RxObserver<T> implements Observer<T> {
         }
         _onError(msg);
 
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
     }
 
     @Override
     public void onComplete() {
         _onComplete();
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
     }
 
     @Override
@@ -87,5 +81,5 @@ public abstract class RxObserver<T> implements Observer<T> {
 
     public abstract void _onError(String msg);
 
-    public abstract void _onComplete();
+    public  void _onComplete(){}
 }

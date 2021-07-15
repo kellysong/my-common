@@ -28,7 +28,10 @@ public class RetrofitParams {
      * 拦截器
      */
     private List<Interceptor> interceptorList;
-
+    /**
+     * 是否开启协程默认false
+     */
+    private boolean useCoroutines;
     private int connectTimeout = 30;
     private int readTimeout = 30;
     private int writeTimeout = 30;
@@ -40,6 +43,7 @@ public class RetrofitParams {
         this.connectTimeout = builder.connectTimeout;
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
+        this.useCoroutines = builder.useCoroutines;
     }
 
 
@@ -50,6 +54,7 @@ public class RetrofitParams {
         private int connectTimeout;
         private int readTimeout;
         private int writeTimeout;
+        private boolean useCoroutines;
 
         public Builder setBaseUrlAdapter(BaseUrlAdapter baseUrlAdapter) {
             if (baseUrlAdapter == null) {
@@ -98,6 +103,11 @@ public class RetrofitParams {
             return this;
         }
 
+        public Builder setUseCoroutines(boolean useCoroutines) {
+            this.useCoroutines = useCoroutines;
+            return this;
+        }
+
         public RetrofitParams build() {
             return new RetrofitParams(this);
         }
@@ -125,5 +135,9 @@ public class RetrofitParams {
 
     public int getWriteTimeout() {
         return writeTimeout;
+    }
+
+    public boolean isUseCoroutines() {
+        return useCoroutines;
     }
 }

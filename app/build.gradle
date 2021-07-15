@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -16,6 +19,7 @@ android {
                 includeCompileClasspath = true
             }
         }
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -32,12 +36,15 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation rootProject.ext.adnroidxDependencies.androidxAppcompat
-    implementation rootProject.ext.adnroidxDependencies.constraintLayout
+
+    implementation rootProject.ext.dependencies.appcompat
+    implementation rootProject.ext.dependencies.constraintLayout
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation project(':base-core')
+    implementation project(':base-core-ktx')
     //必须要加，只对当前模块有效
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'

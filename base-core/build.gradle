@@ -31,7 +31,6 @@ android {
         }
     }
 
-    // Butterknife requires Java 8.
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -42,35 +41,37 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     /*android官方支持库*/
-    api 'androidx.appcompat:appcompat:1.1.0'
-    api 'com.google.android.material:material:1.1.0'
-    api 'androidx.recyclerview:recyclerview:1.1.0'
-    api 'androidx.cardview:cardview:1.0.0'
-    api 'androidx.viewpager:viewpager:1.0.0'
-    api 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
-    api 'androidx.constraintlayout:constraintlayout:1.1.3'
+    /*android官方androidx库*/
+    api rootProject.ext.dependencies.appcompat
+    api rootProject.ext.dependencies.design
+    api rootProject.ext.dependencies.recyclerview
+    api rootProject.ext.dependencies.cardview
+    api rootProject.ext.dependencies.viewpager
+    api rootProject.ext.dependencies.swiperefreshlayout
+    api rootProject.ext.dependencies.constraintLayout
 
     /*Retrofit是一款类型安全的网络框架，基于HTTP协议，服务于Android和java语言,集成了okhttp依赖*/
-    api 'com.squareup.retrofit2:retrofit:2.3.0'
-    api 'com.squareup.retrofit2:converter-gson:2.3.0'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    api 'com.squareup.okhttp3:logging-interceptor:3.8.0'
-    /*RxAndroid一款Android客户端组件间异步通信的框架,1和2差别很大*/
-    api 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    api 'io.reactivex.rxjava2:rxjava:2.1.8'
+    //retrofit + okHttp3
+    api rootProject.ext.dependencies.retrofit
+    api rootProject.ext.dependencies.converterGson
+    api rootProject.ext.dependencies.adapterRxjava2
+
+    api rootProject.ext.dependencies.loggingInterceptor
+    //rxjava
+    api rootProject.ext.dependencies.rxjava
+    api rootProject.ext.dependencies.rxandroid
 
     /*AutoDispose解决RxJava内存泄漏*/
     //1.0.0安卓支持包改成了androidx
-    api 'com.uber.autodispose:autodispose-android-archcomponents:1.0.0'
+    api rootProject.ext.dependencies.autodispose
 
     /*EventBus是一款本地组件间通信框架*/
-    api 'org.greenrobot:eventbus:3.1.1'
+    api rootProject.ext.dependencies.eventbus
 
     /*图片加载*/
-    api 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    /*json解析*/
-    api 'com.google.code.gson:gson:2.8.0'
+    api rootProject.ext.dependencies.glide
+    annotationProcessor "com.github.bumptech.glide:compiler:${rootProject.ext.glide}"
+
 
     /*控件注解框架*/
     //特别注意要在主工程下添加
@@ -82,7 +83,7 @@ dependencies {
     api 'com.orhanobut:logger:2.1.1'
 
     /*强大的BaseRecyclerView适配器*/
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49'
+    api rootProject.ext.dependencies.baseRecyclerViewAdapterHelper
 }
 
 apply from: './nexus-push-core.gradle'

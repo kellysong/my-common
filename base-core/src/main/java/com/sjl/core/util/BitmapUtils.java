@@ -9,6 +9,10 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.Base64;
 
@@ -544,5 +548,56 @@ public class BitmapUtils {
     public static Bitmap byteArrToBitmap(byte[] bytes) {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         return bitmap;
+    }
+
+    /**
+     * 合并bitmap
+     * @param background
+     * @param foreground
+     * @return
+     */
+    public static Bitmap mergeBitmap(Bitmap background, Bitmap foreground) {
+        int bgWidth = background.getWidth();
+        int bgHeight = background.getHeight();
+        int fgWidth = foreground.getWidth();
+        int fgHeight = foreground.getHeight();
+        background.eraseColor(Color.WHITE);
+        Bitmap temp = Bitmap.createBitmap(bgWidth, bgHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(temp);
+        canvas.drawBitmap(background, 0, 0, null);
+        canvas.drawBitmap(foreground, (bgWidth - fgWidth) / 2, (bgHeight - fgHeight) / 2, null);
+        canvas.save();
+        canvas.restore();
+        return temp;
+    }
+
+    /**
+     * 制作圆角bitmap
+     * @param mBitmap
+     * @param index
+     * @return
+     */
+    public static Bitmap roundBitmap(Bitmap mBitmap, float index){
+        Bitmap bitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+
+        //设置矩形大小
+        Rect rect = new Rect(0,0,mBitmap.getWidth(),mBitmap.getHeight());
+        RectF rectf = new RectF(rect);
+
+        // 相当于清屏
+        canvas.drawARGB(0, 0, 0, 0);
+        //画圆角
+        canvas.drawRoundRect(rectf, index, index, paint);
+        // 取两层绘制，显示上层
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+
+        // 把原生的图片放到这个画布上，使之带有画布的效果
+        canvas.drawBitmap(mBitmap, rect, rect, paint);
+        return bitmap;
+
     }
 }

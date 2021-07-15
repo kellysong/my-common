@@ -17,7 +17,6 @@ import com.sjl.core.util.AppUtils;
 import com.sjl.core.util.JsonUtils;
 import com.sjl.core.util.ToastUtils;
 import com.sjl.core.util.log.LogUtils;
-import com.sjl.core.util.log.LoggerUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,11 +96,18 @@ public class RetrofitHelper {
             }
         });
         Gson gson = builder.create();
-        mRetrofit = new Retrofit.Builder().client(getOkHttpClient(retrofitParams))
+        Retrofit.Builder rb = new Retrofit.Builder().client(getOkHttpClient(retrofitParams))
                 .baseUrl(baseUrlAdapter.getDefaultBaseUrl())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+                .addConverterFactory(GsonConverterFactory.create(gson));
+
+        boolean useCoroutine = retrofitParams.isUseCoroutines();
+        if (useCoroutine){
+            //2.6版本之后不再需要设置Adapter
+        }else {
+            rb.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+        }
+
+        mRetrofit = rb .build();
     }
 
 
@@ -259,7 +265,7 @@ public class RetrofitHelper {
         public void log(String message) {
             // 请求或者响应开始
             try {
-                if (message.startsWith("--> POST")) {
+                if (message.startsWith("--> POST") || message.startsWith("--> GET")) {
                     mMessage.setLength(0);
                 }
                 // 以{}或者[]形式的说明是响应结果的json数据，需要进行格式化
@@ -270,7 +276,7 @@ public class RetrofitHelper {
                 mMessage.append(message.concat("\n"));
                 // 响应结束，打印整条日志
                 if (message.startsWith("<-- END HTTP")) {
-                    LoggerUtils.d(mMessage.toString());
+                    LogUtils.d(mMessage.toString());
                 }
 
             } catch (Exception e) {

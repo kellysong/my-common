@@ -1,1 +1,1 @@
-include ':app', ':base-core', ':base-adapter'
+include ':app', ':base-core',':base-core-ktx', ':base-adapter'

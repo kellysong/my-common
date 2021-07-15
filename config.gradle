@@ -10,20 +10,85 @@ ext {
     buildToolsVersion = "28.0.3"
     minSdkVersion = 14
     targetSdkVersion = 28
-    versionCode = 100
+    versionCode = 1
     versionName = "1.0.0"
 
     //Version
-    androidx_constraint_layout = "1.1.3"
-    androidxLibrary = "1.0.0"
-    //AndroidX dependencies
-    adnroidxDependencies = [
-            androidxAppcompat   : "androidx.appcompat:appcompat:${androidxLibrary}",
-            androidxRecyclerview: "androidx.recyclerview:recyclerview:${androidxLibrary}",
-            androidxCardview    : "androidx.cardview:cardview:${androidxLibrary}",
-            androidxPalette     : "androidx.palette:palette:${androidxLibrary}",
-            androidxDesign      : "com.google.android.material:material:${androidxLibrary}",
-            constraintLayout   : "androidx.constraintlayout:constraintlayout:${androidx_constraint_layout}"
+    //下面是较新稳定库
+
+    //kotlin_version
+    kotlinVersion = '1.3.72'
+    kotlinxCoroutinesVersion ="1.4.0"
+
+    //androidx Version
+    androidxAppcompat = "1.2.0"
+    androidxRecyclerview = "1.1.0"
+    androidxCardview = "1.0.0"
+    androidxPalette = "1.0.0"
+    androidxDesign = "1.1.0"
+    androidxViewpager = "1.0.0"
+    androidxSwiperefreshlayout = "1.0.0"
+    androidxConstraintLayout = "2.0.4"
+    androidxMultidex = "2.0.1"
+
+    //Jetpack
+    lifecycle = "2.2.0"
+    //other
+    retrofitVersion = "2.9.0"
+    loggingInterceptor = "3.10.0"
+    rxjava = "2.2.17"
+    rxandroid = "2.1.1"
+
+    autodispose="1.0.0"
+    eventbus ="3.1.1"
+    glide="4.11.0"
+    baseRecyclerViewAdapterHelper = "3.0.4"
+
+
+    //dependencies
+    dependencies = [
+            appcompat         : "androidx.appcompat:appcompat:${androidxAppcompat}",
+            recyclerview      : "androidx.recyclerview:recyclerview:${androidxRecyclerview}",
+            cardview          : "androidx.cardview:cardview:${androidxCardview}",
+            palette           : "androidx.palette:palette:${androidxPalette}",
+            design            : "com.google.android.material:material:${androidxDesign}",
+            viewpager         : "androidx.viewpager:viewpager:${androidxViewpager}",
+            swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:${androidxSwiperefreshlayout}",
+            constraintLayout  : "androidx.constraintlayout:constraintlayout:${androidxConstraintLayout}",
+            multidex          : "androidx.multidex:multidex:${androidxMultidex}",
+
+            //Jetpack
+            lifecycleExtensions : "androidx.lifecycle:lifecycle-extensions:${lifecycle}",
+            lifecycleViewmodelKtx : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle}",
+
+            //kotlin
+            kotlin            : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
+            //kotlin协程
+            kotlinxCoroutinesCore : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinxCoroutinesVersion}",
+            kotlinxCoroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinxCoroutinesVersion}",
+
+            //retrofit
+            retrofit : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            converterGson : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            adapterRxjava2 : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
+            loggingInterceptor : "com.squareup.okhttp3:logging-interceptor:${loggingInterceptor}",
+
+            //rxjava
+            rxjava : "io.reactivex.rxjava2:rxjava:${rxjava}",
+            rxandroid : "io.reactivex.rxjava2:rxandroid:${rxandroid}",
+            /*AutoDispose解决RxJava内存泄漏*/
+            //1.0.0安卓支持包改成了androidx
+            autodispose : "com.uber.autodispose:autodispose-android-archcomponents:${autodispose}",
+
+
+            /*EventBus是一款本地组件间通信框架*/
+            eventbus: "org.greenrobot:eventbus:${eventbus}",
+
+            /*图片加载*/
+            glide : "com.github.bumptech.glide:glide:${glide}",
+
+            /*强大的BaseRecyclerView适配器*/
+            baseRecyclerViewAdapterHelper : "com.github.CymChad:BaseRecyclerViewAdapterHelper:${baseRecyclerViewAdapterHelper}",
 
     ]
 

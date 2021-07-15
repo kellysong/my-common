@@ -1,0 +1,59 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-kapt"
+
+if(rootProject.hasProperty("upload.github")){
+    apply plugin: 'com.github.dcendents.android-maven'//this
+    group='com.github.kellysong'//this
+}
+
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+       /* release {
+            *//**
+             * 1.多模块或者组件化混淆，只要app模块开了混淆，子模块无论是否打开混淆都是默认开启的。只是通过上面的方法，子模块可以自定义混淆的规则。
+             2.子模块的混淆规则是无法影响app模块的的。所以建议，在子模块里尽量只放和子模块相关的混淆规则，一些公有的混淆方式请放在app或者公有的模块中。
+             *//*
+            consumerProguardFiles  'proguard-rules.pro'
+        }*/
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':base-core')
+    //kotlin
+    api rootProject.ext.dependencies.kotlin
+    //kotlin协程
+    api rootProject.ext.dependencies.kotlinxCoroutinesCore
+    api rootProject.ext.dependencies.kotlinxCoroutinesAndroid
+
+    //android Jetpack
+    api rootProject.ext.dependencies.lifecycleExtensions
+    api rootProject.ext.dependencies.lifecycleViewmodelKtx
+}
+
+apply from: './nexus-push-core.gradle'
