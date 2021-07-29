@@ -10,11 +10,11 @@ if(rootProject.hasProperty("upload.github")){
 
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -52,7 +52,11 @@ dependencies {
     api rootProject.ext.dependencies.kotlinxCoroutinesAndroid
 
     //android Jetpack
-    api rootProject.ext.dependencies.lifecycleExtensions
+//    api rootProject.ext.dependencies.lifecycleExtensions
+    api rootProject.ext.dependencies.lifecycleViewmodel
+    api rootProject.ext.dependencies.lifecycleLivedata
+    api rootProject.ext.dependencies.lifecycleRuntime
+    api rootProject.ext.dependencies.lifecycleViewmodelSavedstate
     api rootProject.ext.dependencies.lifecycleViewmodelKtx
 }
 

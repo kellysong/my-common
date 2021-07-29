@@ -6,11 +6,12 @@ if(rootProject.hasProperty("upload.github")){
 
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 14 // app工程下的lib必须保持minSdkVersion一致
-        targetSdkVersion 28
+        // app工程下的lib必须保持minSdkVersion一致
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 304
         versionName "3.0.4"
     }
@@ -23,8 +24,8 @@ android {
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.viewpager:viewpager:1.0.0'
+    api rootProject.ext.dependencies.recyclerview
+    api rootProject.ext.dependencies.viewpager
 
 
 }

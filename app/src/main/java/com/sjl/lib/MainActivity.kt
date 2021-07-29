@@ -1,28 +1,29 @@
 package com.sjl.lib
 
 import android.Manifest
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import com.sjl.core.manager.CachedThreadManager
 import com.sjl.core.mvvm.BaseActivity
 import com.sjl.core.permission.PermissionsManager
 import com.sjl.core.permission.PermissionsResultAction
-import com.sjl.core.util.AdbUtils
-import com.sjl.core.util.DeviceIdUtils
-import com.sjl.core.util.StopWatch
-import com.sjl.core.util.ViewUtils
-import com.sjl.lib.test.LogTestActivity
+import com.sjl.core.util.*
+import com.sjl.core.util.activityresult.ActivityResultUtils
+import com.sjl.core.util.log.LogUtils
+import com.sjl.lib.manager.LoginManager
 import com.sjl.lib.test.MyBaseDialogFragment
-import com.sjl.lib.test.SavedStateActivity
-
-import com.sjl.lib.test.mvvm.NetActivity
+import com.sjl.lib.test.mvp.LogTestActivity
+import com.sjl.lib.test.mvp.PermissionsTestActivity
+import com.sjl.lib.test.mvvm.activity.KEY_RESULT
+import com.sjl.lib.test.mvvm.activity.NetActivity
+import com.sjl.lib.test.mvvm.activity.SavedStateActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * 测试入口
  */
 class MainActivity : BaseActivity() {
-
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
@@ -36,11 +37,16 @@ class MainActivity : BaseActivity() {
     override fun initData() {
         println("DeviceI:" + DeviceIdUtils.getDeviceId(this))
 
-        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
         PermissionsManager.getInstance()
                 .requestPermissionsIfNecessaryForResult(this, permissions, object : PermissionsResultAction() {
-                    override fun onGranted() {}
-                    override fun onDenied(permission: String) {}
+                    override fun onGranted() {
+                        LogUtils.d("权限授权通过")
+                    }
+
+                    override fun onDenied(permission: String) {
+                        LogUtils.d("权限拒绝：$permission")
+                    }
                 })
     }
 
@@ -52,7 +58,7 @@ class MainActivity : BaseActivity() {
         ViewUtils.openActivity(this, NetActivity::class.java)
     }
 
-    fun btnBseFragment(view: View) {
+    fun btnTestBaseDialogFragment(view: View) {
         //报错，把fragment的定义放到别的文件里，不要用匿名内部类的方式 
         /* val baseDialogFragment =  object :BaseDialogFragment(Gravity.CENTER, true){
              override fun getLayoutResId(): Int {
@@ -114,5 +120,34 @@ class MainActivity : BaseActivity() {
             println("sw.prettyPrint()~~~~~~~~~~~~~~~~~")
             System.out.println(sw.prettyPrint())
         }
+    }
+
+    fun btnTestPermission(view: View) {
+        ViewUtils.openActivity(this, PermissionsTestActivity::class.java)
+    }
+
+    fun btnTestActivityResultUtils(view: View) {
+        val intent = Intent(this, NetActivity::class.java)
+        val requestCode = 10
+        ActivityResultUtils.init(this).startActivityForResult(intent, requestCode, object : ActivityResultUtils.Callback {
+
+            override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+                val result = data?.getStringExtra(KEY_RESULT)
+                LogUtils.i("requestCode=$requestCode,resultCode = $resultCode,result = $result")
+            }
+        })
+
+    }
+
+    fun btnTestLogin(view: View) {
+        LoginManager.toLogin(this, object : LoginManager.LoginCallback {
+            override fun onLoginResult(loginResult: Boolean) {
+                if (loginResult) {
+                    ToastUtils.showShort(this@MainActivity, "登陆成功");
+                } else {
+                    ToastUtils.showShort(this@MainActivity, "登陆失败");
+                }
+            }
+        })
     }
 }

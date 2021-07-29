@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/btn_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnTestOverlay"
+        android:text="悬浮窗权限申请"/>
+
+    <Button
+        android:id="@+id/btn_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnTestInstall"
+        app:layout_constraintTop_toBottomOf="@id/btn_1"
+        android:text="安装权限申请"/>
+
+
+    <Button
+        android:id="@+id/btn_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnTestSetting"
+        app:layout_constraintTop_toBottomOf="@id/btn_2"
+        android:text="设置权限申请"/>
+
+
+    <Button
+        android:id="@+id/btn_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnTestNotificationAccess"
+        app:layout_constraintTop_toBottomOf="@id/btn_3"
+        android:text="访问通知权限"/>
+    <Button
+        android:id="@+id/btn_6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnTestManageAllFilesAccess"
+        app:layout_constraintTop_toBottomOf="@id/btn_5"
+        android:text="管理外部存储权限"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

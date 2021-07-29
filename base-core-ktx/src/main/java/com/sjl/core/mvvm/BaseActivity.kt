@@ -1,8 +1,11 @@
 package com.sjl.core.mvvm
 
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.sjl.core.permission.PermissionsManager
 
 
@@ -26,25 +29,31 @@ abstract class BaseActivity : AppCompatActivity() {
         initListener()
         initData()
     }
+
     /**
      * 准备工作
      */
-    protected open fun ready(){}
+    protected open fun ready() {}
 
     abstract fun getLayoutId(): Int
     abstract fun initView()
     abstract fun initListener()
     abstract fun initData()
 
-    protected fun startActivity(z: Class<*>) {
-        startActivity(Intent(applicationContext, z))
+    companion object {
+
+        /**
+         * 判断Activity是否Destroy
+         * @param mActivity
+         * @return true:已销毁
+         */
+        @JvmStatic
+        fun isDestroy(mActivity: Activity?): Boolean {
+            return mActivity == null ||
+                    mActivity.isFinishing ||
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed
+        }
+
     }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionsManager.getInstance().notifyPermissionsChange(permissions, grantResults)
-    }
-
 
 }

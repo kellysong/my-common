@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".test.mvvm.NetActivity"
+    tools:context=".test.mvvm.activity.NetActivity"
     tools:showIn="@layout/net_activity">
 
     <androidx.recyclerview.widget.RecyclerView

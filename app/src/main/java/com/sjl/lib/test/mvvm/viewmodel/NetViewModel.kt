@@ -1,4 +1,4 @@
-package com.sjl.lib.test.mvvm
+package com.sjl.lib.test.mvvm.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,7 +6,6 @@ import com.sjl.core.mvvm.BaseViewModel
 import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.entity.ArticleBean
 import com.sjl.lib.net.RetrofitClient
-import java.lang.NullPointerException
 
 /***
  * mvvm单向引用
@@ -35,7 +34,7 @@ class NetViewModel : BaseViewModel() {
     private fun loadDatas()  {
 
         //以前互相独立
-        launchUI({
+    /*    launchUI({
             log("child1")
             throw NullPointerException("sss")
         },{
@@ -49,7 +48,7 @@ class NetViewModel : BaseViewModel() {
             e ->
             LogUtils.e("获取数据异常2",e)
         })
-
+*/
         launchUI({
             log("child3")
             val api = RetrofitClient.api

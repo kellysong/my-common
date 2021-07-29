@@ -1,7 +1,10 @@
 package com.sjl.core.mvvm
 
 import android.os.Bundle
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
+import com.sjl.core.mvvm.util.ViewModelUtils
+import com.sjl.core.mvvm.util.openActivity
 
 
 /**
@@ -17,36 +20,28 @@ abstract class BaseViewModelActivity<VM : BaseViewModel> : BaseActivity() {
 
     protected lateinit var viewModel: VM
 
+    private val factory: ViewModelProvider.Factory? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startObserve()
-    }
 
+    }
     override fun ready() {
         //初始化viewModel
         initVM()
+        startObserve()
     }
 
     private fun initVM() {
-        providerVMClass()?.let {
-//            viewModel = ViewModelProviders.of(this).get(it)
-            viewModel = ViewModelProvider(this).get(it)
-            lifecycle.addObserver(viewModel)
-        }
+        viewModel = ViewModelUtils.createViewModel(this,getViewModelFactory(),0)
     }
 
     open fun providerVMClass(): Class<VM>? = null
 
-    private fun startObserve() {
-
-    }
+    open abstract fun startObserve()
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (::viewModel.isInitialized) {
-            lifecycle.removeObserver(viewModel)
-        }
-
+    open fun getViewModelFactory(): ViewModelProvider.Factory?{
+        return null
     }
 }

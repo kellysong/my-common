@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".test.mvvm.NetActivity">
+    tools:context=".test.mvvm.activity.NetActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"

@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.sjl.core.R;
 import com.sjl.core.net.RxLifecycleUtils;
 import com.sjl.core.net.RxManager;
-import com.sjl.core.permission.PermissionsManager;
 import com.sjl.core.util.TUtils;
 import com.sjl.core.util.ToastUtils;
 import com.sjl.core.util.log.LogUtils;
@@ -315,11 +314,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionsManager.getInstance().notifyPermissionsChange(permissions, grantResults);//权限申请
-    }
+
 
     /**
      * 销毁activity

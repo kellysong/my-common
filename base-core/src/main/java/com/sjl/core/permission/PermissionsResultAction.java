@@ -110,9 +110,9 @@ public abstract class PermissionsResultAction {
     @CallSuper
     protected synchronized final boolean onResult(final @NonNull String permission, int result) {
         if (result == PackageManager.PERMISSION_GRANTED) {
-            return onResult(permission, Permissions.GRANTED);
+            return onResult(permission, PermissionStatus.GRANTED);
         } else {
-            return onResult(permission, Permissions.DENIED);
+            return onResult(permission, PermissionStatus.DENIED);
         }
 
     }
@@ -130,9 +130,9 @@ public abstract class PermissionsResultAction {
      */
     @SuppressWarnings("WeakerAccess")
     @CallSuper
-    protected synchronized final boolean onResult(final @NonNull String permission, Permissions result) {
+    protected synchronized final boolean onResult(final @NonNull String permission, PermissionStatus result) {
         mPermissions.remove(permission);
-        if (result == Permissions.GRANTED) {
+        if (result == PermissionStatus.GRANTED) {
             if (mPermissions.isEmpty()) {
                 new Handler(mLooper).post(new Runnable() {
                     @Override
@@ -142,7 +142,7 @@ public abstract class PermissionsResultAction {
                 });
                 return true;
             }
-        } else if (result == Permissions.DENIED) {
+        } else if (result == PermissionStatus.DENIED) {
             new Handler(mLooper).post(new Runnable() {
                 @Override
                 public void run() {
@@ -150,7 +150,7 @@ public abstract class PermissionsResultAction {
                 }
             });
             return true;
-        } else if (result == Permissions.NOT_FOUND) {
+        } else if (result == PermissionStatus.NOT_FOUND) {
             if (shouldIgnorePermissionNotFound(permission)) {
                 if (mPermissions.isEmpty()) {
                     new Handler(mLooper).post(new Runnable() {

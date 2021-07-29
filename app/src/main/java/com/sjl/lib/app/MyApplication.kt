@@ -3,6 +3,7 @@ package com.sjl.lib.app
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.sjl.core.app.BaseApplication
+import com.sjl.core.mvvm.BaseActivity
 import com.sjl.core.net.BaseUrlAdapter
 import com.sjl.core.net.RetrofitHelper
 import com.sjl.core.net.RetrofitLogAdapter
@@ -20,9 +21,7 @@ class MyApplication : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         initLogConfig(true)
-
-        initRetrofitClient();
-
+        initRetrofitClient()
     }
 
     private fun initRetrofitClient() {

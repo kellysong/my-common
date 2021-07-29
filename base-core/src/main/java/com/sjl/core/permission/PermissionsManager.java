@@ -40,6 +40,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 /**
  * A class to help you manage your permissions simply.
@@ -210,6 +212,7 @@ public class PermissionsManager {
      * @param action   the PermissionsResultAction used to notify you of permissions being accepted.
      */
     @SuppressWarnings("unused")
+    @Deprecated
     public synchronized void requestAllManifestPermissionsIfNecessary(final @Nullable Activity activity,
                                                                       final @Nullable PermissionsResultAction action) {
         if (activity == null) {
@@ -251,9 +254,12 @@ public class PermissionsManager {
             } else {
                 String[] permsToRequest = permList.toArray(new String[permList.size()]);
                 mPendingRequests.addAll(permList);
-                ActivityCompat.requestPermissions(activity, permsToRequest, 1);
+//                ActivityCompat.requestPermissions(activity, permsToRequest, 1);
+                getPermissionFragment(activity).dispatchPermissions(permsToRequest, 1);
+
             }
         }
+
     }
 
     /**
@@ -274,23 +280,49 @@ public class PermissionsManager {
                                                                     @NonNull String[] permissions,
                                                                     @Nullable PermissionsResultAction action) {
         Activity activity = fragment.getActivity();
-        if (activity == null) {
-            return;
-        }
-        addPendingAction(permissions, action);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            doPermissionWorkBeforeAndroidM(activity, permissions, action);
-        } else {
-            List<String> permList = getPermissionsListToRequest(activity, permissions, action);
-            if (permList.isEmpty()) {
-                //if there is no permission to request, there is no reason to keep the action int the list
-                removePendingAction(action);
-            } else {
-                String[] permsToRequest = permList.toArray(new String[permList.size()]);
-                mPendingRequests.addAll(permList);
-                fragment.requestPermissions(permsToRequest, 1);
+        requestPermissionsIfNecessaryForResult(activity, permissions, action);
+    }
+
+    private static final String TAG_PERMISSION = "TAG_PERMISSION";
+
+
+    /**
+     * 获取权限Fragment
+     *
+     * @param activity
+     * @return
+     */
+    private BasePermissionFragment getPermissionFragment(Activity activity) {
+        BasePermissionFragment basePermissionFragment;
+        if (activity instanceof FragmentActivity) {
+            FragmentActivity fragmentActivity = (FragmentActivity) activity;
+            FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
+            PermissionSupportFragment permissionSupportFragment = (PermissionSupportFragment) supportFragmentManager.findFragmentByTag(TAG_PERMISSION);
+            if (permissionSupportFragment == null) {
+                permissionSupportFragment = PermissionSupportFragment.newInstance();
+                supportFragmentManager
+                        .beginTransaction()
+                        .add(permissionSupportFragment, TAG_PERMISSION)
+                        .commitAllowingStateLoss();
+                supportFragmentManager.executePendingTransactions();
             }
+            basePermissionFragment = permissionSupportFragment;
+        } else {
+            android.app.FragmentManager fragmentManager = activity.getFragmentManager();
+            PermissionAppFragment permissionAppFragment = (PermissionAppFragment) fragmentManager.findFragmentByTag(TAG_PERMISSION);
+            if (permissionAppFragment == null) {
+                permissionAppFragment = PermissionAppFragment.newInstance();
+                fragmentManager
+                        .beginTransaction()
+                        .add(permissionAppFragment, TAG_PERMISSION)
+                        .commitAllowingStateLoss();
+                fragmentManager.executePendingTransactions();
+            }
+
+            basePermissionFragment = permissionAppFragment;
         }
+
+        return basePermissionFragment;
     }
 
     /**
@@ -326,6 +358,12 @@ public class PermissionsManager {
         }
     }
 
+    public synchronized void notifyPermissionsChange(@NonNull String permission, @NonNull int result) {
+        String[] permissions = new String[]{permission};
+        int[] results = new int[]{result};
+        notifyPermissionsChange(permissions, results);
+    }
+
     /**
      * When request permissions on devices before Android M (Android 6.0, API Level 23)
      * Do the granted or denied work directly according to the permission status
@@ -341,12 +379,12 @@ public class PermissionsManager {
         for (String perm : permissions) {
             if (action != null) {
                 if (!mPermissions.contains(perm)) {
-                    action.onResult(perm, Permissions.NOT_FOUND);
+                    action.onResult(perm, PermissionStatus.NOT_FOUND);
                 } else if (ActivityCompat.checkSelfPermission(activity, perm)
                         != PackageManager.PERMISSION_GRANTED) {
-                    action.onResult(perm, Permissions.DENIED);//拒绝的权限
+                    action.onResult(perm, PermissionStatus.DENIED);//拒绝的权限
                 } else {
-                    action.onResult(perm, Permissions.GRANTED);
+                    action.onResult(perm, PermissionStatus.GRANTED);
                 }
             }
         }
@@ -371,7 +409,7 @@ public class PermissionsManager {
         for (String perm : permissions) {
             if (!mPermissions.contains(perm)) {
                 if (action != null) {
-                    action.onResult(perm, Permissions.NOT_FOUND);
+                    action.onResult(perm, PermissionStatus.NOT_FOUND);
                 }
             } else if (ActivityCompat.checkSelfPermission(activity, perm) != PackageManager.PERMISSION_GRANTED) {
                 if (!mPendingRequests.contains(perm)) {
@@ -379,11 +417,55 @@ public class PermissionsManager {
                 }
             } else {
                 if (action != null) {
-                    action.onResult(perm, Permissions.GRANTED);
+                    action.onResult(perm, PermissionStatus.GRANTED);
                 }
             }
         }
         return permList;
+    }
+
+    /**
+     * 申请特殊权限
+     *
+     * @param specialPermission
+     * @param activity
+     * @param action
+     */
+    public synchronized void requestSpecialPermission(SpecialPermission specialPermission, @Nullable Activity activity, @Nullable PermissionsResultAction action) {
+        if (activity == null) {
+            return;
+        }
+        if (specialPermission == null) {
+            return;
+        }
+        String[] permissions = new String[0];
+        switch (specialPermission) {
+            case INSTALL:
+                permissions = new String[]{Manifest.permission.REQUEST_INSTALL_PACKAGES};
+                break;
+            case OVERLAY:
+                permissions = new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW};
+                break;
+            case SETTING:
+                permissions = new String[]{Manifest.permission.WRITE_SETTINGS};
+                break;
+            case NOTIFICATION_ACCESS:
+                permissions = new String[]{specialPermission.name()};
+                break;
+            case MANAGE_ALL_FILES_ACCESS:
+                permissions = new String[]{Manifest.permission.MANAGE_EXTERNAL_STORAGE};
+                break;
+            default:
+                break;
+        }
+        addPendingAction(permissions, action);
+        getPermissionFragment(activity).dispatchSpecialPermission(specialPermission);
+    }
+
+
+    public synchronized void requestSpecialPermission(SpecialPermission specialPermission, @Nullable Fragment fragment, @Nullable PermissionsResultAction action) {
+        Activity activity = fragment.getActivity();
+        requestSpecialPermission(specialPermission, activity, action);
     }
 
 }

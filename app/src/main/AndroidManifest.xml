@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.sjl.lib">
+
+<!--  特殊权限  -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+<!--    11.0-->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+<!--    8.0-->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <application
         android:allowBackup="true"
@@ -19,9 +29,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".test.LogTestActivity" />
-        <activity android:name=".test.mvvm.NetActivity" />
-        <activity android:name=".test.SavedStateActivity" />
+        <activity android:name=".test.mvp.LogTestActivity" />
+        <activity android:name=".test.mvvm.activity.NetActivity" />
+        <activity android:name=".test.mvvm.activity.SavedStateActivity" />
+        <activity android:name=".test.mvp.PermissionsTestActivity" />
+        <activity android:name=".test.mvvm.activity.LoginActivity" />
 
         <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
         <provider

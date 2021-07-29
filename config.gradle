@@ -6,10 +6,10 @@
  */
 ext {
     //Android
-    compileSdkVersion = 28
-    buildToolsVersion = "28.0.3"
+    compileSdkVersion = 30
+    buildToolsVersion = "30.0.2"
     minSdkVersion = 14
-    targetSdkVersion = 28
+    targetSdkVersion = 30
     versionCode = 1
     versionName = "1.0.0"
 
@@ -17,19 +17,23 @@ ext {
     //下面是较新稳定库
 
     //kotlin_version
-    kotlinVersion = '1.3.72'
+    kotlinVersion = '1.4.21'
     kotlinxCoroutinesVersion ="1.4.0"
 
     //androidx Version
     androidxAppcompat = "1.2.0"
-    androidxRecyclerview = "1.1.0"
+    androidxConstraintLayout = "2.0.4"
+    androidxRecyclerview = "1.2.0"
+    androidxDesign = "1.3.0"
+
+    androidxSwiperefreshlayout = "1.1.0"
+
+    androidxMultidex = "2.0.1"
+
+    //不在更新
     androidxCardview = "1.0.0"
     androidxPalette = "1.0.0"
-    androidxDesign = "1.1.0"
     androidxViewpager = "1.0.0"
-    androidxSwiperefreshlayout = "1.0.0"
-    androidxConstraintLayout = "2.0.4"
-    androidxMultidex = "2.0.1"
 
     //Jetpack
     lifecycle = "2.2.0"
@@ -42,7 +46,7 @@ ext {
     autodispose="1.0.0"
     eventbus ="3.1.1"
     glide="4.11.0"
-    baseRecyclerViewAdapterHelper = "3.0.4"
+    baseRecyclerViewAdapterHelper = "3.0.6"
 
 
     //dependencies
@@ -58,7 +62,16 @@ ext {
             multidex          : "androidx.multidex:multidex:${androidxMultidex}",
 
             //Jetpack
-            lifecycleExtensions : "androidx.lifecycle:lifecycle-extensions:${lifecycle}",
+//            lifecycleExtensions : "androidx.lifecycle:lifecycle-extensions:${lifecycle}",
+
+            // ViewModel
+            lifecycleViewmodel : "androidx.lifecycle:lifecycle-viewmodel:${lifecycle}",
+            // LiveData
+            lifecycleLivedata : "androidx.lifecycle:lifecycle-livedata:${lifecycle}",
+            // Saved state module for ViewModel
+            lifecycleRuntime : "androidx.lifecycle:lifecycle-runtime:${lifecycle}",
+            // Saved state module for ViewModel
+            lifecycleViewmodelSavedstate : "androidx.lifecycle:lifecycle-viewmodel-savedstate:${lifecycle}",
             lifecycleViewmodelKtx : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle}",
 
             //kotlin

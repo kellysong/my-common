@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
  * @time 2019/1/3 13:42
  * @copyright(C) 2019 song
  */
+@Deprecated
 public class PermissionGuide {
 
 

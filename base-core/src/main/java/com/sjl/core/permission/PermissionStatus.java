@@ -25,7 +25,7 @@ package com.sjl.core.permission;
  * of permissions since the PackageManager only
  * has a granted and denied state.
  */
-enum Permissions {
+enum PermissionStatus {
     GRANTED,//授权
     DENIED,//拒绝
     NOT_FOUND

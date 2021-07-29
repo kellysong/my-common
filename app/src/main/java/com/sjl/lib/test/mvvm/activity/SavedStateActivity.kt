@@ -1,10 +1,14 @@
-package com.sjl.lib.test
+package com.sjl.lib.test.mvvm.activity
 
 
+import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.ViewModelProvider
 import com.sjl.core.mvvm.BaseViewModelActivity
 import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.R
+import com.sjl.lib.test.mvvm.viewmodel.SavedStateViewModel
 import kotlinx.android.synthetic.main.saved_state_activity.*
+
 
 /**
  * 模拟 Activity 由于系统内存不足被销毁的情况
@@ -21,7 +25,6 @@ import kotlinx.android.synthetic.main.saved_state_activity.*
  */
 class SavedStateActivity : BaseViewModelActivity<SavedStateViewModel>() {
 
-    override fun providerVMClass(): Class<SavedStateViewModel>? = SavedStateViewModel::class.java
 
     override fun getLayoutId(): Int {
         return R.layout.saved_state_activity
@@ -37,6 +40,10 @@ class SavedStateActivity : BaseViewModelActivity<SavedStateViewModel>() {
 
     override fun initData() {
 
+
+    }
+
+    override fun startObserve() {
         LogUtils.i("savedStateViewModel: $viewModel")
         LogUtils.i("savedStateViewModel.name: ${viewModel.nameLiveData.value}")
         LogUtils.i("savedStateViewModel.blog: ${viewModel.blogLiveData.value}")
@@ -47,7 +54,9 @@ class SavedStateActivity : BaseViewModelActivity<SavedStateViewModel>() {
         }
     }
 
-
+    override fun getViewModelFactory(): ViewModelProvider.Factory? {
+        return SavedStateViewModelFactory(application, this)
+    }
 
 
 }
