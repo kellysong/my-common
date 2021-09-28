@@ -101,13 +101,13 @@ public class RetrofitHelper {
                 .addConverterFactory(GsonConverterFactory.create(gson));
 
         boolean useCoroutine = retrofitParams.isUseCoroutines();
-        if (useCoroutine){
+        if (useCoroutine) {
             //2.6版本之后不再需要设置Adapter
-        }else {
+        } else {
             rb.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
         }
 
-        mRetrofit = rb .build();
+        mRetrofit = rb.build();
     }
 
 
@@ -265,7 +265,8 @@ public class RetrofitHelper {
         public void log(String message) {
             // 请求或者响应开始
             try {
-                if (message.startsWith("--> POST") || message.startsWith("--> GET")) {
+                if (message.startsWith("--> POST") || message.startsWith("--> GET")
+                        || message.startsWith("--> DELETE") || message.startsWith("--> PUT")) {
                     mMessage.setLength(0);
                 }
                 // 以{}或者[]形式的说明是响应结果的json数据，需要进行格式化
@@ -281,6 +282,7 @@ public class RetrofitHelper {
 
             } catch (Exception e) {
                 LogUtils.e(e);
+                mMessage.setLength(0);
             }
 
         }

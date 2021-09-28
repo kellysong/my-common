@@ -2,6 +2,7 @@ package com.sjl.core.net.filedownload;
 
 
 import com.sjl.core.net.RxManager;
+import com.sjl.core.net.RxSchedulers;
 import com.sjl.core.util.log.LogUtils;
 
 import java.io.File;
@@ -13,10 +14,8 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 
 /**
@@ -64,8 +63,7 @@ public class FileDownloader {
     public static void downloadFile(Observable<ResponseBody> observable, final String destDir, final String fileName, final DownloadProgressHandler progressHandler) {
         final DownloadInfo downloadInfo = new DownloadInfo();
         observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+                .compose(RxSchedulers.io_io())
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -83,13 +81,13 @@ public class FileDownloader {
                             int len;
                             responseLength = responseBody.contentLength();
                             inputStream = responseBody.byteStream();
-                            final File file = new File(destDir, fileName);
-                            downloadInfo.setFile(file);
-                            downloadInfo.setFileSize(responseLength);
                             File dir = new File(destDir);
                             if (!dir.exists()) {
                                 dir.mkdirs();
                             }
+                            final File file = new File(dir, fileName);
+                            downloadInfo.setFile(file);
+                            downloadInfo.setFileSize(responseLength);
                             fos = new FileOutputStream(file);
                             int progress = 0;
                             int lastProgress;
@@ -160,8 +158,6 @@ public class FileDownloader {
     public static void downloadFile2(Observable<ResponseBody> observable, final String destDir, final String fileName, final DownloadProgressHandler progressHandler) {
         final DownloadInfo downloadInfo = new DownloadInfo();
         observable
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .flatMap(new Function<ResponseBody, ObservableSource<DownloadInfo>>() {
 
                     @Override
@@ -179,13 +175,14 @@ public class FileDownloader {
                                     int len = 0;
                                     responseLength = responseBody.contentLength();
                                     inputStream = responseBody.byteStream();
-                                    final File file = new File(destDir, fileName);
-                                    downloadInfo.setFile(file);
-                                    downloadInfo.setFileSize(responseLength);
+
                                     File dir = new File(destDir);
                                     if (!dir.exists()) {
                                         dir.mkdirs();
                                     }
+                                    final File file = new File(dir, fileName);
+                                    downloadInfo.setFile(file);
+                                    downloadInfo.setFileSize(responseLength);
                                     fos = new FileOutputStream(file);
                                     int progress = 0;
                                     int lastProgress = 0;
@@ -206,15 +203,21 @@ public class FileDownloader {
                                             downloadInfo.setSpeed(speed);
                                             downloadInfo.setProgress(progress);
                                             downloadInfo.setCurrentSize(total);
-                                            emitter.onNext(downloadInfo);
+                                            if (!emitter.isDisposed()){
+                                                emitter.onNext(downloadInfo);
+                                            }
                                         }
                                     }
                                     fos.flush();
                                     downloadInfo.setFile(file);
-                                    emitter.onComplete();
+                                    if (!emitter.isDisposed()){
+                                        emitter.onComplete();
+                                    }
                                 } catch (Exception e) {
                                     downloadInfo.setErrorMsg(e);
-                                    emitter.onError(e);
+                                    if (!emitter.isDisposed()){
+                                        emitter.onError(e);
+                                    }
                                 } finally {
                                     try {
                                         if (fos != null) {
@@ -232,7 +235,7 @@ public class FileDownloader {
                         });
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxSchedulers.applySchedulers())
                 .subscribe(new Observer<DownloadInfo>() {
                     @Override
                     public void onSubscribe(Disposable d) {

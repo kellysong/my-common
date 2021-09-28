@@ -80,6 +80,8 @@ class MainActivity : BaseActivity() {
             Log.i("TAG", "你好1")
             Log.w("TAG", "你好2")
             Log.e("TAG", "你好3 错误")
+            "你好1".v() //扩展函数调用
+
             /*AdbUtils.pullLogCatLog(this@MainActivity);
                 AdbUtils.pullAnrLog(this@MainActivity);
                 StringBuilder sb = new StringBuilder();

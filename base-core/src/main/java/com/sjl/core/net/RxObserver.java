@@ -65,11 +65,19 @@ public abstract class RxObserver<T> implements Observer<T> {
         }
         _onError(msg);
 
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+            disposable = null;
+        }
     }
 
     @Override
     public void onComplete() {
         _onComplete();
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+            disposable = null;
+        }
     }
 
     @Override

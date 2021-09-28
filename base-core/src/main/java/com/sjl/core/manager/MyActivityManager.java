@@ -1,8 +1,10 @@
 package com.sjl.core.manager;
 
 import android.app.Activity;
+import android.os.Build;
 
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -119,7 +121,7 @@ public class MyActivityManager {
 
 
     /**
-     * 根据class关闭知道Activity
+     * 根据class关闭指定Activity
      *
      * @param clz
      * @return
@@ -133,11 +135,81 @@ public class MyActivityManager {
 
 
     /**
-     * 关闭每一个list内的activity
+     * 关闭所有activity
      */
     public void finishActivityList() {
-        for (Activity activity : activityList) {
+        Iterator<Activity> iterator = activityList.iterator();
+        while (iterator.hasNext()){
+            Activity activity = iterator.next();
             activity.finish();
+            iterator.remove();
+        }
+    }
+
+    /**
+     * 获取栈顶Activity
+     *
+     * @return
+     */
+    public Activity getTopActivity() {
+        Activity activity = null;
+        int size = activityList.size();
+        if (size > 0) {
+            activity = activityList.get(size -1);;
+        }
+        return activity;
+    }
+
+    /**
+     * 判断Activity class是否处于栈顶
+     *
+     * @param clz
+     * @return
+     */
+    protected boolean isTopActivity(Class<?> clz) {
+        Activity topActivity = getTopActivity();
+        if (topActivity != null && topActivity.getClass() == clz) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断一个Activity class 是否存在
+     *
+     * @param clz
+     * @return
+     */
+    public <T extends Activity> boolean isActivityExist(Class<T> clz) {
+        boolean res = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Activity activity = getActivity(clz);
+            if (activity == null) {
+                res = false;
+            } else {
+                if (activity.isFinishing() || activity.isDestroyed()) {
+                    res = false;
+                } else {
+                    res = true;
+                }
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 判断Activity是否Destroy
+     * @param mActivity
+     * @return true:已销毁
+     */
+    public static boolean isDestroy(Activity mActivity) {
+        if (mActivity == null ||
+                mActivity.isFinishing() ||
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed())) {
+            return true;
+        } else {
+            return false;
         }
     }
 

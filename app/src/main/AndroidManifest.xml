@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sjl.lib">
+<!--    AdbUtils-->
+    <uses-permission android:name="android.permission.READ_LOGS"
+        />
+    <uses-permission android:name="android.permission.DUMP" />
 
 <!--  特殊权限  -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />

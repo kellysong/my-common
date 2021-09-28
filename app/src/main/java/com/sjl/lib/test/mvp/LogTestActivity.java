@@ -50,6 +50,9 @@ public class LogTestActivity extends BaseActivity {
         LogWriter.w("ww", new RuntimeException("出错了"));
         LogWriter.json(getJson(1000));
         LogWriter.xml(getXml());
+
+    /*    LogKtxKt.w("dd");
+        LogKtxKt.w("dd",new RuntimeException());*/
     }
 
     private String getXml() {

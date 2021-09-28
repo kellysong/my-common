@@ -1,6 +1,5 @@
 package com.sjl.core.mvp;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -388,7 +387,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
 
 
     /**
-     * 根据class获取实例
+     * 判断Activity class是否处于栈顶
      *
      * @param clz
      * @return
@@ -402,12 +401,11 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
     }
 
     /**
-     * 判断一个Activity 是否存在
+     * 判断一个Activity class是否存在
      *
      * @param clz
      * @return
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public <T extends Activity> boolean isActivityExist(Class<T> clz) {
         boolean res = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
