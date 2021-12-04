@@ -67,8 +67,8 @@ public abstract class RxObserver<T> implements Observer<T> {
 
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
-            disposable = null;
         }
+        disposable = null;
     }
 
     @Override
@@ -76,8 +76,8 @@ public abstract class RxObserver<T> implements Observer<T> {
         _onComplete();
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
-            disposable = null;
         }
+        disposable = null;
     }
 
     @Override

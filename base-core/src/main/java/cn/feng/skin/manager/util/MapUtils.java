@@ -10,7 +10,8 @@ import java.util.Map.Entry;
  * 
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2011-7-22
  */
-public class MapUtils {
+public class
+MapUtils {
 
     /** default separator between key and value **/
     public static final String DEFAULT_KEY_AND_VALUE_SEPARATOR      = ":";
@@ -34,6 +35,33 @@ public class MapUtils {
      */
     public static <K, V> boolean isEmpty(Map<K, V> sourceMap) {
         return (sourceMap == null || sourceMap.size() == 0);
+    }
+
+    /**
+     * map  非空判断
+     * @param sourceMap
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public static  <K, V> boolean isNotEmpty(Map<K, V> sourceMap) {
+        return !isEmpty(sourceMap);
+    }
+
+    /**
+     * 根据Key获取map的Value值
+     * @param map
+     * @param key
+     * @param defaultValue
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public static <K,V> V getOrDefault(Map<K, V> map, Object key, V defaultValue) {
+        V v;
+        return (((v = map.get(key)) != null) || map.containsKey(key))
+                ? v
+                : defaultValue;
     }
 
     /**

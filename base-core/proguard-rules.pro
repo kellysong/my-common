@@ -142,7 +142,7 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
 
-# my-core-lib
+# base-core
 -keep class com.sjl.core.entity.**{*;}
 -keep class cn.feng.skin.manager.entity.**{*;}
 

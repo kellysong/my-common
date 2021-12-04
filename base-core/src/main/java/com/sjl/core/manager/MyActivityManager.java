@@ -9,44 +9,38 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * activity管理
- * registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+ * activity
+ *<pre>
+ * {@code
  *
+ *  registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
  *            @Override
  *            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
  *                MyActivityManager.getInstance().addActivity(activity);
  *            }
- *
  *            @Override
  *            public void onActivityStarted(Activity activity) {
- *
  *            }
- *
  *            @Override
  *            public void onActivityResumed(Activity activity) {
  *                      MyActivityManager.getInstance().setCurrentActivity(activity);
  *            }
- *
  *            @Override
  *            public void onActivityPaused(Activity activity) {
- *
  *            }
- *
  *            @Override
  *            public void onActivityStopped(Activity activity) {
- *
  *            }
- *
  *            @Override
  *            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
- *
  *            }
- *
  *            @Override
  *            public void onActivityDestroyed(Activity activity) {
  *                MyActivityManager.getInstance().removeActivity(activity);
  *            }
  *        });
+ *        }
+ *        </pre>
  * @author Kelly
  * @version 1.0.0
  * @filename MyActivityManager.java
@@ -129,8 +123,10 @@ public class MyActivityManager {
     public void finishActivity(Class<?> clz) {
         Activity activity = getActivity(clz);
         if (activity != null){
+            activityList.remove(activity);
             activity.finish();
         }
+
     }
 
 

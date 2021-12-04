@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * 位图操作工具类
@@ -38,6 +39,7 @@ public class BitmapUtils {
     /**
      * bitmap转为base64
      *
+     * @see BitmapUtils#base64ToBitmap(String)   配套使用
      * @param bitmap
      * @param quality
      * @return
@@ -526,17 +528,33 @@ public class BitmapUtils {
     }
 
     /**
-     * bitmap转字节数组
+     * bitmap转字节数组(带压缩)
      *
      * @param bitmap
      * @param quality
      * @return
      */
-    public static byte[] bitmapToByteArr(Bitmap bitmap, int quality) {
+    public static byte[] bitmapToByteArrWithCompress(Bitmap bitmap, int quality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);// (0 - 100)压缩文件
         byte[] bytes = stream.toByteArray();
         return bytes;
+    } 
+    
+    
+    /**
+     * bitmap转字节数组
+     *
+     * @see BitmapUtils#byteArrToBitmap(byte[]) 配套使用
+     * @param bitmap
+     * @return
+     */
+    public static byte[] bitmapToByteArr(Bitmap bitmap) {
+        int bytes = bitmap.getByteCount();
+        ByteBuffer buf = ByteBuffer.allocate(bytes);
+        bitmap.copyPixelsToBuffer(buf);
+        byte[] byteArray = buf.array();
+        return byteArray;
     }
 
     /**

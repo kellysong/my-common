@@ -137,7 +137,7 @@ public class SkinManager implements ISkinLoader {
         String skin = SkinConfig.getCustomSkinPath(context);
         File file = new File(skin);
         if (!file.exists()) {
-            LogWriter.e("换肤失败:" + skin + ",file.exists()=" + file.exists() + ",file.isFile()=" + file.isFile());
+//            LogWriter.e("换肤失败:" + skin + ",file.exists()=" + file.exists() + ",file.isFile()=" + file.isFile());
             return;
         }
         load(skin, null);
@@ -150,7 +150,7 @@ public class SkinManager implements ISkinLoader {
         String skin = SkinConfig.getCustomSkinPath(context);
         File file = new File(skin);
         if (!file.exists()) {
-            LogWriter.e("换肤失败:" + skin + ",file.exists()=" + file.exists() + ",file.isFile()=" + file.isFile());
+//            LogWriter.e("换肤失败:" + skin + ",file.exists()=" + file.exists() + ",file.isFile()=" + file.isFile());
             return;
         }
         Map<String, Object> result = loadSkin(skin);

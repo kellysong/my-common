@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spanned;
 import android.text.util.Linkify;
 import android.util.SparseArray;
@@ -21,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
     private SparseArray<View> mViews;
@@ -163,7 +164,42 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder setVisible(int viewId, boolean visible) {
         View view = getView(viewId);
-        view.setVisibility(visible ? View.VISIBLE : View.GONE);
+        view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        return this;
+    }
+
+    /**
+     *
+     * @param viewId
+     * @param gone true隐藏，false显示
+     * @return
+     */
+    public ViewHolder setGone(int viewId, boolean gone) {
+        View view = getView(viewId);
+        view.setVisibility(gone ? View.GONE : View.VISIBLE);
+        return this;
+    }
+
+    public ViewHolder setEnabled(int viewId, boolean enabled) {
+        View view = getView(viewId);
+        view.setEnabled(enabled);
+        return this;
+    }
+
+    public ViewHolder setSelected(int viewId, boolean selected) {
+        View view = getView(viewId);
+        view.setSelected(selected);
+        return this;
+    }
+    public ViewHolder setFocusable(int viewId, boolean focusable) {
+        View view = getView(viewId);
+        view.setFocusable(focusable);
+        return this;
+    }
+
+    public ViewHolder setActivated(int viewId, boolean activated) {
+        View view = getView(viewId);
+        view.setActivated(activated);
         return this;
     }
 

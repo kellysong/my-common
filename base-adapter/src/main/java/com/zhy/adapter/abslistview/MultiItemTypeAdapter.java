@@ -13,6 +13,8 @@ import com.zhy.adapter.abslistview.base.ItemViewDelegateManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 public class MultiItemTypeAdapter<T> extends BaseAdapter {
     protected Context mContext;
     protected List<T> mDatas;
@@ -98,14 +100,23 @@ public class MultiItemTypeAdapter<T> extends BaseAdapter {
     }
 
     /**
-     * 刷新条目
+     * 获取上下文
+     *
+     * @return
+     */
+    protected Context getContext() {
+        return mContext;
+    }
+
+    /**
+     * 刷新列表
      *
      * @param datas
+     * @deprecated Use {@link MultiItemTypeAdapter#setNewData(List)} directly
      */
+    @Deprecated
     public void refreshItems(List<T> datas) {
-        mDatas.clear();
-        mDatas.addAll(datas);
-        notifyDataSetChanged();
+        setNewData(datas);
     }
 
     /**
@@ -113,7 +124,7 @@ public class MultiItemTypeAdapter<T> extends BaseAdapter {
      *
      * @param position 要更新的位置
      */
-    public void updateItem(int position, ListView listView) {
+    public void setData(int position, ListView listView) {
         /**第一个可见的位置**/
         int firstVisiblePosition = listView.getFirstVisiblePosition();
         /**最后一个可见的位置**/
@@ -128,10 +139,91 @@ public class MultiItemTypeAdapter<T> extends BaseAdapter {
 
     }
 
+    /**
+     * 交换位置
+     *
+     * @param startPosition
+     * @param endPosition
+     */
+    public synchronized void change(int startPosition, int endPosition) {
+        int i = getCount() - 1;
+        if (startPosition >= 0 && startPosition <= i && endPosition >= 0 && endPosition <= i) {
+            T srcData = mDatas.get(startPosition);
+            mDatas.remove(srcData);
+            mDatas.add(endPosition, srcData);
+            notifyDataSetChanged();
+        }
 
-    protected Context getContext() {
-        return mContext;
+    }
+
+    /**
+     * 更新单个条目
+     */
+    public void setData(int index, @NonNull T data) {
+        mDatas.set(index, data);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 填充新的数据
+     *
+     * @param datas
+     */
+    public void setNewData(List<T> datas) {
+        mDatas.clear();
+        mDatas.addAll(datas);
+        notifyDataSetChanged();
     }
 
 
+    /**
+     * 添加新的数据
+     *
+     * @param position
+     * @param newData
+     */
+    public void addData(int position, List<T> newData) {
+        mDatas.addAll(position, newData);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 添加新的数据
+     *
+     * @param newData
+     */
+    public void addData(List<T> newData) {
+        mDatas.addAll(newData);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 删除条目
+     *
+     * @param position
+     */
+    public void remove(int position) {
+        mDatas.remove(position);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 批量删除条目
+     *
+     * @param value
+     */
+    public void remove(List<T> value) {
+        mDatas.removeAll(value);
+        notifyDataSetChanged();
+    }
+
+
+    /**
+     * 返回列表数据
+     *
+     * @return
+     */
+    public List<T> getData() {
+        return mDatas;
+    }
 }

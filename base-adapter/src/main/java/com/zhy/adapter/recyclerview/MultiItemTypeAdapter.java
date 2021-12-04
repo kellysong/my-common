@@ -11,6 +11,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -127,43 +128,29 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     }
 
 
-     /*以下方法由本人添加*/
+    /*以下方法由本人添加*/
 
-    /**
-     * 删除条目 add by Kelly on 20180503
-     *
-     * @param position
-     */
-    public void removeItem(int position) {
-        mDatas.remove(position);
-        notifyItemRemoved(position);//删除动画
-        if (position != mDatas.size()) { // 如果移除的是最后一个，忽略
-            notifyItemRangeChanged(position, mDatas.size() - position);//itemview重新onBind，就可以了
-        }
+    protected Context getContext() {
+        return mContext;
     }
 
-
     /**
-     * 批量删除条目
-     * @param value
-     */
-    public void batchRemoveItem(List<T> value){
-        mDatas.removeAll(value);
-        notifyDataSetChanged();
-    }
-
-
-    /**
-     * 添加条目 add by Kelly on 20180503
+     * 刷新条目
      *
-     * @param position
-     * @param data
+     * @param datas
+     * @deprecated Use {@link MultiItemTypeAdapter#setNewData(List)} directly
      */
     @Deprecated
-    public void addItem(int position, T data) {
-        mDatas.add(position, data);
-        //添加动画
-        notifyItemInserted(position);
+    public void refreshItems(List<T> datas) {
+        setNewData(datas);
+    }
+
+    /**
+     * 更新单个条目
+     */
+    public void setData(int index, @NonNull T data) {
+        mDatas.set(index, data);
+        notifyItemChanged(index);
     }
 
 
@@ -172,31 +159,77 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
      *
      * @param datas
      */
-    public void refreshItems(List<T> datas) {
+    public void setNewData(List<T> datas) {
         mDatas.clear();
         mDatas.addAll(datas);
         notifyDataSetChanged();
     }
 
     /**
-     * 追加条目
+     * 添加新的数据
      *
      * @param datas
      */
-    public void appendItems(List<T> datas) {
+    public void addData(List<T> datas) {
         mDatas.addAll(datas);
         notifyDataSetChanged();
     }
 
     /**
+     * 添加新的数据
+     *
+     * @param position
+     * @param newData
+     */
+    public void addData(int position, List<T> newData) {
+        mDatas.addAll(position, newData);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 添加条目 add by Kelly on 20180503
+     *
+     * @param position
+     * @param data
+     */
+    @Deprecated
+    public void addData(int position, T data) {
+        mDatas.add(position, data);
+        //添加动画
+        notifyItemInserted(position);
+    }
+
+
+    /**
+     * 删除条目 add by Kelly on 20180503
+     *
+     * @param position
+     */
+    public void remove(int position) {
+        mDatas.remove(position);
+        notifyItemRemoved(position);//删除动画
+        if (position != mDatas.size()) { // 如果移除的是最后一个，忽略
+            notifyItemRangeChanged(position, mDatas.size() - position);//itemview重新onBind，就可以了
+        }
+    }
+
+    /*
+     * 批量删除条目
+     * @param value
+     */
+    public void remove(List<T> value) {
+        mDatas.removeAll(value);
+        notifyDataSetChanged();
+    }
+
+
+    /**
      * 获取数据条目
      */
-    public T getDataItem(int position) {
+    public T getItem(int position) {
         return mDatas.get(position);
     }
 
-    protected Context getContext() {
-        return mContext;
-    }
+
 
 }

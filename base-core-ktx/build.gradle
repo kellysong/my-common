@@ -58,6 +58,7 @@ dependencies {
     api rootProject.ext.dependencies.lifecycleRuntime
     api rootProject.ext.dependencies.lifecycleViewmodelSavedstate
     api rootProject.ext.dependencies.lifecycleViewmodelKtx
+    api rootProject.ext.dependencies.lifecycleRuntimeKtx
 }
 
 apply from: './nexus-push-core.gradle'

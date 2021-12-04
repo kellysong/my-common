@@ -299,6 +299,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends BaseSkinActi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mToast = null;
         synchronized (mActivities) {
             mActivities.remove(this);
         }

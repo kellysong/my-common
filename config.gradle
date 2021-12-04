@@ -10,8 +10,8 @@ ext {
     buildToolsVersion = "30.0.2"
     minSdkVersion = 14
     targetSdkVersion = 30
-    versionCode = 1
-    versionName = "1.0.0"
+    versionCode = 9
+    versionName = "2.3.2"
 
     //Version
     //下面是较新稳定库
@@ -73,6 +73,7 @@ ext {
             // Saved state module for ViewModel
             lifecycleViewmodelSavedstate : "androidx.lifecycle:lifecycle-viewmodel-savedstate:${lifecycle}",
             lifecycleViewmodelKtx : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle}",
+            lifecycleRuntimeKtx : "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle}",
 
             //kotlin
             kotlin            : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
