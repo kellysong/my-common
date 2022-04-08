@@ -84,4 +84,16 @@
             android:text="savedstate测试" />
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnTestImgSave"
+            android:text="保存图片(相册显示)" />
+
+
+    </LinearLayout>
 </LinearLayout>

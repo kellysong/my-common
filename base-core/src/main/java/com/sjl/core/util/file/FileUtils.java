@@ -1,10 +1,14 @@
 package com.sjl.core.util.file;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
@@ -15,7 +19,6 @@ import com.sjl.core.util.log.LogUtils;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,21 +66,42 @@ public class FileUtils {
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
                     fos.flush();
                     fos.close();
-                    saveResultCallback.onSavedSuccess();
-                } catch (FileNotFoundException e) {
-                    saveResultCallback.onSavedFailed();
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    saveResultCallback.onSavedFailed();
+                    saveResultCallback.onSavedSuccess(file);
+                    updateAlbum(context,file);
+                } catch (Exception e) {
+                    saveResultCallback.onSavedFailed(e);
                     e.printStackTrace();
                 }
-
-                //保存图片后发送广播通知更新数据库
-                Uri uri = Uri.fromFile(file);
-                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
             }
         }).start();
     }
+
+    public static void updateAlbum(Context context, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //更新图库
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, file.getName());
+            values.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM);
+            ContentResolver contentResolver = context.getContentResolver();
+            Uri uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,  values);
+            if (uri == null) {
+                return;
+            }
+            try {
+                OutputStream outputStream = contentResolver.openOutputStream(uri);
+                FileInputStream fileInputStream = new FileInputStream(file);
+                FileUtils.fileCopy(fileInputStream, outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            //保存图片后发送广播通知更新数据库
+            Uri uri = Uri.fromFile(file);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+        }
+    }
+
 
     /**
      * 获取SD卡路径
@@ -379,15 +403,24 @@ public class FileUtils {
      * @throws IOException
      */
     public static void fileCopy(InputStream in, File target) throws IOException {
-        OutputStream out = null;
+        fileCopy(in,new FileOutputStream(target));
+    }
+
+
+    /**
+     * 输入流拷贝到输出流
+     * @param in
+     * @param out
+     * @throws IOException
+     */
+    public static void fileCopy(InputStream in, OutputStream out) throws IOException {
         try {
-            out = new FileOutputStream(target);
             byte buffer[] = new byte[1024];
             int len = 0;
             while ((len = in.read(buffer)) > 0) {
                 out.write(buffer, 0, len);
             }
-            Logger.i("file copy success!");
+            Logger.i("stream copy success!");
         } finally {
             if (in != null) {
                 in.close();
@@ -397,7 +430,6 @@ public class FileUtils {
             }
         }
     }
-
     /**
      * 复制url对象到指定文件，相当于网页另存为
      *
@@ -411,9 +443,9 @@ public class FileUtils {
     }
 
     public interface SaveResultCallback {
-        void onSavedSuccess();
+        void onSavedSuccess(File file);
 
-        void onSavedFailed();
+        void onSavedFailed(Exception e);
     }
 
     /**

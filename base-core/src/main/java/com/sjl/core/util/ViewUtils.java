@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.util.Xml;
@@ -229,6 +230,22 @@ public class ViewUtils {
         } catch (IOException e) {
             LogUtils.e("view转图片异常", e);
         }
+    }
+
+    /**
+     * View转Bitmap
+     * @param v
+     * @return
+     */
+    public static  Bitmap viewToBitmap(View v) {
+        int w = v.getWidth();
+        int h = v.getHeight();
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(bmp);
+        c.drawColor(Color.WHITE);
+        v.layout(0, 0, w, h);
+        v.draw(c);
+        return bmp;
     }
 
     /**

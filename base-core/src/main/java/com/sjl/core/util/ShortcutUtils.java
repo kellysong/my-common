@@ -2,6 +2,7 @@ package com.sjl.core.util;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -179,7 +180,7 @@ public class ShortcutUtils {
             List<ShortcutInfo> infoList = shortcutManager.getDynamicShortcuts();
             String tempShortCutId = null;
             for (ShortcutInfo shortcutInfo : infoList) {
-                if (shortCutId.equals(shortcutInfo.getId())) {
+                if (shortcutInfo.getId().equals(shortCutId)) {
                     tempShortCutId = shortcutInfo.getId();
                     break;
                 }
@@ -195,6 +196,98 @@ public class ShortcutUtils {
                         .build();
                 boolean b = shortcutManager.addDynamicShortcuts(Arrays.asList(shortcut));
                 Log.e(TAG, "addDynamicShortcuts result:" + b);
+            }
+        }
+    }
+    /**
+     * 更新动态快捷方式
+     * @param activity
+     * @param targetClass
+     * @param shortCutId
+     * @param shortCutName
+     * @param iconId
+     */
+    public static void updateDyShortcut(Activity activity,Class targetClass,String shortCutId,String shortCutName,int iconId) {
+        if (TextUtils.isEmpty(shortCutId) || TextUtils.isEmpty(shortCutName)){
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutManager shortcutManager = (ShortcutManager) activity.getSystemService(Context.SHORTCUT_SERVICE);
+            List<ShortcutInfo> infoList = shortcutManager.getDynamicShortcuts();
+            String tempShortCutId = null;
+            for (ShortcutInfo shortcutInfo : infoList) {
+                if (shortcutInfo.getId().equals(shortCutId)) {
+                    tempShortCutId = shortcutInfo.getId();
+                    break;
+                }
+            }
+            if (tempShortCutId != null) {
+                Intent shortcutInfoIntent = new Intent(activity, targetClass);
+                shortcutInfoIntent.setAction(Intent.ACTION_VIEW);
+                ShortcutInfo shortcut = new ShortcutInfo.Builder(activity, shortCutId)
+                        .setShortLabel(shortCutName)
+                        .setLongLabel(shortCutName)
+                        .setIcon(Icon.createWithResource(activity, iconId))
+                        .setIntent(shortcutInfoIntent)
+                        .build();
+                boolean b = shortcutManager.updateShortcuts(Arrays.asList(shortcut));
+                Log.e(TAG, "updateDyShortcut result:" + b);
+            }
+        }
+    }
+
+    /**
+     * 删除动态快捷方式
+     * @param activity
+     * @param shortCutId
+     */
+    public static void removeDyShortcut(Activity activity,String shortCutId) {
+        if (TextUtils.isEmpty(shortCutId)){
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutManager shortcutManager = (ShortcutManager) activity.getSystemService(Context.SHORTCUT_SERVICE);
+            List<ShortcutInfo> infoList = shortcutManager.getDynamicShortcuts();
+            String tempShortCutId = null;
+            for (ShortcutInfo shortcutInfo : infoList) {
+                if (shortcutInfo.getId().equals(shortCutId)) {
+                    tempShortCutId = shortcutInfo.getId();
+                    break;
+                }
+            }
+            if (tempShortCutId != null) {
+                List<String> shortcutIds = Arrays.asList(tempShortCutId);
+                shortcutManager.disableShortcuts(shortcutIds);
+                shortcutManager.removeDynamicShortcuts(shortcutIds);
+                Log.e(TAG, "removeDyShortcut success");
+            }
+        }
+    }
+
+    /**
+     * 禁用快捷方式（固定、动态、静态）
+     * @param activity
+     * @param shortCutId
+     */
+    public static void disablePinnedShortcut(Activity activity,String shortCutId) {
+        if (TextUtils.isEmpty(shortCutId)){
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutManager shortcutManager = (ShortcutManager) activity.getSystemService(Context.SHORTCUT_SERVICE);
+            //固定到桌面的快捷方式
+            List<ShortcutInfo> infoList = shortcutManager.getPinnedShortcuts();
+            String tempShortCutId = null;
+            for (ShortcutInfo shortcutInfo : infoList) {
+                if (shortcutInfo.getId().equals(shortCutId)) {
+                    tempShortCutId = shortcutInfo.getId();
+                    break;
+                }
+            }
+            if (tempShortCutId != null) {
+                List<String> shortcutIds = Arrays.asList(tempShortCutId);
+                shortcutManager.disableShortcuts(shortcutIds);
+                Log.e(TAG, "removeDyShortcut success");
             }
         }
     }

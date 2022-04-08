@@ -15,7 +15,9 @@ import okhttp3.Interceptor;
  * @copyright(C) 2019 song
  */
 public class RetrofitParams {
-
+    private final static int TIMEOUT_CONNECT = 30;
+    private final static int TIMEOUT_READ = 30;
+    private final static int TIMEOUT_WRITE = 30;
     /**
      * base url适配器
      */
@@ -32,9 +34,10 @@ public class RetrofitParams {
      * 是否开启协程默认false
      */
     private boolean useCoroutines;
-    private int connectTimeout = 30;
-    private int readTimeout = 30;
-    private int writeTimeout = 30;
+
+    private int connectTimeout;
+    private int readTimeout;
+    private int writeTimeout;
 
     public RetrofitParams(Builder builder) {
         this.baseUrlAdapter = builder.baseUrlAdapter;
@@ -126,15 +129,15 @@ public class RetrofitParams {
     }
 
     public int getConnectTimeout() {
-        return connectTimeout;
+        return connectTimeout == 0 ? TIMEOUT_CONNECT:connectTimeout;
     }
 
     public int getReadTimeout() {
-        return readTimeout;
+        return readTimeout == 0 ? TIMEOUT_READ:readTimeout;
     }
 
     public int getWriteTimeout() {
-        return writeTimeout;
+        return writeTimeout == 0 ? TIMEOUT_WRITE:writeTimeout;
     }
 
     public boolean isUseCoroutines() {

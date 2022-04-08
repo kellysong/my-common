@@ -8,8 +8,10 @@ import com.sjl.core.manager.CachedThreadManager
 import com.sjl.core.mvvm.BaseActivity
 import com.sjl.core.permission.PermissionsManager
 import com.sjl.core.permission.PermissionsResultAction
+import com.sjl.core.permission.SpecialPermission
 import com.sjl.core.util.*
 import com.sjl.core.util.activityresult.ActivityResultUtils
+import com.sjl.core.util.file.FileUtils
 import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.manager.LoginManager
 import com.sjl.lib.test.MyBaseDialogFragment
@@ -19,6 +21,8 @@ import com.sjl.lib.test.mvvm.activity.KEY_RESULT
 import com.sjl.lib.test.mvvm.activity.NetActivity
 import com.sjl.lib.test.mvvm.activity.SavedStateActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
+import java.lang.Exception
 
 /**
  * 测试入口
@@ -48,6 +52,18 @@ class MainActivity : BaseActivity() {
                         LogUtils.d("权限拒绝：$permission")
                     }
                 })
+    }
+
+    private fun requestFilePermission() {
+        PermissionsManager.getInstance().requestSpecialPermission(SpecialPermission.MANAGE_ALL_FILES_ACCESS,this,object : PermissionsResultAction() {
+            override fun onGranted() {
+                LogUtils.d("MANAGE_EXTERNAL_STORAGE权限授权通过")
+            }
+
+            override fun onDenied(permission: String) {
+                LogUtils.d("MANAGE_EXTERNAL_STORAGE权限拒绝：$permission")
+            }
+        })
     }
 
     fun btnTestLog(view: View) {
@@ -149,6 +165,18 @@ class MainActivity : BaseActivity() {
                 } else {
                     ToastUtils.showShort(this@MainActivity, "登陆失败");
                 }
+            }
+        })
+    }
+
+    fun btnTestImgSave(view: android.view.View) {
+        FileUtils.savePhoto(this,ViewUtils.viewToBitmap(view),object : FileUtils.SaveResultCallback{
+            override fun onSavedSuccess(file: File) {
+                LogUtils.d("Saved Success")
+            }
+
+            override fun onSavedFailed(e: Exception) {
+                LogUtils.d("Saved Failed")
             }
         })
     }
