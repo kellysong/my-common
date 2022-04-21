@@ -1,12 +1,12 @@
 package com.sjl.core.mvp;
 
-import androidx.lifecycle.LifecycleOwner;
 import android.content.Context;
-import androidx.annotation.NonNull;
 
 import com.sjl.core.net.RxLifecycleUtils;
 import com.uber.autodispose.AutoDisposeConverter;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 
 
 /**
@@ -24,7 +24,6 @@ public class BasePresenter<V extends BaseContract.IBaseView> implements BaseCont
     protected LifecycleOwner lifecycleOwner;
 
 
-
     @Override
     public void attachView(V view) {
         this.mView = view;
@@ -34,7 +33,7 @@ public class BasePresenter<V extends BaseContract.IBaseView> implements BaseCont
     /**
      * 用于初始化参数
      */
-    public void init(){
+    public void init() {
 
     }
 
@@ -44,12 +43,30 @@ public class BasePresenter<V extends BaseContract.IBaseView> implements BaseCont
         this.mView = null;
     }
 
-    @NonNull
-    protected V getView() {
-        if (mView == null) throw new IllegalStateException("view not attached.");
-        else return mView;
+    /**
+     * 建议使用 {@link #sendToView(ViewAction)}
+     * @return
+     */
+    public V getView() {
+        return mView;
     }
 
+    public V getViewOrThrow() {
+        final V view = getView();
+        if (view == null) throw new IllegalStateException("view not attached.");
+        return view;
+    }
+
+    /**
+     * 处理V的回调
+     * @param action
+     */
+    public void sendToView(final ViewAction<V> action) {
+        final V view = getView();
+        if (view != null) {
+            action.call(view);
+        }
+    }
 
     protected <T> AutoDisposeConverter<T> bindLifecycle() {
         if (null == lifecycleOwner)

@@ -49,7 +49,15 @@ public class DiskLog implements ILog {
      * 最多保存最近七天日志文件
      */
     private final int LOG_FILE_SAVE_DAYS = 7;
+    /**
+     * 文件名追加的前缀
+     */
+    private static final String FILE_APPEND_PREFIX = "log-";
 
+    /**
+     * 文件后缀
+     */
+    private static final String FILE_SUFFIX = ".txt";
     /**
      * 日志文件
      */
@@ -75,7 +83,7 @@ public class DiskLog implements ILog {
         }
         isCanWrite = writeFileFlag;
         logPath = Environment.getExternalStorageDirectory() + File.separator + BaseApplication.getContext().getPackageName() + File.separator + "Log";
-        String logFileName = "log-" + TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4) + ".txt";
+        String logFileName = FILE_APPEND_PREFIX + TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4) + FILE_SUFFIX;
         File fileDir = new File(logPath);
         if (!fileDir.exists()) {
             fileDir.mkdirs();
@@ -207,7 +215,7 @@ public class DiskLog implements ILog {
             List<String> dateList = TimeUtils.getDateList(-LOG_FILE_SAVE_DAYS);
             Map<String, String> map = new LinkedHashMap<>();
             for (String date : dateList) {
-                map.put("log-" + date, date);
+                map.put(FILE_APPEND_PREFIX + date, date);
             }
             int fileSize = files.length;
             try {
@@ -294,7 +302,9 @@ public class DiskLog implements ILog {
         String content = appendDescribe(logLevel, logMsg);
         FileWriter fileWriter = null;
         try {
-            if (logFile.length() >= SINGLE_LOG_FILE_SIZE) {
+            if (TimeUtils.getCurrentDayRemainMillis() <= 5) {
+                reset();
+            } else if (logFile.length() >= SINGLE_LOG_FILE_SIZE) {
                 createNewFile();
             }
             fileWriter = new FileWriter(logFile, true);
@@ -312,17 +322,29 @@ public class DiskLog implements ILog {
             }
         }
     }
+    private  void reset() throws IOException {
+        String s = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
+        String logFileName = FILE_APPEND_PREFIX + s + FILE_SUFFIX;
+        logFile = new File(logPath, logFileName);
+        if (!logFile.exists()){
+            logFile.createNewFile();
+        }
 
+
+    }
     private void createNewFile() throws Exception {
         String s = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
-        String logFileName = "log-" + s + "_" + TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_8) + ".txt";
+        String logFileName = FILE_APPEND_PREFIX + s + "_" + TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_8) + FILE_SUFFIX;
         logFile = new File(logPath, logFileName);
-        logFile.createNewFile();
+        if (!logFile.exists()){
+            logFile.createNewFile();
+        }
     }
 
 
     /**
      * 追加输出日志描述
+     *
      *
      * @param logLevel 日志级别
      * @param msg      日志信息

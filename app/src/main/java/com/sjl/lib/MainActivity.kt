@@ -2,6 +2,7 @@ package com.sjl.lib
 
 import android.Manifest
 import android.content.Intent
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import com.sjl.core.manager.CachedThreadManager
@@ -46,6 +47,7 @@ class MainActivity : BaseActivity() {
                 .requestPermissionsIfNecessaryForResult(this, permissions, object : PermissionsResultAction() {
                     override fun onGranted() {
                         LogUtils.d("权限授权通过")
+                        requestFilePermission()
                     }
 
                     override fun onDenied(permission: String) {
@@ -58,6 +60,15 @@ class MainActivity : BaseActivity() {
         PermissionsManager.getInstance().requestSpecialPermission(SpecialPermission.MANAGE_ALL_FILES_ACCESS,this,object : PermissionsResultAction() {
             override fun onGranted() {
                 LogUtils.d("MANAGE_EXTERNAL_STORAGE权限授权通过")
+
+                kotlin.runCatching {
+                    var dir =  File(Environment.getExternalStorageDirectory(),Environment.DIRECTORY_DCIM)
+                    var file =  File(dir,"test.txt")
+                    file.createNewFile()//Kotlin不提示捕获异常，由开发者处理
+                }.onFailure {
+                    it.printStackTrace()
+                }
+
             }
 
             override fun onDenied(permission: String) {
@@ -176,7 +187,7 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onSavedFailed(e: Exception) {
-                LogUtils.d("Saved Failed")
+                LogUtils.e("Saved Failed",e)
             }
         })
     }
