@@ -151,6 +151,7 @@ public class PermissionsManager {
             SoftReference<PermissionsResultAction> weakRef = iterator.next();
             if (weakRef.get() == action || weakRef.get() == null) {
                 iterator.remove();
+                weakRef.clear();
             }
         }
     }
@@ -345,10 +346,12 @@ public class PermissionsManager {
         }
         Iterator<SoftReference<PermissionsResultAction>> iterator = mPendingActions.iterator();
         while (iterator.hasNext()) {
-            PermissionsResultAction action = iterator.next().get();
+            SoftReference<PermissionsResultAction> next = iterator.next();
+            PermissionsResultAction action = next.get();
             for (int n = 0; n < size; n++) {
                 if (action == null || action.onResult(permissions[n], results[n])) {
                     iterator.remove();
+                    next.clear();
                     break;
                 }
             }

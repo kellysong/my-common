@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-if(rootProject.hasProperty("upload.github")){
+if(uploadJitpack){
     apply plugin: 'com.github.dcendents.android-maven'//this
     group='com.github.kellysong'//this
 }

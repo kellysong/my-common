@@ -35,7 +35,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initView() {
-        tv_msg!!.text = "hello world！ my-common-lib"
+        tv_msg.text = "hello world！ my-common-lib"
     }
 
     override fun initListener() {}

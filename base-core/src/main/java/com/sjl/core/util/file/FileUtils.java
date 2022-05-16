@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
@@ -23,12 +25,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * 文件操作工具类
@@ -115,6 +122,47 @@ public class FileUtils {
             sdDir = Environment.getExternalStorageDirectory();//获取跟目录
         }
         return sdDir;
+    }
+
+    /**
+     * 获取存储路径
+     *
+     * @param context
+     * @param isRemovable 为false时得到的是内置sd卡路径，为true则为外置sd卡路径。
+     * @return
+     */
+    @RequiresApi(Build.VERSION_CODES.M)
+    public static String getStoragePath(Context context, boolean isRemovable) throws Exception {
+        StorageManager mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //7.0以上
+            List<StorageVolume> storageVolumes = mStorageManager.getStorageVolumes();
+            LogUtils.i("storageVolumes：" + storageVolumes.size());
+            for (StorageVolume storageVolume : storageVolumes) {
+                boolean removable = storageVolume.isRemovable();
+                Class<?> storageVolumeClazz = storageVolume.getClass();
+                Method getPath = storageVolumeClazz.getMethod("getPath");
+                String path = (String) getPath.invoke(storageVolume);
+                if (isRemovable == removable) {
+                    return path;
+                }
+            }
+        } else {
+            Class<?> storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+            Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
+            Method getPath = storageVolumeClazz.getMethod("getPath");
+            Method is_Removable = storageVolumeClazz.getMethod("isRemovable");
+            Object result = getVolumeList.invoke(mStorageManager);
+            final int length = Array.getLength(result);
+            LogUtils.i("storageVolumes：" + length);
+            for (int i = 0; i < length; i++) {
+                Object storageVolumeElement = Array.get(result, i);
+                String path = (String) getPath.invoke(storageVolumeElement);
+                if (isRemovable == (Boolean) is_Removable.invoke(storageVolumeElement)) {
+                    return path;
+                }
+            }
+        }
+        return null;
     }
 
     /**
