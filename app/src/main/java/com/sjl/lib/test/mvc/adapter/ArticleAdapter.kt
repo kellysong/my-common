@@ -1,4 +1,4 @@
-package com.sjl.lib.test.mvvm.adapter
+package com.sjl.lib.test.mvc.adapter
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder

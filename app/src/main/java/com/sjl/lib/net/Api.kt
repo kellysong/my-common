@@ -3,6 +3,8 @@ package com.sjl.lib.net
 
 import com.sjl.lib.entity.ArticleBean
 import com.sjl.lib.entity.ResponseData
+import io.reactivex.Observable
+import io.reactivex.Observer
 import retrofit2.http.GET
 
 /**
@@ -17,4 +19,7 @@ interface Api {
 
     @GET("/wxarticle/chapters/json")
     suspend fun getDatas() : ResponseData<List<ArticleBean>>
+
+    @GET("/wxarticle/chapters/json")
+    fun getDatas2() : Observable<ResponseData<List<ArticleBean>>>
 }

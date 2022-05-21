@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.sjl.core.util.activityresult.ActivityResultUtils
-import com.sjl.lib.test.mvvm.activity.LoginActivity
+import com.sjl.lib.test.login.LoginActivity
 
 /**
  * 登陆跳转封装，有些功能必须登陆才能跳转

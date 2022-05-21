@@ -1,4 +1,4 @@
-package com.sjl.lib.test.mvvm.activity
+package com.sjl.lib.test.savedstate.activity
 
 
 import androidx.lifecycle.SavedStateViewModelFactory
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.sjl.core.mvvm.BaseViewModelActivity
 import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.R
-import com.sjl.lib.test.mvvm.viewmodel.SavedStateViewModel
+import com.sjl.lib.test.savedstate.viewmodel.SavedStateViewModel
 import kotlinx.android.synthetic.main.saved_state_activity.*
 
 

@@ -9,6 +9,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="hello world！ my-common-lib" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnSoftwareArch"
+            android:text="软件架构示例" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="btnTestSavedState"
+            android:text="savedstate测试" />
+    </LinearLayout>
     <!--    类测试-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -71,29 +88,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="btnTestNet"
-            android:text="网络请求测试(协程)" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="btnTestSavedState"
-            android:text="savedstate测试" />
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="btnTestImgSave"
             android:text="保存图片(相册显示)" />
-
-
     </LinearLayout>
+
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.sjl.lib.test.mvp;
+package com.sjl.lib.test.permissions;
 
 import android.content.Context;
 import android.os.Bundle;

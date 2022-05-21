@@ -1,4 +1,4 @@
-package com.sjl.lib.test.mvvm.viewmodel
+package com.sjl.lib.test.savedstate.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle

@@ -16,11 +16,12 @@ import com.sjl.core.util.file.FileUtils
 import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.manager.LoginManager
 import com.sjl.lib.test.MyBaseDialogFragment
-import com.sjl.lib.test.mvp.LogTestActivity
-import com.sjl.lib.test.mvp.PermissionsTestActivity
+import com.sjl.lib.test.SoftwareArchActivity
+import com.sjl.lib.test.log.LogTestActivity
+import com.sjl.lib.test.mvc.NetActivity
+import com.sjl.lib.test.permissions.PermissionsTestActivity
 import com.sjl.lib.test.mvvm.activity.KEY_RESULT
-import com.sjl.lib.test.mvvm.activity.NetActivity
-import com.sjl.lib.test.mvvm.activity.SavedStateActivity
+import com.sjl.lib.test.savedstate.activity.SavedStateActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.lang.Exception
@@ -81,8 +82,8 @@ class MainActivity : BaseActivity() {
         ViewUtils.openActivity(this, LogTestActivity::class.java)
     }
 
-    fun btnTestNet(view: View) {
-        ViewUtils.openActivity(this, NetActivity::class.java)
+    fun btnSoftwareArch(view: View) {
+        ViewUtils.openActivity(this, SoftwareArchActivity::class.java)
     }
 
     fun btnTestBaseDialogFragment(view: View) {
@@ -184,11 +185,14 @@ class MainActivity : BaseActivity() {
         FileUtils.savePhoto(this,ViewUtils.viewToBitmap(view),object : FileUtils.SaveResultCallback{
             override fun onSavedSuccess(file: File) {
                 LogUtils.d("Saved Success")
+                SnackbarUtils.makeShort(window.decorView,"Saved Success").info()
             }
 
             override fun onSavedFailed(e: Exception) {
                 LogUtils.e("Saved Failed",e)
+                SnackbarUtils.makeShort(window.decorView,"Saved Failed").danger()
             }
         })
+
     }
 }

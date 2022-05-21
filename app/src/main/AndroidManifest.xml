@@ -35,11 +35,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".test.mvp.LogTestActivity" />
-        <activity android:name=".test.mvvm.activity.NetActivity" />
-        <activity android:name=".test.mvvm.activity.SavedStateActivity" />
-        <activity android:name=".test.mvp.PermissionsTestActivity" />
-        <activity android:name=".test.mvvm.activity.LoginActivity" />
+        <activity android:name=".test.log.LogTestActivity" />
+        <activity android:name=".test.savedstate.activity.SavedStateActivity" />
+        <activity android:name=".test.permissions.PermissionsTestActivity" />
+        <activity android:name=".test.login.LoginActivity" />
+        <activity android:name=".test.mvc.NetActivity" android:theme="@style/NoActionBar"/>
+        <activity android:name=".test.mvp.activity.NetActivity2" android:theme="@style/NoActionBar"/>
+        <activity android:name=".test.mvvm.activity.NetActivity3" android:theme="@style/NoActionBar" />
+        <activity android:name=".test.mvi.activity.NetActivity4" android:theme="@style/NoActionBar"/>
+        <activity android:name=".test.SoftwareArchActivity" />
 
         <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
         <provider

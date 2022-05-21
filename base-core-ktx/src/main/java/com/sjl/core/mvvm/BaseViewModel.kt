@@ -1,9 +1,10 @@
 package com.sjl.core.mvvm
 
-import androidx.lifecycle.*
-import com.sjl.core.util.log.LogUtils
-import kotlinx.coroutines.*
-import java.lang.Exception
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -20,56 +21,43 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
 
     /**
      * 运行在UI线程的协程
-     * @param block [@kotlin.ExtensionFunctionType] SuspendFunction1<CoroutineScope, Unit>
-     * @param error Function1<[@kotlin.ParameterName] Throwable, Unit>?
-     * @param finally Function0<Unit>?
-     * @return Job
+     * @param block [@kotlin.ExtensionFunctionType] SuspendFunction1<CoroutineScope, T>
+     * @param success SuspendFunction1<[@kotlin.ParameterName] T, Unit>?
+     * @param error SuspendFunction1<[@kotlin.ParameterName] Throwable, Unit>?
      */
-    fun launchUI(block: suspend CoroutineScope.() -> Unit, error: (suspend (e: Throwable) -> Unit)? = null, finally: (suspend () -> Unit)? = null) = viewModelScope.launch {
-        var tempE: Exception? = null
-        try {
-//            withTimeout(10_1000){ //协程10s超时
-//                block()
-//            }
-            block()
-        } catch (e: CancellationException) {
-            LogUtils.e("launchUI,job cancelled")
-        } catch (e: Exception) {
-            tempE = e
-            if (error != null) {
-                error(tempE)
+    fun <T : Any?> launchUI(
+        block: suspend CoroutineScope.() -> T,
+        success: (suspend (t: T) -> Unit)? = null,
+        error: (suspend (e: Throwable) -> Unit)? = null
+    ) {
+        viewModelScope.launch {
+            runCatching {
+                block()
+            }.onSuccess {
+                success?.invoke(it)//带一个参数的调用
+            }.onFailure {
+                error?.invoke(it)
             }
-        } finally {//命令式
-            if (tempE == null) {
-                finally?.invoke()
-            }
-        }
 
+        }
     }
 
+
     /**
-     * 协程异常处理
-     *  //callback?.invoke(default) 相当于  callback( default )
-    //(suspend () -> Unit)? = null
+     * 挂起函数异常捕获
+     * callback?.invoke(default) 相当于  callback( default )
      * @param block SuspendFunction0<Unit>?
      * @param error SuspendFunction1<[@kotlin.ParameterName] Throwable, Unit>?
      */
-    suspend fun catchException(block: (suspend () -> Unit)? = null, error: (suspend (e: Throwable) -> Unit)? = null) {
-        try {
+    suspend fun catchException(
+        block: (suspend () -> Unit)? = null,
+        error: (suspend (e: Throwable) -> Unit)? = null
+    ) {
+        runCatching {
             block?.invoke()
-        } catch (e: Exception) {
-            if (error != null) {
-                error(e)
-            }
+        }.onFailure {
+            error?.invoke(it)
         }
     }
 
-
-    /**
-     * 如果不用 viewModelScope 我们就得重写的 onCleared() 方法。在 clear() 方法中，ViewModel 会取消 viewModelScope 中的任务
-     */
-    /*   override fun onCleared() {
-           super.onCleared()
-           viewModelScope.cancel()
-       }*/
 }

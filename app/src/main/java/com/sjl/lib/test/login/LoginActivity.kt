@@ -1,4 +1,4 @@
-package com.sjl.lib.test.mvvm.activity
+package com.sjl.lib.test.login
 
 import android.content.Intent
 import android.view.View

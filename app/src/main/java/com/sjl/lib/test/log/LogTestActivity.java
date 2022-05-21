@@ -1,4 +1,4 @@
-package com.sjl.lib.test.mvp;
+package com.sjl.lib.test.log;
 
 import com.google.gson.Gson;
 import com.sjl.core.mvp.BaseActivity;

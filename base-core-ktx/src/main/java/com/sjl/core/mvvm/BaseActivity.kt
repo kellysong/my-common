@@ -1,9 +1,11 @@
 package com.sjl.core.mvvm
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.sjl.core.permission.PermissionsManager
@@ -54,6 +56,27 @@ abstract class BaseActivity : AppCompatActivity() {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed
         }
 
+    }
+
+    inline fun <reified T : Activity> Activity.openActivity(context: Context) {
+        openActivity<T>(context,null)
+    }
+
+    inline fun <reified T : Activity> Activity.openActivity(context: Context, bundle: Bundle?) {
+        val intent = Intent(context, T::class.java)
+        if(bundle != null){
+            intent.putExtras(bundle)
+        }
+        startActivity(intent)
+    }
+
+    protected open fun setStatusBar(color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = window
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = color
+        }
     }
 
 }

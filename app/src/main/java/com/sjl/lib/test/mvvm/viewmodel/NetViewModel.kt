@@ -26,7 +26,7 @@ class NetViewModel : BaseViewModel() {
      * 注意到暴露的获取LiveData的方法 返回的是LiveData类型，即不可变的，而不是MutableLiveData，好处是避免数据在外部被更改
      * @return LiveData<List<ArticleBean>>
      */
-    fun getArticle(): LiveData<List<ArticleBean>> {
+    fun listArticles(): LiveData<List<ArticleBean>> {
         return datas
     }
     fun log(msg: String) = LogUtils.i("[${Thread.currentThread().name}] $msg")
@@ -38,27 +38,23 @@ class NetViewModel : BaseViewModel() {
             log("child1")
             throw NullPointerException("sss")
         },{
-            e ->
-            LogUtils.e("获取数据异常1",e)
+            LogUtils.e("获取数据异常1",it)
         })
 
         launchUI({
             log("child2")
         },{
-            e ->
-            LogUtils.e("获取数据异常2",e)
+            LogUtils.e("获取数据异常2",it)
         })
 */
         launchUI({
             log("child3")
-            val api = RetrofitClient.api
-            LogUtils.i("api:$api")
-            val data = api.getDatas().data
-            datas.value = data
+            RetrofitClient.api.getDatas().data
         },{
-            e ->
-            LogUtils.e("获取数据异常",e)
-        })
+            datas.value = it
+        },{
 
+            LogUtils.e("获取数据异常",it)
+        })
     }
 }
