@@ -10,7 +10,7 @@ import com.sjl.core.util.ColorUtils
 import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.R
 import com.sjl.lib.entity.ArticleBean
-import com.sjl.lib.net.RetrofitClient
+import com.sjl.lib.net.repository.ApiRepository
 import com.sjl.lib.test.mvvm.activity.CODE_RESULT
 import com.sjl.lib.test.mvvm.activity.KEY_RESULT
 import com.sjl.lib.test.mvc.adapter.ArticleAdapter
@@ -65,12 +65,9 @@ class NetActivity : BaseActivity<NoPresenter>() {
         articleAdapter = ArticleAdapter(null)
         recycleView.adapter = articleAdapter
 
-
-        RetrofitClient.api2.getDatas2()
-            .compose(RxSchedulers.applySchedulers())
+    ApiRepository.listArticles2().compose(RxSchedulers.applySchedulers())
             .`as`(bindLifecycle()).subscribe(Consumer {
-                val data = it.data
-                showArticles(data)
+                showArticles(it)
             }, Consumer {
                 val message = it.message
                 showFailMsg(message)

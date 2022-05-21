@@ -17,9 +17,19 @@ import retrofit2.http.GET
  */
 interface Api {
 
+    /**
+     * 使用协程
+     * ## 使用协程,直接返回数据类对象
+     * ## 不使用协程，需要返回一个Call对象使用
+     * @return ResponseData<List<ArticleBean>>
+     */
     @GET("/wxarticle/chapters/json")
     suspend fun getDatas() : ResponseData<List<ArticleBean>>
 
+    /**
+     * 使用RxJava
+     * @return Observable<List<ArticleBean>>
+     */
     @GET("/wxarticle/chapters/json")
     fun getDatas2() : Observable<ResponseData<List<ArticleBean>>>
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.sjl.core.mvvm.BaseViewModel
 import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.entity.ArticleBean
-import com.sjl.lib.net.RetrofitClient
+import com.sjl.lib.net.repository.ApiRepository
 
 /***
  * mvvm单向引用
@@ -49,7 +49,7 @@ class NetViewModel : BaseViewModel() {
 */
         launchUI({
             log("child3")
-            RetrofitClient.api.getDatas().data
+            ApiRepository.listArticles()
         },{
             datas.value = it
         },{

@@ -1,7 +1,7 @@
 package com.sjl.lib.test.mvp.presenter
 
 import com.sjl.core.net.RxSchedulers
-import com.sjl.lib.net.RetrofitClient
+import com.sjl.lib.net.repository.ApiRepository
 import com.sjl.lib.test.mvp.contract.NetActivity2Contract
 import io.reactivex.functions.Consumer
 
@@ -16,12 +16,12 @@ import io.reactivex.functions.Consumer
  */
 class NetActivity2Presenter : NetActivity2Contract.Presenter() {
     override fun listArticles() {
-        RetrofitClient.api2.getDatas2()
+        ApiRepository.listArticles2()
             .compose(RxSchedulers.applySchedulers())
-            .`as`(bindLifecycle()).subscribe(Consumer {
-                val data = it.data
+            .`as`(bindLifecycle()).subscribe(Consumer { it ->
+                val data = it
                 sendToView { it.showArticles(data) }
-            }, Consumer {
+            }, Consumer { it ->
                 val message = it.message
                 sendToView { it.showFailMsg(message) }
             })

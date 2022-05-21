@@ -3,7 +3,7 @@ package com.sjl.lib.test.mvi.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.sjl.core.mvvm.BaseViewModel
 import com.sjl.lib.entity.ArticleBean
-import com.sjl.lib.net.RetrofitClient
+import com.sjl.lib.net.repository.ApiRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collect
@@ -22,7 +22,6 @@ class NetViewModel2 : BaseViewModel() {
     private val _viewState = MutableSharedFlow<NetUiState>()
     val viewState: SharedFlow<NetUiState>
         get() = _viewState
-
     /**
      * 接收事件
      */
@@ -55,7 +54,7 @@ class NetViewModel2 : BaseViewModel() {
 
     private fun listArticles() {
         launchUI({
-            RetrofitClient.api.getDatas().data
+            ApiRepository.listArticles()
         }, {
             _viewState.emit(NetUiState.ShowSuccess(it))
 

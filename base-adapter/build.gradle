@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-if(uploadJitpack){
+if(uploadJitpack.toBoolean()){
     apply plugin: 'com.github.dcendents.android-maven'//this
     group='com.github.kellysong'//this
 }
