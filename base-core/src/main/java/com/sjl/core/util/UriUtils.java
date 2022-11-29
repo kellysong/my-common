@@ -1,6 +1,7 @@
 package com.sjl.core.util;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,9 +10,20 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
+
+import com.sjl.core.util.file.FileUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import androidx.annotation.RequiresApi;
 
 /**
- * TODO
+ * fileUriToPath全版本适配
  *
  * @author Kelly
  * @version 1.0.0
@@ -35,12 +47,72 @@ public class UriUtils {
         if (uri.getPath().startsWith("/document/raw:/storage/emulated/0")){
             return uri.getPath().split(":")[1];
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+           return uriToFileOnQ(context,uri).getPath();
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            return getFilePathFromURI(context, uri);
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
            return  getPath(context, uri);
         } else {//4.4以下下系统调用方法
            return getRealPathFromURI(context, uri);
         }
     }
+
+    public static String getFilePathFromURI(Context context, Uri contentUri) {
+        File rootDataDir = context.getCacheDir();
+        //提取文件
+        String fileName = getFileName(contentUri);
+        if (!TextUtils.isEmpty(fileName)) {
+            File dstFile = new File(rootDataDir + File.separator + fileName);
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(contentUri);
+                FileUtils.fileCopy(inputStream,dstFile);
+                return dstFile.getAbsolutePath();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+
+    public static String getFileName(Uri uri) {
+        if (uri == null) return null;
+        String fileName = null;
+        String path = uri.getPath();
+        int cut = path.lastIndexOf('/');
+        if (cut != -1) {
+            fileName = path.substring(cut + 1);
+        }
+        return fileName;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    public static File uriToFileOnQ(Context context, Uri uri) {
+        File file = null;
+        if (uri == null) return file;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_FILE)) {
+            file = new File(uri.getPath());
+        } else if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver contentResolver = context.getContentResolver();
+            String displayName = "temp"
+                    + "." + MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri));
+            InputStream is;
+            try {
+                is = contentResolver.openInputStream(uri);
+                File cache = new File(context.getCacheDir().getAbsolutePath(), displayName);
+                FileUtils.fileCopy(is,cache);
+                file = cache;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
+    }
+
 
     private static String getRealPathFromURI(Context context, Uri contentUri) {
         String res = null;
@@ -105,11 +177,14 @@ public class UriUtils {
             }
         }
         // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+        else if (ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme())) {
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
             return getDataColumn(context, uri, null, null);
         }
         // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+        else if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
         return null;
@@ -168,5 +243,13 @@ public class UriUtils {
      */
     private static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 }

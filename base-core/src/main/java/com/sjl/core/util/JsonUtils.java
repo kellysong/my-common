@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.sjl.core.annotation.FieldName;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,8 +45,13 @@ public class JsonUtils {
      * @return
      */
     public static boolean isGoodJson(String json) {
+
         try {
-            new JSONObject(json);
+            if(json.contains("[" )&& json.contains("]")){
+                new JSONArray(json);
+            }else{
+                new JSONObject(json);
+            }
             return true;
         } catch (JSONException e) {
             return false;

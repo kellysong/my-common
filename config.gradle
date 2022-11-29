@@ -1,110 +1,113 @@
-/**
- * 在主项目的根目录下创建config.gradle文件
- * 在这里单独处理统一依赖问题
- * 注意需要在根目录的build.gradle中进行引入
- * 这个配置只针对app使用，lib不用目的是方便业务app工程依赖lib工程，方便修改
- */
 ext {
-    //Android
-    compileSdkVersion = 30
-    buildToolsVersion = "30.0.2"
-    minSdkVersion = 14
-    targetSdkVersion = 30
-    versionCode = 11
-    versionName = "2.3.4"
-    applicationId="com.sjl.lib"
+    android = [
+            compileSdkVersion: 30,
+            buildToolsVersion: "30.0.2",
+            minSdkVersion    : 14,
+            targetSdkVersion : 30,
+            versionCode      : 11,
+            versionName      : "2.3.4",
+            applicationId    : "com.sjl.lib"
+    ]
 
-    //Version
-    //下面是较新稳定库
+    //version,较新稳定库
+    version = [
+            //kotlin_version
+            kotlinVersion                : "1.4.21",
+            kotlinxCoroutinesVersion     : "1.4.0",
 
-    //kotlin_version
-    kotlinVersion = '1.4.21'
-    kotlinxCoroutinesVersion ="1.4.0"
+            //androidx Version
+            androidxAppcompat            : "1.2.0",
+            androidxConstraintLayout     : "2.0.4",
+            androidxRecyclerview         : "1.2.0",
+            androidxDesign               : "1.3.0",
+            androidxSwiperefreshlayout   : "1.1.0",
+            androidxMultidex             : "2.0.1",
 
-    //androidx Version
-    androidxAppcompat = "1.2.0"
-    androidxConstraintLayout = "2.0.4"
-    androidxRecyclerview = "1.2.0"
-    androidxDesign = "1.3.0"
+            //不再更新
+            androidxCardview             : "1.0.0",
+            androidxPalette              : "1.0.0",
+            androidxViewpager            : "1.0.0",
 
-    androidxSwiperefreshlayout = "1.1.0"
-
-    androidxMultidex = "2.0.1"
-
-    //不在更新
-    androidxCardview = "1.0.0"
-    androidxPalette = "1.0.0"
-    androidxViewpager = "1.0.0"
-
-    //Jetpack
-    lifecycle = "2.2.0"
-    //other
-    retrofitVersion = "2.9.0"
-    loggingInterceptor = "3.10.0"
-    rxjava = "2.2.17"
-    rxandroid = "2.1.1"
-
-    autodispose="1.0.0"
-    eventbus ="3.1.1"
-    glide="4.11.0"
-    baseRecyclerViewAdapterHelper = "3.0.6"
+            //Jetpack(可针对不同版本处理)
+            lifecycle                    : "2.2.0",
+            //other
+            retrofit                     : "2.9.0",
+            loggingInterceptor           : "3.10.0",
+            rxjava                       : "2.2.17",
+            rxandroid                    : "2.1.1",
+            autodispose                  : "1.0.0",
+            eventbus                     : "3.1.1",
+            glide                        : "4.11.0",
+            baseRecyclerViewAdapterHelper: "3.0.6",
+            leakcanary                   : "2.3",
+    ]
 
 
     //dependencies
     dependencies = [
-            appcompat         : "androidx.appcompat:appcompat:${androidxAppcompat}",
-            recyclerview      : "androidx.recyclerview:recyclerview:${androidxRecyclerview}",
-            cardview          : "androidx.cardview:cardview:${androidxCardview}",
-            palette           : "androidx.palette:palette:${androidxPalette}",
-            design            : "com.google.android.material:material:${androidxDesign}",
-            viewpager         : "androidx.viewpager:viewpager:${androidxViewpager}",
-            swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:${androidxSwiperefreshlayout}",
-            constraintLayout  : "androidx.constraintlayout:constraintlayout:${androidxConstraintLayout}",
-            multidex          : "androidx.multidex:multidex:${androidxMultidex}",
+            //kotlin
+            kotlin                       : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${version.kotlinVersion}",
+            //kotlin协程
+            kotlinxCoroutinesCore        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${version.kotlinxCoroutinesVersion}",
+            kotlinxCoroutinesAndroid     : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${version.kotlinxCoroutinesVersion}",
 
-            //Jetpack
-//            lifecycleExtensions : "androidx.lifecycle:lifecycle-extensions:${lifecycle}",
+            // android
+            appcompat                    : "androidx.appcompat:appcompat:${version.androidxAppcompat}",
+            recyclerview                 : "androidx.recyclerview:recyclerview:${version.androidxRecyclerview}",
+            cardview                     : "androidx.cardview:cardview:${version.androidxCardview}",
+            palette                      : "androidx.palette:palette:${version.androidxPalette}",
+            design                       : "com.google.android.material:material:${version.androidxDesign}",
+            viewpager                    : "androidx.viewpager:viewpager:${version.androidxViewpager}",
+            swiperefreshlayout           : "androidx.swiperefreshlayout:swiperefreshlayout:${version.androidxSwiperefreshlayout}",
+            constraintLayout             : "androidx.constraintlayout:constraintlayout:${version.androidxConstraintLayout}",
+            multidex                     : "androidx.multidex:multidex:${version.androidxMultidex}",
 
             // ViewModel
-            lifecycleViewmodel : "androidx.lifecycle:lifecycle-viewmodel:${lifecycle}",
+            lifecycleViewmodel           : "androidx.lifecycle:lifecycle-viewmodel:${version.lifecycle}",
             // LiveData
-            lifecycleLivedata : "androidx.lifecycle:lifecycle-livedata:${lifecycle}",
+            lifecycleLivedata            : "androidx.lifecycle:lifecycle-livedata:${version.lifecycle}",
             // Saved state module for ViewModel
-            lifecycleRuntime : "androidx.lifecycle:lifecycle-runtime:${lifecycle}",
+            lifecycleRuntime             : "androidx.lifecycle:lifecycle-runtime:${version.lifecycle}",
             // Saved state module for ViewModel
-            lifecycleViewmodelSavedstate : "androidx.lifecycle:lifecycle-viewmodel-savedstate:${lifecycle}",
-            lifecycleViewmodelKtx : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle}",
-            lifecycleRuntimeKtx : "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle}",
+            lifecycleViewmodelSavedstate : "androidx.lifecycle:lifecycle-viewmodel-savedstate:${version.lifecycle}",
+            lifecycleViewmodelKtx        : "androidx.lifecycle:lifecycle-viewmodel-ktx:${version.lifecycle}",
+            lifecycleRuntimeKtx          : "androidx.lifecycle:lifecycle-runtime-ktx:${version.lifecycle}",
 
-            //kotlin
-            kotlin            : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
-            //kotlin协程
-            kotlinxCoroutinesCore : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinxCoroutinesVersion}",
-            kotlinxCoroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${kotlinxCoroutinesVersion}",
 
             //retrofit
-            retrofit : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
-            converterGson : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
-            adapterRxjava2 : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
-            loggingInterceptor : "com.squareup.okhttp3:logging-interceptor:${loggingInterceptor}",
+            retrofit                     : "com.squareup.retrofit2:retrofit:${version.retrofit}",
+            converterGson                : "com.squareup.retrofit2:converter-gson:${version.retrofit}",
+            adapterRxjava2               : "com.squareup.retrofit2:adapter-rxjava2:${version.retrofit}",
+            loggingInterceptor           : "com.squareup.okhttp3:logging-interceptor:${version.loggingInterceptor}",
 
             //rxjava
-            rxjava : "io.reactivex.rxjava2:rxjava:${rxjava}",
-            rxandroid : "io.reactivex.rxjava2:rxandroid:${rxandroid}",
-            /*AutoDispose解决RxJava内存泄漏*/
-            //1.0.0安卓支持包改成了androidx
-            autodispose : "com.uber.autodispose:autodispose-android-archcomponents:${autodispose}",
+            rxjava                       : "io.reactivex.rxjava2:rxjava:${version.rxjava}",
+            rxandroid                    : "io.reactivex.rxjava2:rxandroid:${version.rxandroid}",
+
+            //AutoDispose解决RxJava内存泄漏,1.0.0安卓支持包改成了androidx
+            autodispose                  : "com.uber.autodispose:autodispose-android-archcomponents:${version.autodispose}",
 
 
-            /*EventBus是一款本地组件间通信框架*/
-            eventbus: "org.greenrobot:eventbus:${eventbus}",
+            //EventBus是一款本地组件间通信框架
+            eventbus                     : "org.greenrobot:eventbus:${version.eventbus}",
 
-            /*图片加载*/
-            glide : "com.github.bumptech.glide:glide:${glide}",
+            //图片加载
+            glide                        : "com.github.bumptech.glide:glide:${version.glide}",
 
-            /*强大的BaseRecyclerView适配器*/
-            baseRecyclerViewAdapterHelper : "com.github.CymChad:BaseRecyclerViewAdapterHelper:${baseRecyclerViewAdapterHelper}",
+            //强大的BaseRecyclerView适配器
+            baseRecyclerViewAdapterHelper: "com.github.CymChad:BaseRecyclerViewAdapterHelper:${version.baseRecyclerViewAdapterHelper}",
 
+    ]
+
+
+    annotationProcessor = [
+            "glide": "com.github.bumptech.glide:compiler:${version.glide}"
+    ]
+
+    debugDependencies = [
+            "leakcanary": "com.squareup.leakcanary:leakcanary-android:${version.leakcanary}"
+    ]
+    releaseDependencies = [
     ]
 
 

@@ -6,11 +6,11 @@ if(uploadJitpack.toBoolean()){
 
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -40,8 +40,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    /*android官方支持库*/
-    /*android官方androidx库*/
+
+    //android官方androidx库
     api rootProject.ext.dependencies.appcompat
     api rootProject.ext.dependencies.design
     api rootProject.ext.dependencies.recyclerview
@@ -50,8 +50,7 @@ dependencies {
     api rootProject.ext.dependencies.swiperefreshlayout
     api rootProject.ext.dependencies.constraintLayout
 
-    /*Retrofit是一款类型安全的网络框架，基于HTTP协议，服务于Android和java语言,集成了okhttp依赖*/
-    //retrofit + okHttp3
+    //retrofit + okHttp3,retrofit是一款类型安全的网络框架，基于HTTP协议，服务于Android和java语言,集成了okhttp依赖
     api rootProject.ext.dependencies.retrofit
     api rootProject.ext.dependencies.converterGson
     api rootProject.ext.dependencies.adapterRxjava2
@@ -61,29 +60,28 @@ dependencies {
     api rootProject.ext.dependencies.rxjava
     api rootProject.ext.dependencies.rxandroid
 
-    /*AutoDispose解决RxJava内存泄漏*/
-    //1.0.0安卓支持包改成了androidx
+    //AutoDispose解决RxJava内存泄漏,1.0.0安卓支持包改成了androidx
     api rootProject.ext.dependencies.autodispose
 
-    /*EventBus是一款本地组件间通信框架*/
+    //EventBus是一款本地组件间通信框架
     api rootProject.ext.dependencies.eventbus
 
-    /*图片加载*/
+    //图片加载
     api rootProject.ext.dependencies.glide
-    annotationProcessor "com.github.bumptech.glide:compiler:${rootProject.ext.glide}"
+    annotationProcessor rootProject.ext.annotationProcessor.glide
 
+    //强大的BaseRecyclerView适配器
+    api rootProject.ext.dependencies.baseRecyclerViewAdapterHelper
 
-    /*控件注解框架*/
-    //特别注意要在主工程下添加
-    // annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'，否则注入无效
+    //下面两个不再变
+
+    //控件注解框架,特别注意要在主工程下添加
     api 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-
-    /*日志*/
+    //日志
     api 'com.orhanobut:logger:2.1.1'
 
-    /*强大的BaseRecyclerView适配器*/
-    api rootProject.ext.dependencies.baseRecyclerViewAdapterHelper
+
 }
 
 apply from: './nexus-push-core.gradle'

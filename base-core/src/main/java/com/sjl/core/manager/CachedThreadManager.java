@@ -10,8 +10,10 @@ import java.util.concurrent.Executors;
  * @version 1.0.0
  * @filename SocketThreadManager.java
  * @time 2018/11/6 14:23
- * @copyright(C) 2018 深圳市海恒智能科技有限公司
+ * @copyright(C) 2018 song
+ * @deprecated Use {@link com.sjl.core.manager.AppExecutors} directly
  */
+@Deprecated
 public class CachedThreadManager {
     /**
      * 由于最大线程数为无限大，所以每当我们添加一个新任务进来的时候，如果线程池中有空闲的线程，则由该空闲的线程执行新任务，如果没有空闲线程，则创建新线程来执行任务。

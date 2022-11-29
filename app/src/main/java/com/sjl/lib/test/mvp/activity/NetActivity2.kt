@@ -38,7 +38,7 @@ class NetActivity2 : BaseActivity<NetActivity2Presenter>(), NetActivity2Contract
     }
 
     override fun initListener() {
-        toolbar.setOnClickListener {
+        toolbar.setNavigationOnClickListener {
             finish()
         }
         app_bar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->

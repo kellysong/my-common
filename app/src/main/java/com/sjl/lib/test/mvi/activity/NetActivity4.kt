@@ -39,9 +39,10 @@ class NetActivity4 : BaseViewModelActivity<NetViewModel2>() {
     }
 
     override fun initListener() {
-        toolbar.setOnClickListener {
+        toolbar.setNavigationOnClickListener {
             finish()
         }
+
         app_bar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val color: Int = resources.getColor(R.color.colorPrimary)
             val bgColor: Int = if (color != -1) {

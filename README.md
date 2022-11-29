@@ -31,7 +31,7 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
 
 
 
-## 基于androidx(appcompat 1.2.0)编译(开始支持Kotlin MVVM)
+### 基于androidx(appcompat 1.2.0)编译(开始支持Kotlin MVVM)
 
     implementation 'com.github.kellysong.my-common:base-adapter:2.3.0'
     implementation 'com.github.kellysong.my-common:base-core:2.3.0'
@@ -41,7 +41,7 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
      // optional - Kotlin MVVM support for base-core-ktx
     implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.0'
 
-## 最新依赖
+### 最新依赖
 
     implementation 'com.github.kellysong.my-common:base-adapter:2.3.4'
     implementation 'com.github.kellysong.my-common:base-core:2.3.4'
@@ -53,6 +53,29 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
 
 更新日志：  [点我](更新说明.md)
 
-## 参考
+## 使用
 
-https://github.com/lan5572/kotlinCoroutine
+步骤 1. 在工程跟目录build.gradle文件下添加仓库
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
+步骤2. 添加依赖
+
+	dependencies {
+	    
+	     
+        implementation 'com.github.kellysong.my-common:base-core:2.3.4'
+        // 可选
+        annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+        annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+         // optional - Kotlin MVVM support for base-core-ktx
+        implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.4'
+	    
+	}
+
+步骤3. 使用自定义的Application继承BaseApplication

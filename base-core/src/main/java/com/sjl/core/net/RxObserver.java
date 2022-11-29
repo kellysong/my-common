@@ -3,8 +3,6 @@ package com.sjl.core.net;
 import android.net.ParseException;
 
 import com.google.gson.JsonParseException;
-import com.sjl.core.app.BaseApplication;
-import com.sjl.core.util.AppUtils;
 import com.sjl.core.util.log.LogUtils;
 
 import org.json.JSONException;
@@ -43,19 +41,19 @@ public abstract class RxObserver<T> implements Observer<T> {
     public void onError(Throwable e) {
         LogUtils.e(e);
         String msg;
-        if (AppUtils.isConnected(BaseApplication.getContext())) {
-            msg = "当前网络不可用";
-        } else if (e instanceof UnknownHostException || e instanceof NoRouteToHostException) {
+        if (e instanceof UnknownHostException || e instanceof NoRouteToHostException) {
             msg = "该地址不存在，请检查";
         } else if (e instanceof ConnectException) {
             msg = "连接异常或被拒绝，请检查";
         } else if (e instanceof HttpException) {
             msg = " http错误";
-        } else if (e instanceof InterruptedIOException) { //  连接超时
+        } else if (e instanceof InterruptedIOException) {
+            //  连接超时
             msg = " http 连接超时";
         } else if (e instanceof JsonParseException
                 || e instanceof JSONException
-                || e instanceof ParseException) {   //  解析错误
+                || e instanceof ParseException) {
+            //  解析错误
             msg = " 数据解析错误";
         } else if (e instanceof SocketTimeoutException) {
             // 超时
@@ -65,6 +63,10 @@ public abstract class RxObserver<T> implements Observer<T> {
         }
         _onError(msg);
 
+        cancel();
+    }
+
+    protected void cancel() {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
@@ -74,10 +76,7 @@ public abstract class RxObserver<T> implements Observer<T> {
     @Override
     public void onComplete() {
         _onComplete();
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
-        disposable = null;
+        cancel();
     }
 
     @Override
@@ -89,5 +88,6 @@ public abstract class RxObserver<T> implements Observer<T> {
 
     public abstract void _onError(String msg);
 
-    public  void _onComplete(){}
+    public void _onComplete() {
+    }
 }

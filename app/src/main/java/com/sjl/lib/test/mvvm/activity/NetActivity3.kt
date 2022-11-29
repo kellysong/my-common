@@ -35,7 +35,7 @@ class NetActivity3 : BaseViewModelActivity<NetViewModel>() {
     }
 
     override fun initListener() {
-        toolbar.setOnClickListener {
+        toolbar.setNavigationOnClickListener {
             finish()
         }
         app_bar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
