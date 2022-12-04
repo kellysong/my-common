@@ -256,7 +256,8 @@ public class TimeUtils {
         if (date == null) {
             return "";
         }
-        long diff = new Date().getTime() - date.getTime();
+        /**除以1000是为了转换成秒*/
+        long diff = (new Date().getTime() - date.getTime()) / 1000;
         long r = 0;
         if (diff < SECONDS_OF_1MINUTE) {
             return "刚刚";
