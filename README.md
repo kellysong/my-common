@@ -43,13 +43,13 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
 
 ### 最新依赖
 
-    implementation 'com.github.kellysong.my-common:base-adapter:2.3.4'
-    implementation 'com.github.kellysong.my-common:base-core:2.3.4'
+    implementation 'com.github.kellysong.my-common:base-adapter:2.3.5'
+    implementation 'com.github.kellysong.my-common:base-core:2.3.5'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
      // optional - Kotlin MVVM support for base-core-ktx
-    implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.4'
+    implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.5'
 
 更新日志：  [点我](更新说明.md)
 
@@ -69,12 +69,12 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
 	dependencies {
 	    
 	     
-        implementation 'com.github.kellysong.my-common:base-core:2.3.4'
+        implementation 'com.github.kellysong.my-common:base-core:2.3.5'
         // 可选
         annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
         annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
          // optional - Kotlin MVVM support for base-core-ktx
-        implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.4'
+        implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.5'
 	    
 	}
 
