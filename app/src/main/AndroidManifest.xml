@@ -44,6 +44,7 @@
         <activity android:name=".test.mvvm.activity.NetActivity3" android:theme="@style/NoActionBar" />
         <activity android:name=".test.mvi.activity.NetActivity4" android:theme="@style/NoActionBar"/>
         <activity android:name=".test.SoftwareArchActivity" />
+        <activity android:name=".test.file.FileTestActivity" />
 
         <!--Android 7.0需要使用FileProvider生成content:// Uri来替代file:// Uri-->
         <provider

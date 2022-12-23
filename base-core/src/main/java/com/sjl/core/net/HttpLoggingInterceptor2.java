@@ -1,17 +1,21 @@
 package com.sjl.core.net;
 
 
+import android.text.TextUtils;
+
 import com.sjl.core.util.JsonUtils;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Connection;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -22,8 +26,8 @@ import okio.BufferedSource;
 import okio.GzipSource;
 
 /**
- * 修复网络日志拦截器打印日志错乱问题
- *
+ * <p>修复网络日志拦截器打印日志错乱问题</p>
+ * <p>修复在打开日志拦截器的情况下：下载文件卡顿问题和上传文件oom问题</p>
  * @author Kelly
  * @version 1.0.0
  * @filename NetLogInterceptor
@@ -172,9 +176,6 @@ public final class HttpLoggingInterceptor2 implements Interceptor {
             } else if (bodyHasUnknownEncoding(request.headers())) {
                 sb.append("--> END " + request.method() + " (encoded body omitted)").append(NEW_LINE);
             } else {
-                Buffer buffer = new Buffer();
-                requestBody.writeTo(buffer);
-
                 Charset charset = UTF8;
                 MediaType contentType = requestBody.contentType();
                 if (contentType != null) {
@@ -182,17 +183,35 @@ public final class HttpLoggingInterceptor2 implements Interceptor {
                 }
 
                 sb.append("");
-                if (isPlaintext(buffer)) {
-                    String s = JsonUtils.formatJson(buffer.readString(charset));
+
+                StringBuilder temp = new StringBuilder();
+                boolean ret = requestBodyHasFile(requestBody, temp);
+                if (ret){
+                    String s = JsonUtils.formatJson(temp.toString());
                     sb.append(s).append(NEW_LINE);
                     sb.append("--> END " + request.method()
                             + " (" + requestBody.contentLength() + "-byte body)").append(NEW_LINE);
-                } else {
-                    sb.append("--> END " + request.method() + " (binary "
-                            + requestBody.contentLength() + "-byte body omitted)").append(NEW_LINE);
+
+                }else {
+                    Buffer buffer = new Buffer();
+                    requestBody.writeTo(buffer);
+
+                    if (isPlaintext(buffer)) {
+                        String s = JsonUtils.formatJson(buffer.readString(charset));
+                        sb.append(s).append(NEW_LINE);
+                        sb.append("--> END " + request.method()
+                                + " (" + requestBody.contentLength() + "-byte body)").append(NEW_LINE);
+                    } else {
+                        sb.append("--> END " + request.method() + " (binary "
+                                + requestBody.contentLength() + "-byte body omitted)").append(NEW_LINE);
+                    }
                 }
+
             }
         }
+
+
+        //处理响应数据
 
         long startNs = System.nanoTime();
         Response response;
@@ -203,7 +222,6 @@ public final class HttpLoggingInterceptor2 implements Interceptor {
             throw e;
         }
         long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
-
         ResponseBody responseBody = response.body();
         long contentLength = responseBody.contentLength();
         String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
@@ -226,56 +244,67 @@ public final class HttpLoggingInterceptor2 implements Interceptor {
                 sb.append("<-- END HTTP (encoded body omitted)").append(NEW_LINE);
                 callbackLog(sb);
             } else {
-                BufferedSource source = responseBody.source();
-                source.request(Long.MAX_VALUE); // Buffer the entire body.
-                Buffer buffer = source.buffer();
-
-                Long gzippedLength = null;
-                if ("gzip".equalsIgnoreCase(headers.get("Content-Encoding"))) {
-                    gzippedLength = buffer.size();
-                    GzipSource gzippedResponseBody = null;
-                    try {
-                        gzippedResponseBody = new GzipSource(buffer.clone());
-                        buffer = new Buffer();
-                        buffer.writeAll(gzippedResponseBody);
-                    } finally {
-                        if (gzippedResponseBody != null) {
-                            gzippedResponseBody.close();
-                        }
-                    }
-                }
-
                 Charset charset = UTF8;
                 MediaType contentType = responseBody.contentType();
                 if (contentType != null) {
                     charset = contentType.charset(UTF8);
                 }
 
-                if (!isPlaintext(buffer)) {
-                    sb.append("").append(NEW_LINE);
-                    sb.append("<-- END HTTP (binary " + buffer.size() + "-byte body omitted)").append(NEW_LINE);
-                    callbackLog(sb);
-                    return response;
+                StringBuilder temp = new StringBuilder();
+                boolean ret = responseBodyHasFile(response,responseBody,temp);
+                if (ret){
+                    sb.append(temp).append(NEW_LINE);
+                    sb.append("<-- END HTTP").append(NEW_LINE);
+                }else {
+                    BufferedSource source = responseBody.source();
+                    source.request(Long.MAX_VALUE); // Buffer the entire body.
+                    Buffer buffer = source.getBuffer();
+
+                    Long gzippedLength = null;
+                    if ("gzip".equalsIgnoreCase(headers.get("Content-Encoding"))) {
+                        gzippedLength = buffer.size();
+                        GzipSource gzippedResponseBody = null;
+                        try {
+                            gzippedResponseBody = new GzipSource(buffer.clone());
+                            buffer = new Buffer();
+                            buffer.writeAll(gzippedResponseBody);
+                        } finally {
+                            if (gzippedResponseBody != null) {
+                                gzippedResponseBody.close();
+                            }
+                        }
+                    }
+
+
+                    if (!isPlaintext(buffer)) {
+                        sb.append("").append(NEW_LINE);
+                        sb.append("<-- END HTTP (binary " + buffer.size() + "-byte body omitted)").append(NEW_LINE);
+                        callbackLog(sb);
+                        return response;
+                    }
+
+                    if (contentLength != 0) {
+                        sb.append("").append(NEW_LINE);
+                        String s = buffer.clone().readString(charset);
+                        sb.append(JsonUtils.formatJson(s)).append(NEW_LINE);
+                    }
+
+                    if (gzippedLength != null) {
+                        sb.append("<-- END HTTP (" + buffer.size() + "-byte, "
+                                + gzippedLength + "-gzipped-byte body)").append(NEW_LINE);
+                    } else {
+                        sb.append("<-- END HTTP (" + buffer.size() + "-byte body)").append(NEW_LINE);
+                    }
                 }
 
-                if (contentLength != 0) {
-                    sb.append("").append(NEW_LINE);
-                    String s = buffer.clone().readString(charset);
-                    sb.append(JsonUtils.formatJson(s)).append(NEW_LINE);
-                }
-
-                if (gzippedLength != null) {
-                    sb.append("<-- END HTTP (" + buffer.size() + "-byte, "
-                            + gzippedLength + "-gzipped-byte body)").append(NEW_LINE);
-                } else {
-                    sb.append("<-- END HTTP (" + buffer.size() + "-byte body)").append(NEW_LINE);
-                }
                 callbackLog(sb);
             }
         }
 
         return response;
     }
+
+
 
 
     /**
@@ -307,6 +336,84 @@ public final class HttpLoggingInterceptor2 implements Interceptor {
         return contentEncoding != null
                 && !contentEncoding.equalsIgnoreCase("identity")
                 && !contentEncoding.equalsIgnoreCase("gzip");
+    }
+
+    /**
+     * 判断请求头是否有文件,过滤显示，防止oom
+     *
+     * @param requestBody
+     * @param sb
+     * @return
+     */
+    private boolean requestBodyHasFile(RequestBody requestBody, StringBuilder sb) {
+        boolean flag = false;
+        if (requestBody instanceof MultipartBody) {//判断是否有文件
+            MultipartBody body = (MultipartBody) requestBody;
+            List<MultipartBody.Part> parts = body.parts();
+            RequestBody partBody;
+            for (int i = 0, size = parts.size(); i < size; i++) {
+                partBody = parts.get(i).body();
+                if (null != partBody) {
+                    flag = true;
+                    if (sb.length() > 0) {
+                        sb.append(",");
+                    }
+
+                    if (isPlainText(partBody.contentType())) {
+                        sb.append(readContent(partBody));
+                    } else {
+                        sb.append("other-param-type=").append(partBody.contentType());
+                    }
+                }
+            }
+        }
+        return flag;
+    }
+
+    private String readContent(RequestBody body){
+        if (body == null ) {
+            return "";
+        }
+        Buffer buffer = new Buffer();
+        try {
+            if (body.contentLength() <= 2* 1024*1024) {
+                body.writeTo(buffer);
+            } else {
+                return "===== Content is more than 2M. =====";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return buffer.readUtf8();
+    }
+
+    private boolean isPlainText(MediaType mediaType) {
+        if (null != mediaType) {
+            String mediaTypeString = (null != mediaType ? mediaType.toString() : null);
+            if (!TextUtils.isEmpty(mediaTypeString)) {
+                mediaTypeString = mediaTypeString.toLowerCase();
+                if (mediaTypeString.contains("text") || mediaTypeString.contains("application/json")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断响应体是否有文件,过滤显示，防止下载卡顿
+     * @param response
+     * @param responseBody
+     * @param temp
+     * @return
+     */
+    private boolean responseBodyHasFile(Response response, ResponseBody responseBody, StringBuilder temp) {
+        String header = response.header("Content-Disposition");
+        if (!TextUtils.isEmpty(header) && header.contains("attachment")) {
+            temp.append("===== Content is file. =====");
+            return true;
+        }
+        return false;
     }
 }
 

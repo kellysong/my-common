@@ -39,6 +39,11 @@ public class RetrofitParams {
     private int readTimeout;
     private int writeTimeout;
 
+    /**
+     * 是否开启缓存控制器，当下次请求无网络的时候从缓存获取
+     */
+    private boolean enableCacheControl;
+
     public RetrofitParams(Builder builder) {
         this.baseUrlAdapter = builder.baseUrlAdapter;
         this.retrofitLogAdapter = builder.retrofitLogAdapter;
@@ -47,6 +52,8 @@ public class RetrofitParams {
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
         this.useCoroutines = builder.useCoroutines;
+        this.enableCacheControl = builder.enableCacheControl;
+
     }
 
 
@@ -54,10 +61,11 @@ public class RetrofitParams {
         private BaseUrlAdapter baseUrlAdapter;
         private RetrofitLogAdapter retrofitLogAdapter;
         private List<Interceptor> interceptorList = new ArrayList<>();
-        private int connectTimeout;
-        private int readTimeout;
-        private int writeTimeout;
+        private int connectTimeout = TIMEOUT_CONNECT;
+        private int readTimeout = TIMEOUT_CONNECT;
+        private int writeTimeout = TIMEOUT_WRITE;
         private boolean useCoroutines;
+        private boolean enableCacheControl = true;
 
         public Builder setBaseUrlAdapter(BaseUrlAdapter baseUrlAdapter) {
             if (baseUrlAdapter == null) {
@@ -106,8 +114,19 @@ public class RetrofitParams {
             return this;
         }
 
+        /**
+         * 不再使用
+         * @param useCoroutines
+         * @return
+         */
+        @Deprecated
         public Builder setUseCoroutines(boolean useCoroutines) {
             this.useCoroutines = useCoroutines;
+            return this;
+        }
+
+        public Builder setEnableCacheControl(boolean enableCacheControl) {
+            this.enableCacheControl = enableCacheControl;
             return this;
         }
 
@@ -129,18 +148,22 @@ public class RetrofitParams {
     }
 
     public int getConnectTimeout() {
-        return connectTimeout == 0 ? TIMEOUT_CONNECT:connectTimeout;
+        return connectTimeout;
     }
 
     public int getReadTimeout() {
-        return readTimeout == 0 ? TIMEOUT_READ:readTimeout;
+        return readTimeout;
     }
 
     public int getWriteTimeout() {
-        return writeTimeout == 0 ? TIMEOUT_WRITE:writeTimeout;
+        return writeTimeout;
     }
 
     public boolean isUseCoroutines() {
         return useCoroutines;
+    }
+
+    public boolean isEnableCacheControl() {
+        return enableCacheControl;
     }
 }

@@ -22,7 +22,6 @@ import cn.feng.skin.manager.entity.AttrFactory;
 import cn.feng.skin.manager.entity.DynamicAttr;
 import cn.feng.skin.manager.entity.SkinAttr;
 import cn.feng.skin.manager.entity.SkinItem;
-import cn.feng.skin.manager.util.L;
 import cn.feng.skin.manager.util.ListUtils;
 
 /**
@@ -186,7 +185,7 @@ public class SkinInflaterFactory3 implements LayoutInflater.Factory2 {
                 view = LayoutInflater.from(context).createView(name, null, attrs);
             }
 
-            L.i("about to create " + name);
+            LogUtils.i("about to create " + name);
 
         } catch (Exception e) {
             LogUtils.e("error while create 【" + name + "】", e);
@@ -221,11 +220,11 @@ public class SkinInflaterFactory3 implements LayoutInflater.Factory2 {
                     SkinAttr mSkinAttr = AttrFactory.get(attrName, id, entryName, typeName);
                     //            android:drawableLeft="@drawable/line_title"
 
-                    L.w(TAG, "===========view:" + view.getClass().getSimpleName());//TextView
-                    L.i(TAG, "attrName:" + attrName + " | attrValue:" + attrValue);//drawableLeft 属性
-                    L.i(TAG, "id:" + id);
-                    L.i(TAG, "typeName:" + typeName);//drawable 引用类型
-                    L.i(TAG, "entryName:" + entryName);//line_title 引用属性
+                   LogUtils.w("===========view:" + view.getClass().getSimpleName());//TextView
+                   LogUtils.i("attrName:" + attrName + " | attrValue:" + attrValue);//drawableLeft 属性
+                   LogUtils.i("id:" + id);
+                   LogUtils.i("typeName:" + typeName);//drawable 引用类型
+                   LogUtils.i("entryName:" + entryName);//line_title 引用属性
 
                     if (mSkinAttr != null) {
                         viewAttrs.add(mSkinAttr);

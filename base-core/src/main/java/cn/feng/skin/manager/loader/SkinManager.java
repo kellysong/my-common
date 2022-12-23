@@ -10,6 +10,7 @@ import android.content.res.Resources.NotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 
+import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.log.LogWriter;
 
 import java.io.File;
@@ -23,7 +24,6 @@ import cn.feng.skin.manager.config.SkinConfig;
 import cn.feng.skin.manager.listener.ILoaderListener;
 import cn.feng.skin.manager.listener.ISkinLoader;
 import cn.feng.skin.manager.listener.ISkinUpdate;
-import cn.feng.skin.manager.util.L;
 
 /**
  * Skin Manager Instance
@@ -335,7 +335,6 @@ public class SkinManager implements ISkinLoader {
      * @author pinotao
      */
     public ColorStateList convertToColorStateList(int resId) {
-        L.e("attr1", "convertToColorStateList");
 
         boolean isExtendSkin = true;
 
@@ -344,11 +343,10 @@ public class SkinManager implements ISkinLoader {
         }
 
         String resName = context.getResources().getResourceEntryName(resId);
-        L.e("attr1", "resName = " + resName);
+        LogUtils.e("attr1 resName = " + resName);
         if (isExtendSkin) {
-            L.e("attr1", "isExtendSkin");
             int trueResId = mResources.getIdentifier(resName, "color", skinPackageName);
-            L.e("attr1", "trueResId = " + trueResId);
+            LogUtils.e("attr1 trueResId = " + trueResId);
             ColorStateList trueColorList = null;
             if (trueResId == 0) { // 如果皮肤包没有复写该资源，但是需要判断是否是ColorStateList
                 try {
@@ -356,16 +354,16 @@ public class SkinManager implements ISkinLoader {
                     return originColorList;
                 } catch (NotFoundException e) {
                     e.printStackTrace();
-                    L.e("resName = " + resName + " NotFoundException : " + e.getMessage());
+                    LogUtils.e("resName = " + resName + " NotFoundException : " + e.getMessage());
                 }
             } else {
                 try {
                     trueColorList = mResources.getColorStateList(trueResId);
-                    L.e("attr1", "trueColorList = " + trueColorList);
+                    LogUtils.e("attr1 trueColorList = " + trueColorList);
                     return trueColorList;
                 } catch (NotFoundException e) {
                     e.printStackTrace();
-                    L.w("resName = " + resName + " NotFoundException :" + e.getMessage());
+                    LogUtils.w("resName = " + resName + " NotFoundException :" + e.getMessage());
                 }
             }
         } else {
@@ -374,7 +372,7 @@ public class SkinManager implements ISkinLoader {
                 return originColorList;
             } catch (NotFoundException e) {
                 e.printStackTrace();
-                L.w("resName = " + resName + " NotFoundException :" + e.getMessage());
+                LogUtils.w("resName = " + resName + " NotFoundException :" + e.getMessage());
             }
 
         }

@@ -30,7 +30,7 @@ object ApiRepository : BaseRepository() {
      * @return List<ArticleBean>
      */
     fun listArticles2(): Observable<List<ArticleBean>> {
-        val compose = RetrofitClient.api2.getDatas2()
+        val compose = RetrofitClient.api.getDatas2()
             .compose(ErrorTransformer())//注意compose(ErrorTransformer())
         return compose
     }

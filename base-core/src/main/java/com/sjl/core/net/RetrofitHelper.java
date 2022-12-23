@@ -99,14 +99,9 @@ public class RetrofitHelper {
         Retrofit.Builder rb = new Retrofit.Builder().client(getOkHttpClient(retrofitParams))
                 .baseUrl(baseUrlAdapter.getDefaultBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create(gson));
-
-        boolean useCoroutine = retrofitParams.isUseCoroutines();
-        if (useCoroutine) {
-            //2.6版本之后不再需要设置Adapter
-        } else {
-            rb.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
-        }
-
+        //2.6版本之后不再需要设置Adapter，也支持协程
+        //同时支持RxJava
+        rb.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
         mRetrofit = rb.build();
     }
 
@@ -119,7 +114,7 @@ public class RetrofitHelper {
      */
     private OkHttpClient getOkHttpClient(RetrofitParams retrofitParams) {
         RetrofitLogAdapter retrofitLogAdapter = retrofitParams.getRetrofitLogAdapter();
-
+        boolean enableCacheControl = retrofitParams.isEnableCacheControl();
         Cache cache = new Cache(new File(BaseApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 100);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.cache(cache)
@@ -127,7 +122,7 @@ public class RetrofitHelper {
                 .readTimeout(retrofitParams.getReadTimeout(), TimeUnit.SECONDS)
                 .writeTimeout(retrofitParams.getWriteTimeout(), TimeUnit.SECONDS)
                 .addInterceptor(new BaseUrlInterceptor(retrofitParams.getBaseUrlAdapter().getAppendBaseUrl()))
-                .addInterceptor(new RewriteCacheControlInterceptor(retrofitLogAdapter));
+                .addInterceptor(new RewriteCacheControlInterceptor(retrofitLogAdapter,enableCacheControl));
         List<Interceptor> interceptorList = retrofitParams.getInterceptorList();
         if (interceptorList != null) {
             //添加自定义的拦截器
@@ -203,9 +198,11 @@ public class RetrofitHelper {
      */
     private static final class RewriteCacheControlInterceptor implements Interceptor {
         private RetrofitLogAdapter retrofitLogAdapter;
+        private boolean enableCacheControl;
 
-        public RewriteCacheControlInterceptor(RetrofitLogAdapter retrofitLogAdapter) {
+        public RewriteCacheControlInterceptor(RetrofitLogAdapter retrofitLogAdapter, boolean enableCacheControl) {
             this.retrofitLogAdapter = retrofitLogAdapter;
+            this.enableCacheControl = enableCacheControl;
         }
 
         @Override
@@ -214,7 +211,7 @@ public class RetrofitHelper {
             if (retrofitLogAdapter != null && retrofitLogAdapter.printRequestUrl()) {
                 LogUtils.i("intercept url: " + request.url().toString());
             }
-            if (!AppUtils.isConnected(BaseApplication.getContext())) {
+            if (!AppUtils.isConnected(BaseApplication.getContext()) && enableCacheControl) {
                 Handler mainHandler = new Handler(Looper.getMainLooper());
                 mainHandler.post(new Runnable() {
                     @Override
@@ -223,8 +220,8 @@ public class RetrofitHelper {
                     }
                 });
 
-                LogUtils.i("从缓存读取数据");
-                //设置缓存时间为1天
+                LogUtils.i("无网络，从缓存读取数据");
+                //设置缓存时间为7天
 
                 CacheControl cacheControl = new CacheControl.Builder()
                         .onlyIfCached()
@@ -233,26 +230,23 @@ public class RetrofitHelper {
                 request = request.newBuilder()
                         .cacheControl(cacheControl)
                         .build();
-            }
-
-            Response originalResponse = chain.proceed(request);
-            if (AppUtils.isConnected(BaseApplication.getContext())) {
+                Response originalResponse = chain.proceed(request);
+                return originalResponse.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_SEC)
+                        .removeHeader("Pragma")
+                        .build();
+            }else {
+                Response originalResponse = chain.proceed(request);
                 //有网的时候读接口上的@Headers里的配置，可以在这里进行统一的设置
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()
                         .header("Cache-Control", cacheControl)
                         .removeHeader("Pragma")
                         .build();
-            } else {
-                return originalResponse.newBuilder()
-                        .header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_SEC)
-                        .removeHeader("Pragma")
-                        .build();
             }
         }
     }
 
-    ;
 
     /**
      * http日志拦截器

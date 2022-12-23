@@ -17,6 +17,7 @@ import com.sjl.core.util.log.LogUtils
 import com.sjl.lib.manager.LoginManager
 import com.sjl.lib.test.MyBaseDialogFragment
 import com.sjl.lib.test.SoftwareArchActivity
+import com.sjl.lib.test.file.FileTestActivity
 import com.sjl.lib.test.log.LogTestActivity
 import com.sjl.lib.test.mvc.NetActivity
 import com.sjl.lib.test.permissions.PermissionsTestActivity
@@ -194,5 +195,9 @@ class MainActivity : BaseActivity() {
             }
         })
 
+    }
+
+    fun btnFileTest(view: View) {
+        ViewUtils.openActivity(this, FileTestActivity::class.java)
     }
 }

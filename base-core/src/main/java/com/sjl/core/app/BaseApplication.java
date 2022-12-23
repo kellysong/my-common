@@ -14,7 +14,6 @@ import com.sjl.core.util.log.LogWriter;
 import com.sjl.core.util.log.LoggerUtils;
 
 import cn.feng.skin.manager.loader.SkinManager;
-import cn.feng.skin.manager.util.L;
 
 /**
  * 当前应用
@@ -101,7 +100,6 @@ public class BaseApplication extends Application {
      */
     protected void initLogConfig(boolean isLogEnable) {
         this.LOG_DEBUG_MODE = isLogEnable;
-        L.setDebug(LOG_DEBUG_MODE);
         LogUtils.init(LOG_TAG, LOG_DEBUG_MODE);//初始化日志
         LoggerUtils.init(LOG_TAG, LOG_DEBUG_MODE);
         LogWriter.init(LOG_TAG, true, true);

@@ -3,7 +3,7 @@ package com.sjl.lib.net
 import com.sjl.core.net.RetrofitHelper
 
 /**
- * TODO
+ * Http客户端
  * @author Kelly
  * @version 1.0.0
  * @filename RetrofitClient
@@ -13,17 +13,11 @@ import com.sjl.core.net.RetrofitHelper
  object RetrofitClient {
 
     /**
-     * 使用RetrofitHelper（单例）创建，使用协程
+     * 使用RetrofitHelper（单例）创建，支持协程、RxJava
      */
     val api by lazy {
         return@lazy RetrofitHelper.getInstance().getApiService(Api::class.java)
     }
 
-    /**
-     * 使用RetrofitService创建，使用RxJava
-     */
-    val api2 by lazy {
-        return@lazy RetrofitService.create<Api>()
-    }
 
 }

@@ -41,7 +41,7 @@ class MyApplication : BaseApplication() {
             override fun printHttpLog(): Boolean {
                 return true
             }
-        }).setUseCoroutines(true).build())
+        }).setReadTimeout(10).setWriteTimeout(10).setConnectTimeout(10).build())
     }
 
     override fun attachBaseContext(base: Context) {

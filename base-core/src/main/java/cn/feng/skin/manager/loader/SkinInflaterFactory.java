@@ -18,7 +18,6 @@ import cn.feng.skin.manager.entity.AttrFactory;
 import cn.feng.skin.manager.entity.DynamicAttr;
 import cn.feng.skin.manager.entity.SkinAttr;
 import cn.feng.skin.manager.entity.SkinItem;
-import cn.feng.skin.manager.util.L;
 import cn.feng.skin.manager.util.ListUtils;
 
 /**
@@ -113,7 +112,7 @@ public class SkinInflaterFactory implements LayoutInflaterFactory {
                 view = LayoutInflater.from(context).createView(name, null, attrs);
             }
 
-            L.i("about to create " + name);
+            LogUtils.i("about to create " + name);
 
         } catch (Exception e) {
             LogUtils.e("error while create 【" + name + "】",e);
@@ -147,11 +146,11 @@ public class SkinInflaterFactory implements LayoutInflaterFactory {
                     String entryName = context.getResources().getResourceEntryName(id);
                     String typeName = context.getResources().getResourceTypeName(id);
                     SkinAttr mSkinAttr = AttrFactory.get(attrName, id, entryName, typeName);
-                    L.i(TAG, "view:" + view.getClass().getSimpleName());
-                    L.i(TAG, "attrName:" + attrName + " | attrValue:" + attrValue);
-                    L.i(TAG, "id:" + id);
-                    L.i(TAG, "entryName:" + entryName);
-                    L.i(TAG, "typeName:" + typeName);
+                   LogUtils.i("view:" + view.getClass().getSimpleName());
+                   LogUtils.i("attrName:" + attrName + " | attrValue:" + attrValue);
+                   LogUtils.i("id:" + id);
+                   LogUtils.i("entryName:" + entryName);
+                   LogUtils.i("typeName:" + typeName);
                     if (mSkinAttr != null) {
                         viewAttrs.add(mSkinAttr);
                     }
