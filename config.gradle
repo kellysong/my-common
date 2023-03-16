@@ -73,6 +73,8 @@ ext {
             lifecycleViewmodelKtx        : "androidx.lifecycle:lifecycle-viewmodel-ktx:${version.lifecycle}",
             lifecycleRuntimeKtx          : "androidx.lifecycle:lifecycle-runtime-ktx:${version.lifecycle}",
 
+            lifecycleCommonJava8         : "androidx.lifecycle:lifecycle-common-java8:${version.lifecycle}",
+
 
             //retrofit
             retrofit                     : "com.squareup.retrofit2:retrofit:${version.retrofit}",

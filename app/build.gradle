@@ -32,6 +32,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    viewBinding { //这里AS虽然大于4.0，但是gradle插件是3.6.3
+        enabled = true
+    }
 }
 
 dependencies {

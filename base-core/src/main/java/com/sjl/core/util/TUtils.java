@@ -55,6 +55,19 @@ public class TUtils {
         return null;
     }
 
+    /**
+     * 获取到父类泛型的class
+     * @param o
+     * @param index
+     * @return
+     */
+    public static Class getTClass(Object o, int index) {
+        Class<?> clz = o.getClass();
+        ParameterizedType type = (ParameterizedType) clz.getGenericSuperclass();
+        Class cls = (Class) type.getActualTypeArguments()[0];
+        return cls;
+    }
+
 
     /**
      * 加载class

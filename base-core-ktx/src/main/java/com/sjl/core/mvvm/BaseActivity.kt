@@ -7,13 +7,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.sjl.core.permission.PermissionsManager
 
 
 /**
  *
- *
+ *普通基类
  * @author Kelly
  * @version 1.0.0
  * @filename BaseActivity
@@ -25,8 +23,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getLayoutId())
-        ready()
+        val layoutId = getLayoutId()
+        if (layoutId != 0) {
+            setContentView(layoutId)
+        }
         initView()
         initListener()
         initData()

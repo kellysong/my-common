@@ -33,6 +33,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
 
     compileOptions {
@@ -59,6 +60,8 @@ dependencies {
     api rootProject.ext.dependencies.lifecycleViewmodelSavedstate
     api rootProject.ext.dependencies.lifecycleViewmodelKtx
     api rootProject.ext.dependencies.lifecycleRuntimeKtx
+//    api rootProject.ext.dependencies.lifecycleCommonJava8
+
 }
 
 apply from: './nexus-push-core.gradle'

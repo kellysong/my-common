@@ -24,7 +24,6 @@
 
 <!--            ImageView必须加fitsSystemWindows-->
             <ImageView
-                android:id="@+id/main.backdrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
