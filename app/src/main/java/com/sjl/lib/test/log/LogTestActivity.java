@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.log.LogWriter;
-import com.sjl.core.util.log.LoggerUtils;
 import com.sjl.lib.R;
 
 import java.util.LinkedHashMap;
@@ -41,7 +40,7 @@ public class LogTestActivity extends BaseActivity {
         LogUtils.i(getJson(1));
         LogUtils.json(getJson(3));
         LogUtils.w("ww", new RuntimeException("出错了"));
-        LoggerUtils.e("ww", new RuntimeException("出错了2"));
+        LogUtils.e("ww", new RuntimeException("出错了2"));
         LogUtils.i("==========================");
 
 

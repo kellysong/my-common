@@ -13,7 +13,6 @@ import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
 import com.sjl.core.app.BaseApplication;
 import com.sjl.core.util.io.IOUtils;
 import com.sjl.core.util.log.LogUtils;
@@ -425,7 +424,6 @@ public class FileUtils {
         FileChannel inChannel = new FileInputStream(source).getChannel();
         FileChannel outChannel = new FileOutputStream(target).getChannel();
         try {
-            inChannel.transferTo(0, inChannel.size(), outChannel);
             int maxCount = (64 * 1024 * 1024) - (32 * 1024);
             long size = inChannel.size();
             long position = 0;
@@ -441,6 +439,16 @@ public class FileUtils {
                 outChannel.close();
             }
         }
+    }
+    /**
+     * 常规文件拷贝
+     *
+     * @param source
+     * @param target
+     * @throws IOException
+     */
+    public static void fileCopy2(File source, File target) throws IOException {
+        fileCopy(new FileInputStream(source),new FileOutputStream(target));
     }
 
     /**
@@ -468,7 +476,7 @@ public class FileUtils {
             while ((len = in.read(buffer)) > 0) {
                 out.write(buffer, 0, len);
             }
-            Logger.i("stream copy success!");
+            LogUtils.i("stream copy success!");
         } finally {
             if (in != null) {
                 in.close();

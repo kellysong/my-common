@@ -78,8 +78,6 @@ dependencies {
     //控件注解框架,特别注意要在主工程下添加
     api 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-    //日志
-    api 'com.orhanobut:logger:2.1.1'
 
 
 }

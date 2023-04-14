@@ -28,7 +28,17 @@ public class LogWriter {
         log = new DiskLog(tag, logDebugMode, writeFileFlag);
     }
 
-
+    /**
+     * 初始化initFileWriter
+     *
+     * @param tag           标签
+     * @param logDebugMode  日志打印标志，true打印日志，false不打印日志，包括写文件日志
+     * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
+     * @param    logPath 日志路径
+     */
+    public static void init(String tag, boolean logDebugMode, boolean writeFileFlag, String logPath) {
+        log = new DiskLog(tag, logDebugMode, writeFileFlag,logPath);
+    }
     /**
      * 以级别为 v 的形式输出LOG
      */
