@@ -22,23 +22,10 @@ public class DeviceIdUtils {
     public static String getDeviceId(Context context) {
         StringBuilder sbDeviceId = new StringBuilder();
 
-        //获得AndroidId（无需权限）
-        String androidid = getAndroidId(context);
-        //获得设备序列号（无需权限）
-        String serial = getSERIAL();
         //获得硬件uuid（根据硬件相关属性，生成uuid）（无需权限）
         String uuid = getDeviceUUID().replace("-", "");
 
-        //追加androidid
-        if (androidid != null && androidid.length() > 0) {
-            sbDeviceId.append(androidid);
-            sbDeviceId.append("|");
-        }
-        //追加serial
-        if (serial != null && serial.length() > 0) {
-            sbDeviceId.append(serial);
-            sbDeviceId.append("|");
-        }
+
         //追加硬件uuid
         if (uuid != null && uuid.length() > 0) {
             sbDeviceId.append(uuid);
@@ -63,47 +50,9 @@ public class DeviceIdUtils {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    //需要获得READ_PHONE_STATE权限，>=6.0，默认返回null
-    private static String getIMEI(Context context) {
-        try {
-            TelephonyManager tm = (TelephonyManager)
-                    context.getSystemService(Context.TELEPHONY_SERVICE);
-            return tm.getDeviceId();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "";
-    }
 
-    /**
-     * 获得设备的AndroidId
-     *
-     * @param context 上下文
-     * @return 设备的AndroidId
-     */
-    private static String getAndroidId(Context context) {
-        try {
-            return Settings.Secure.getString(context.getContentResolver(),
-                    Settings.Secure.ANDROID_ID);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "";
-    }
 
-    /**
-     * 获得设备序列号（如：WTK7N16923005607）, 个别设备无法获取
-     *
-     * @return 设备序列号
-     */
-    private static String getSERIAL() {
-        try {
-            return Build.SERIAL;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return "";
-    }
+
 
     /**
      * 获得设备硬件uuid
