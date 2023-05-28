@@ -487,6 +487,62 @@ public class FileUtils {
         }
     }
     /**
+     * 复制文件夹及其中的文件
+     *
+     * @param oldPath String 原文件夹路径
+     * @param newPath String 复制后的路径
+     * @return
+     */
+    public static boolean copyFolder(String oldPath, String newPath) {
+        return copyFolder(oldPath,oldPath,null);
+    }
+
+
+    /**
+     * 复制文件夹及其中的文件
+     *
+     * @param oldPath String 原文件夹路径
+     * @param newPath String 复制后的路径
+     * @param excludeFiles 需要排除的文件名
+     * @return
+     */
+    public static boolean copyFolder(String oldPath, String newPath,List<String> excludeFiles) {
+        try {
+
+            File oldFile = new File(oldPath);
+            String[] files = oldFile.list();
+            if (files == null || files.length == 0) {
+                return false;
+            }
+            File newFile = new File(newPath);
+            if (!newFile.exists()) {
+                newFile.mkdirs();
+            }
+
+            File temp;
+            for (String file : files) {
+                if (oldPath.endsWith(File.separator)) {
+                    temp = new File(oldPath + file);
+                } else {
+                    temp = new File(oldPath + File.separator + file);
+                }
+                if (temp.isDirectory()) {   //如果是子文件夹
+                    copyFolder(oldPath + File.separator + file, newPath + File.separator + file, excludeFiles);
+                } else if (temp.exists() && temp.isFile() && temp.canRead()) {
+                    if (excludeFiles != null && excludeFiles.size() > 0 && excludeFiles.contains(temp.getName())) {
+                        continue;
+                    }
+                    InputStream inputStream = new FileInputStream(temp);
+                    fileCopy(inputStream, new File(newPath + File.separator + temp.getName()));
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * 复制url对象到指定文件，相当于网页另存为
      *
      * @param source
@@ -543,6 +599,16 @@ public class FileUtils {
         } finally {
             IOUtils.close(in);
         }
+    }
+    /**
+     * 写入文本到文件
+     *
+     * @param file
+     * @param data
+     * @throws IOException
+     */
+    public static void writeTextToFile(File file, String data) throws IOException {
+        writeByteArrayToFile(file, data.getBytes("utf-8"), false);
     }
 
     /**

@@ -70,6 +70,8 @@ public class DiskLog implements ILog {
     private boolean isCanWrite;
     private String logPath;
 
+    private int saveDay = LOG_FILE_SAVE_DAYS;
+
     /**
      * 初始化initFileWriter
      *
@@ -126,6 +128,17 @@ public class DiskLog implements ILog {
         lightLog.setStackTraceIndex(LOG_STACK_TRACE_INDEX + 1);
     }
 
+    /**
+     * 设置文件保留天数
+     *
+     * @param saveDay
+     */
+    public void setSaveDay(int saveDay) {
+        if (saveDay <= 0) {
+            return;
+        }
+        this.saveDay = saveDay;
+    }
 
     @Override
     public void v(String msg) {
@@ -226,7 +239,7 @@ public class DiskLog implements ILog {
             }
 //            orderByName(files);//升序
             //获取最近七天文件
-            List<String> dateList = TimeUtils.getDateList(-LOG_FILE_SAVE_DAYS);
+            List<String> dateList = TimeUtils.getDateList(-saveDay);
             Map<String, String> map = new LinkedHashMap<>();
             for (String date : dateList) {
                 map.put(FILE_APPEND_PREFIX + date, date);

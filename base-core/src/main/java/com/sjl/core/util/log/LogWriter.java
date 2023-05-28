@@ -40,6 +40,16 @@ public class LogWriter {
         log = new DiskLog(tag, logDebugMode, writeFileFlag,logPath);
     }
     /**
+     * 设置文件保留天数
+     *
+     * @param saveDay
+     */
+    public static void setSaveDay(int saveDay) {
+        checkLog();
+        final DiskLog diskLog = (DiskLog) log;
+        diskLog.setSaveDay(saveDay);
+    }
+    /**
      * 以级别为 v 的形式输出LOG
      */
 
