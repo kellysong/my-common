@@ -19,7 +19,7 @@ import java.io.ObjectOutputStream;
  * @version 1.0.0
  * @filename SerializeUtils.java
  * @time 2018/10/5 13:05
- * @copyright(C) 2018 xxx有限公司
+ * @copyright(C) 2018 song
  */
 public class SerializeUtils {
     /**

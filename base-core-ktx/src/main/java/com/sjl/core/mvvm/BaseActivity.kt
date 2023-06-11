@@ -27,6 +27,7 @@ abstract class BaseActivity : AppCompatActivity() {
         if (layoutId != 0) {
             setContentView(layoutId)
         }
+        ready()
         initView()
         initListener()
         initData()

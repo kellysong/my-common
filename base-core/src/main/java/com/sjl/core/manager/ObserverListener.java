@@ -7,7 +7,7 @@ package com.sjl.core.manager;
  * @version 1.0.0
  * @filename ObserverListener.java
  * @time 2018/10/5 17:54
- * @copyright(C) 2018 xxx有限公司
+ * @copyright(C) 2018 song
  */
 public interface ObserverListener {
 

@@ -2,6 +2,7 @@ package com.sjl.lib.test.log;
 
 import com.google.gson.Gson;
 import com.sjl.core.mvp.BaseActivity;
+import com.sjl.core.util.datetime.TimeUtils;
 import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.log.LogWriter;
 import com.sjl.lib.R;
@@ -42,7 +43,6 @@ public class LogTestActivity extends BaseActivity {
         LogUtils.w("ww", new RuntimeException("出错了"));
         LogUtils.e("ww", new RuntimeException("出错了2"));
         LogUtils.i("==========================");
-
 
         LogWriter.i(getJson(1));
         LogWriter.json(getJson(3));

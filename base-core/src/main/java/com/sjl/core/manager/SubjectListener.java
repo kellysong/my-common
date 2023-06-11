@@ -7,7 +7,7 @@ package com.sjl.core.manager;
  * @version 1.0.0
  * @filename SubjectListener.java
  * @time 2018/10/5 17:53
- * @copyright(C) 2018 xxx有限公司
+ * @copyright(C) 2018 song
  */
 public interface SubjectListener {
 

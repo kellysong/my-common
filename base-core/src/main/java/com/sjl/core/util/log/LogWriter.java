@@ -49,6 +49,19 @@ public class LogWriter {
         final DiskLog diskLog = (DiskLog) log;
         diskLog.setSaveDay(saveDay);
     }
+
+
+    /**
+     * 设置单个文件大小
+     *
+     * @param singleFileSize
+     */
+    public static void setSingleFileSize(int singleFileSize) {
+        checkLog();
+        final DiskLog diskLog = (DiskLog) log;
+        diskLog.setSingleFileSize(singleFileSize);
+    }
+
     /**
      * 以级别为 v 的形式输出LOG
      */

@@ -3,11 +3,12 @@ package com.sjl.lib.app
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.sjl.core.app.BaseApplication
-import com.sjl.core.mvvm.BaseActivity
 import com.sjl.core.net.BaseUrlAdapter
 import com.sjl.core.net.RetrofitHelper
 import com.sjl.core.net.RetrofitLogAdapter
 import com.sjl.core.net.RetrofitParams
+import com.sjl.core.util.log.LogWriter
+
 /**
  * TODO
  *
@@ -21,6 +22,7 @@ class MyApplication : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         initLogConfig(true)
+        LogWriter.setSaveDay(30)
         initRetrofitClient()
     }
 

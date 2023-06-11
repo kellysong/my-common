@@ -71,6 +71,9 @@ public class DiskLog implements ILog {
     private String logPath;
 
     private int saveDay = LOG_FILE_SAVE_DAYS;
+    private int singleFileSize = SINGLE_LOG_FILE_SIZE;
+
+    private Date logDate;
 
     /**
      * 初始化initFileWriter
@@ -99,7 +102,8 @@ public class DiskLog implements ILog {
         }
         isCanWrite = writeFileFlag;
         this.logPath = logPath;
-        String logFileName = FILE_APPEND_PREFIX + TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4) + FILE_SUFFIX;
+        this.logDate = new Date();
+        String logFileName = FILE_APPEND_PREFIX + TimeUtils.formatDateToStr(this.logDate, TimeUtils.DATE_FORMAT_4) + FILE_SUFFIX;
         File fileDir = new File(logPath);
         if (!fileDir.exists()) {
             fileDir.mkdirs();
@@ -138,6 +142,17 @@ public class DiskLog implements ILog {
             return;
         }
         this.saveDay = saveDay;
+    }
+
+    /**
+     * 设置单个文件大小
+     * @param singleFileSize
+     */
+    public void setSingleFileSize(int singleFileSize) {
+        if (singleFileSize <= 0) {
+            return;
+        }
+        this.singleFileSize = singleFileSize;
     }
 
     @Override
@@ -278,7 +293,7 @@ public class DiskLog implements ILog {
      * @return
      */
     private boolean checkLogFileSize(File file) {
-        if (file.length() > SINGLE_LOG_FILE_SIZE) {
+        if (file.length() > singleFileSize) {
             return true;
         } else {
             return false;
@@ -329,9 +344,9 @@ public class DiskLog implements ILog {
         String content = appendDescribe(logLevel, logMsg);
         FileWriter fileWriter = null;
         try {
-            if (TimeUtils.getCurrentDayRemainMillis() <= 5) {
+            if (isPastToday()) {
                 reset();
-            } else if (logFile.length() >= SINGLE_LOG_FILE_SIZE) {
+            } else if (logFile.length() >= singleFileSize) {
                 createNewFile();
             }
             fileWriter = new FileWriter(logFile, true);
@@ -349,8 +364,25 @@ public class DiskLog implements ILog {
             }
         }
     }
+
+    private boolean isPastToday() {
+        final Date logDate = this.logDate;
+        if (logDate == null) {
+            return false;
+        }
+        int date1 = logDate.getDate();
+        int date2 = new Date().getDate();
+        // 判断日志日期是否过了今天
+        if (date1 != date2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private  void reset() throws IOException {
-        String s = TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_4);
+        this.logDate = new Date();
+        String s = TimeUtils.formatDateToStr(this.logDate, TimeUtils.DATE_FORMAT_4);
         String logFileName = FILE_APPEND_PREFIX + s + FILE_SUFFIX;
         logFile = new File(logPath, logFileName);
         if (!logFile.exists()){

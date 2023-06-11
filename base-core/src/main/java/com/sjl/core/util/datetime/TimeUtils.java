@@ -462,7 +462,7 @@ public class TimeUtils {
     }
 
     /**
-     * 获取当天剩余秒数
+     * 获取当天剩余毫秒数
      * @return
      */
     public static Long getCurrentDayRemainMillis() {
@@ -472,7 +472,14 @@ public class TimeUtils {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        return (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+        return (cal.getTimeInMillis() - System.currentTimeMillis());
+    }
+    /**
+     * 获取当天剩余秒数
+     * @return
+     */
+    public static Long getCurrentDayRemainSeconds() {
+        return getCurrentDayRemainMillis()/1000;
     }
 
 }
