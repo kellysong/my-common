@@ -22,7 +22,6 @@ class MyApplication : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         initLogConfig(true)
-        LogWriter.setSaveDay(30)
         initRetrofitClient()
     }
 

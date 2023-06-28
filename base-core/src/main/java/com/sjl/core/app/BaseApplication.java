@@ -9,6 +9,7 @@ import android.os.Handler;
 
 import com.sjl.core.manager.MyActivityManager;
 import com.sjl.core.util.ResourcesUtils;
+import com.sjl.core.util.log.LogConfig;
 import com.sjl.core.util.log.LogUtils;
 import com.sjl.core.util.log.LogWriter;
 
@@ -95,12 +96,20 @@ public class BaseApplication extends Application {
 
 
     /**
-     * 初始化日志（可选）
+     * 初始化日志,或者通过自行自定义（可选）
      */
     protected void initLogConfig(boolean isLogEnable) {
         this.LOG_DEBUG_MODE = isLogEnable;
         LogUtils.init(LOG_TAG, LOG_DEBUG_MODE);//初始化日志
-        LogWriter.init(LOG_TAG, true, true);
+//        LogWriter.init(LOG_TAG, true, true);
+
+        LogConfig logConfig = new LogConfig.Builder()
+                .setTag(LOG_TAG)
+                .setLogDebugMode(true)
+                .setWriteFileFlag(true)
+                .setSaveDay(30)
+                .setSingleFileSize(10 * 1024 * 1024).build();
+        LogWriter.init(logConfig);
     }
 
 

@@ -76,26 +76,62 @@ public class DiskLog implements ILog {
     private Date logDate;
 
     /**
-     * 初始化initFileWriter
-     *
-     * @param tag           标签
-     * @param logDebugMode  日志打印标志，true打印日志，false不打印日志，包括写文件日志
+     * 初始化DiskLog
+     * @param tag 标签
+     * @param logDebugMode 日志打印标志，true打印日志，false不打印日志，包括写文件日志
      * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
+     * @see DiskLog#DiskLog(LogConfig)
+     *
      */
+    @Deprecated
     public DiskLog(String tag, boolean logDebugMode, boolean writeFileFlag) {
-        this(tag,logDebugMode,writeFileFlag,Environment.getExternalStorageDirectory() + File.separator + BaseApplication.getContext().getPackageName() + File.separator + "Log");
+        init(tag,logDebugMode,writeFileFlag,Environment.getExternalStorageDirectory() + File.separator + BaseApplication.getContext().getPackageName() + File.separator + "Log");
     }
 
 
+
     /**
-     * 初始化initFileWriter
+     * 初始化DiskLog
      *
      * @param tag           标签
      * @param logDebugMode  日志打印标志，true打印日志，false不打印日志，包括写文件日志
      * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
      * @param logPath 日志路径
+     * @see DiskLog#DiskLog(LogConfig)
      */
+    @Deprecated
     public DiskLog(String tag, boolean logDebugMode, boolean writeFileFlag, String logPath) {
+        init(tag,logDebugMode,writeFileFlag,logPath);
+    }
+
+    /**
+     * 初始化DiskLog
+     *
+     * @param logConfig 日志配置
+     */
+    public DiskLog(LogConfig logConfig) {
+        if (logConfig == null){
+            throw new NullPointerException("logConfig为空，初始化DiskLog失败");
+        }
+        int saveDay = logConfig.getSaveDay();
+        if (saveDay > 0){
+            this.saveDay = saveDay;
+        }
+        int singleFileSize = logConfig.getSingleFileSize();
+
+        //最小1M
+        if (singleFileSize > 1024 * 1024) {
+            this.singleFileSize = singleFileSize;
+        }
+        String logPath = logConfig.getLogPath();
+        if (TextUtils.isEmpty(logPath)){
+            logPath = Environment.getExternalStorageDirectory() + File.separator + BaseApplication.getContext().getPackageName() + File.separator + "Log";
+        }
+        init(logConfig.getTag(),logConfig.isLogDebugMode(),logConfig.isWriteFileFlag(), logPath);
+    }
+
+
+    private void init(String tag, boolean logDebugMode, boolean writeFileFlag, String logPath) {
         if (!logDebugMode) {
             isCanWrite = false;
             return;
@@ -132,28 +168,6 @@ public class DiskLog implements ILog {
         lightLog.setStackTraceIndex(LOG_STACK_TRACE_INDEX + 1);
     }
 
-    /**
-     * 设置文件保留天数
-     *
-     * @param saveDay
-     */
-    public void setSaveDay(int saveDay) {
-        if (saveDay <= 0) {
-            return;
-        }
-        this.saveDay = saveDay;
-    }
-
-    /**
-     * 设置单个文件大小
-     * @param singleFileSize
-     */
-    public void setSingleFileSize(int singleFileSize) {
-        if (singleFileSize <= 0) {
-            return;
-        }
-        this.singleFileSize = singleFileSize;
-    }
 
     @Override
     public void v(String msg) {

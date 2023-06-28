@@ -25,30 +25,38 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
 ### 基于androidx(appcompat 1.1.0)编译
 
     implementation 'com.github.kellysong.my-common:base-adapter:2.1.0'
-    implementation 'com.github.kellysong.my-common:base-core:2.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-
+    // optional
+    implementation 'com.github.kellysong.my-common:base-core:2.1.0'
+    // optional
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
 
 ### 基于androidx(appcompat 1.2.0)编译(开始支持Kotlin MVVM)
 
-    implementation 'com.github.kellysong.my-common:base-adapter:2.3.0'
     implementation 'com.github.kellysong.my-common:base-core:2.3.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // optional
+    implementation 'com.github.kellysong.my-common:base-adapter:2.3.0'
+   
+    // optional
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
      // optional - Kotlin MVVM support for base-core-ktx
     implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.0'
 
 ### 最新依赖
 
-    implementation 'com.github.kellysong.my-common:base-adapter:2.3.5'
-    implementation 'com.github.kellysong.my-common:base-core:2.3.5'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    implementation 'com.github.kellysong.my-common:base-core:2.5.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
-     // optional - Kotlin MVVM support for base-core-ktx
+    // 可选
+    implementation 'com.github.kellysong.my-common:base-adapter:2.5.0'
+    // 可选
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+     // 可选 - Kotlin MVVM support for base-core-ktx
     implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.5'
 
 更新日志：  [点我](更新说明.md)
@@ -69,12 +77,16 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
 	dependencies {
 	    
 	     
-        implementation 'com.github.kellysong.my-common:base-core:2.3.5'
+        implementation 'com.github.kellysong.my-common:base-core:2.5.0'
+        annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+        // 可选
+        implementation 'com.github.kellysong.my-common:base-adapter:2.5.0'
         // 可选
         annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
-        annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-         // optional - Kotlin MVVM support for base-core-ktx
-        implementation 'com.github.kellysong.my-common:base-core-ktx:2.3.5'
+        
+         // 可选 - Kotlin MVVM support for base-core-ktx
+        implementation 'com.github.kellysong.my-common:base-core-ktx:2.5.0'
 	    
 	}
 

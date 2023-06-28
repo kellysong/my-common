@@ -212,14 +212,6 @@ public class RetrofitHelper {
                 LogUtils.i("intercept url: " + request.url().toString());
             }
             if (!AppUtils.isConnected(BaseApplication.getContext()) && enableCacheControl) {
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showToast(BaseApplication.getContext(), R.string.net_error, Toast.LENGTH_LONG);
-                    }
-                });
-
                 LogUtils.i("无网络，从缓存读取数据");
                 //设置缓存时间为7天
 

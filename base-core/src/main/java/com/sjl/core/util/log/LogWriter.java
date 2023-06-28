@@ -1,10 +1,10 @@
 package com.sjl.core.util.log;
 
 /**
- * 自定义轻量级写日志到文件工具类（目前只用于设备驱动，网络通信，其它不需要，控制台日志即可）
+ * 自定义轻量级写日志到文件工具类（目前可用于需要本地写日志的任何场景，其它不需要的场景使用控制台日志即可）
  *
  * @author songjiali
- * @version 4.0.0
+ * @version 4.1.0
  * @filename LogWriter.java
  * @time 2018/10/22 17:25
  * @copyright(C) 2018 song
@@ -18,48 +18,39 @@ public class LogWriter {
     }
 
     /**
-     * 初始化initFileWriter
+     * 初始化LogWriter
      *
      * @param tag           标签
      * @param logDebugMode  日志打印标志，true打印日志，false不打印日志，包括写文件日志
      * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
+     * @see LogWriter#init(LogConfig)
      */
+    @Deprecated
     public static void init(String tag, boolean logDebugMode, boolean writeFileFlag) {
         log = new DiskLog(tag, logDebugMode, writeFileFlag);
     }
 
     /**
-     * 初始化initFileWriter
+     * 初始化LogWriter
      *
      * @param tag           标签
      * @param logDebugMode  日志打印标志，true打印日志，false不打印日志，包括写文件日志
      * @param writeFileFlag 写文件标志，默认false，false不写文件，true写文件
      * @param    logPath 日志路径
+     * @see LogWriter#init(LogConfig)
      */
+    @Deprecated
     public static void init(String tag, boolean logDebugMode, boolean writeFileFlag, String logPath) {
         log = new DiskLog(tag, logDebugMode, writeFileFlag,logPath);
     }
-    /**
-     * 设置文件保留天数
-     *
-     * @param saveDay
-     */
-    public static void setSaveDay(int saveDay) {
-        checkLog();
-        final DiskLog diskLog = (DiskLog) log;
-        diskLog.setSaveDay(saveDay);
-    }
-
 
     /**
-     * 设置单个文件大小
+     * 初始化LogWriter
      *
-     * @param singleFileSize
+     * @param logConfig 日志配置
      */
-    public static void setSingleFileSize(int singleFileSize) {
-        checkLog();
-        final DiskLog diskLog = (DiskLog) log;
-        diskLog.setSingleFileSize(singleFileSize);
+    public static void init(LogConfig logConfig) {
+        log = new DiskLog(logConfig);
     }
 
     /**
@@ -154,7 +145,7 @@ public class LogWriter {
 
     private static void checkLog() {
         if (log == null) {
-            log = new DiskLog(ConsoleLog.mTag,true, true);//初始化，如果需要开启写磁盘，调用init初始化
+            throw new NullPointerException("LogWriter 未初始化.");
         }
     }
 
