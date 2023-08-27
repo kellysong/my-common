@@ -1,5 +1,9 @@
 package com.sjl.core.util.security;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -35,5 +39,43 @@ public class MD5Utils {
             reStr = reStr.substring(8, 24);
         }
         return reStr;
+    }
+
+
+    public static String getFileMd5(File file) {
+        InputStream inputStream = null;
+        byte[] buffer = new byte[2048];
+        int numRead;
+        MessageDigest md5;
+        try {
+            inputStream = new FileInputStream(file);
+            md5 = MessageDigest.getInstance("MD5");
+            while ((numRead = inputStream.read(buffer)) > 0) {
+                md5.update(buffer, 0, numRead);
+            }
+            return bytesToMd5Str(md5.digest());
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static String bytesToMd5Str(byte[] md5Bytes) {
+        StringBuilder hexValue = new StringBuilder();
+        for (byte b : md5Bytes) {
+            int val = ((int) b) & 0xff;
+            if (val < 16) {
+                hexValue.append("0");
+            }
+            hexValue.append(Integer.toHexString(val));
+        }
+        return hexValue.toString();
     }
 }

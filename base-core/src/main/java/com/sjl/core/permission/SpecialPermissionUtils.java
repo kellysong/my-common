@@ -95,7 +95,8 @@ public class SpecialPermissionUtils {
 
             case MANAGE_ALL_FILES_ACCESS: {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                    intent.setData(Uri.parse("package:" + context.getPackageName()));
                     basePermissionFragment.openActivityForResult(intent, REQUEST_CODE_MANAGE_ALL_FILES_ACCESS);
                     return;
                 }
