@@ -494,7 +494,7 @@ public class FileUtils {
      * @return
      */
     public static boolean copyFolder(String oldPath, String newPath) {
-        return copyFolder(oldPath,oldPath,null);
+        return copyFolder(oldPath,newPath,null);
     }
 
 
