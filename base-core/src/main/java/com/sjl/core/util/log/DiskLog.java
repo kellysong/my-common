@@ -74,6 +74,7 @@ public class DiskLog implements ILog {
     private int singleFileSize = SINGLE_LOG_FILE_SIZE;
 
     private Date logDate;
+    private int myPid;
 
     /**
      * 初始化DiskLog
@@ -136,6 +137,7 @@ public class DiskLog implements ILog {
             isCanWrite = false;
             return;
         }
+        myPid = android.os.Process.myPid();
         isCanWrite = writeFileFlag;
         this.logPath = logPath;
         this.logDate = new Date();
@@ -426,10 +428,9 @@ public class DiskLog implements ILog {
     private String appendDescribe(int logLevel, String msg) {
         return new StringBuilder().
                 append(TimeUtils.formatDateToStr(new Date(), TimeUtils.DATE_FORMAT_6))
-                .append("/")
-                .append(lightLog.getLogLevel(logLevel))
-                .append("/")
-                .append(msg)
+                .append("/").append(myPid)
+                .append("/").append(lightLog.getLogLevel(logLevel))
+                .append("/").append(msg)
                 .append("\n").toString();
     }
 

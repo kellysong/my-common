@@ -1,5 +1,7 @@
 package com.sjl.lib.test.log;
 
+import android.view.View;
+
 import com.google.gson.Gson;
 import com.sjl.core.mvp.BaseActivity;
 import com.sjl.core.util.datetime.TimeUtils;
@@ -78,5 +80,9 @@ public class LogTestActivity extends BaseActivity {
             map.put(j, String.valueOf(System.currentTimeMillis()));
         }
         return new Gson().toJson(map);
+    }
+
+    public void btnCrashTest(View view) {
+        throw new RuntimeException("模拟应用崩溃");
     }
 }

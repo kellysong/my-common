@@ -3,14 +3,19 @@ package com.sjl.core.util;
 import android.os.Environment;
 
 import com.sjl.core.app.BaseApplication;
+import com.sjl.core.util.io.IOUtils;
 import com.sjl.core.util.log.LogUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * 序列化工具类
@@ -85,5 +90,46 @@ public class SerializeUtils {
     public static <T> T deserialize(String fileName, Class<?> clz) {
         Object obj = deserialize(fileName);
         return obj != null ? (T) clz.cast(obj) : null;
+    }
+
+    public static byte[] serializeObj(Serializable obj)  throws Exception{
+        ObjectOutputStream oos = null;
+        byte[] data;
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(out);
+            oos.writeObject(obj);
+            oos.flush();
+            data = out.toByteArray();
+            out.close();
+            return data;
+        }finally {
+            IOUtils.close(oos);
+        }
+    }
+
+    public static <T> T deserializeObj(byte[] bytes) throws Exception{
+        ObjectInputStream ois = null;
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+            ois = new ObjectInputStream(in);
+            Object o = ois.readObject();
+            in.close();
+            return (T) o;
+        } finally {
+            IOUtils.close(ois);
+        }
+    }
+
+    public static <T> T deserializeObj(InputStream in) throws Exception{
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(in);
+            Object o = ois.readObject();
+            return (T) o;
+        } finally {
+            IOUtils.close(in);
+            IOUtils.close(ois);
+        }
     }
 }
