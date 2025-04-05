@@ -2,6 +2,7 @@ package com.sjl.core.language
 
 import android.R
 import android.annotation.TargetApi
+import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -54,8 +55,8 @@ object LanguageManager {
      * 但在8.0 系统中，若 mContext 采用 ApplicationContext 则无法切换应用的语言类型,必须是activity的Context
      * @param languageType 默认语言类型
      */
-    fun initAppLanguage(context: Context,languageType: Int) {
-        changeLanguage(context, getCurrentLanguageType(context,languageType))
+    fun initAppLanguage(context: Context, languageType: Int) {
+        changeLanguage(context, getCurrentLanguageType(context, languageType))
     }
 
     /**
@@ -68,9 +69,21 @@ object LanguageManager {
 //        LogUtils.i("1.languageType:" + languageType + ",get LocaleString:" + getLocaleString(Locale.getDefault()))
         var locale: Locale
         if (languageType == null) {//如果没有指定语言使用系统首选语言
-            locale = getSystemPreferredLanguage()
+            locale = getSystemPreferredLanguage(context)
         } else {//指定了语言使用指定语言
-            locale = getSupportLanguage(languageType)!!
+            locale = getSupportLanguage(context, languageType)!!
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val localeManager: LocaleManager =
+                context.getSystemService<LocaleManager>(LocaleManager::class.java)
+            if (localeManager != null) {
+                if (languageType == null) {
+                    localeManager.applicationLocales = LocaleList.getEmptyLocaleList()
+                } else {
+                    localeManager.applicationLocales = LocaleList(locale)
+                }
+            }
+
         }
         val attachBaseContext = LanguageUtils.attachBaseContext(context, locale)
         LanguageManager.context = attachBaseContext
@@ -83,9 +96,9 @@ object LanguageManager {
         var languageType = getCurrentLanguageType(context)
         var locale: Locale
         if (languageType == null) {//如果没有指定语言使用系统首选语言
-            locale = getSystemPreferredLanguage()
+            locale = getSystemPreferredLanguage(context)
         } else {//指定了语言使用指定语言
-            locale = getSupportLanguage(languageType)!!
+            locale = getSupportLanguage(context, languageType)!!
         }
         val attachBaseContext = LanguageUtils.attachBaseContext(context, locale)
         return attachBaseContext
@@ -104,15 +117,16 @@ object LanguageManager {
     /**
      * 获取支持语言
      *
+     * @param context
      * @param language language
      * @return 支持返回支持语言，不支持返回系统首选语言
      */
     @TargetApi(Build.VERSION_CODES.N)
-    fun getSupportLanguage(language: Int): Locale? {
+    fun getSupportLanguage(context: Context, language: Int): Locale? {
         if (isSupportLanguage(language)) {
-            return mSupportLanguages.get(language)
+            return mSupportLanguages[language]
         } else {
-            return getSystemPreferredLanguage()
+            return getSystemPreferredLanguage(context)
         }
     }
 
@@ -122,7 +136,15 @@ object LanguageManager {
      * @return Locale
      */
 
-    fun getSystemPreferredLanguage(): Locale {
+    fun getSystemPreferredLanguage(context: Context): Locale {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // 在 Android 13 上，不能用 Resources.getSystem() 来获取系统语种了,Android 13 上面新增了一个 LocaleManager 的语种管理类
+            // 因为如果调用 LocaleManager.setApplicationLocales 会影响获取到的结果不准确,所以应该得用 LocaleManager.getSystemLocales 来获取会比较精准
+            val localeManager = context.getSystemService(LocaleManager::class.java)
+            if (localeManager != null) {
+                return localeManager.systemLocales[0]
+            }
+        }
         val locale: Locale
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             locale = LocaleList.getDefault().get(0)

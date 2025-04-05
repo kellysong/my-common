@@ -106,7 +106,15 @@ public class ShortcutUtils {
                     .setLongLabel(name)
                     .build();
             //当添加快捷方式的确认弹框弹出来时，将被回调
-            PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, ShortcutReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent shortcutCallbackIntent;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, ShortcutReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            } else {
+                shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, ShortcutReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT |
+                        PendingIntent.FLAG_IMMUTABLE);
+            }
+
             boolean b = shortcutManager.requestPinShortcut(shortcutInfo, shortcutCallbackIntent.getIntentSender());
             PreferencesHelper.getInstance(activity).put(CREATE_FLAG, b);
             Log.e(TAG, "Create shortcut result:" + b);

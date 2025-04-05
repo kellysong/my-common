@@ -5,7 +5,6 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
     defaultConfig {
         applicationId rootProject.ext.android.applicationId
         minSdkVersion rootProject.ext.android.minSdkVersion
@@ -28,13 +27,16 @@ android {
         }
     }
     //base-core中的autodispose-android-archcomponents引入了java8的新特性，需要加
-    compileOptions {
+   /* compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
+    }*/
 
-    viewBinding { //这里AS虽然大于4.0，但是gradle插件是3.6.3
+    /*viewBinding { //这里AS虽然大于4.0，但是gradle插件是3.6.3
         enabled = true
+    }*/
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -51,5 +53,7 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
+    debugImplementation rootProject.ext.debugDependencies["leakcanary"]
+    implementation rootProject.ext.dependencies["multidex"]
+
 }

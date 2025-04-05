@@ -404,6 +404,7 @@ public class DiskLog implements ILog {
         if (!logFile.exists()){
             logFile.createNewFile();
         }
+        deleteSDCardExpiredLog(logPath);
 
 
     }

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
 
 if(uploadJitpack.toBoolean()){
@@ -36,10 +36,10 @@ android {
 
     }
 
-    compileOptions {
+   /* compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
+    }*/
 
 }
 
