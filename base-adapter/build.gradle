@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 if(uploadJitpack.toBoolean()){
-    apply plugin: 'com.github.dcendents.android-maven'//this
-    group='com.github.kellysong'//this
+    apply plugin: 'maven-publish'//this
+//    group='com.github.kellysong'//this
 }
 
 
@@ -21,13 +21,34 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            group= 'com.github.kellysong'
+            version = '3.0.0'
+            release(MavenPublication) {
+                from components.release
+
+                groupId = group
+                artifactId = 'base-adapter'
+                version = version
+            }
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api rootProject.ext.dependencies.recyclerview
     api rootProject.ext.dependencies.viewpager
-
-
 }
 
-apply from: './nexus-push-baseAdapter.gradle'
+
+//apply from: './nexus-push-baseAdapter.gradle'

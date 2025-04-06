@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 
 if(uploadJitpack.toBoolean()){
-    apply plugin: 'com.github.dcendents.android-maven'//this
-    group='com.github.kellysong'//this
+    apply plugin: 'maven-publish'//this
+//    group='com.github.kellysong'//this
 }
 
 
@@ -36,13 +36,27 @@ android {
 
     }
 
-   /* compileOptions {
+    compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }*/
+    }
 
 }
 
+afterEvaluate {
+    publishing {
+        publications {
+            group= 'com.github.kellysong'
+            version = '3.0.0'
+            release(MavenPublication) {
+                from components.release
+                groupId = group
+                artifactId = 'base-core-ktx'
+                version = version
+            }
+        }
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':base-core')
@@ -64,4 +78,4 @@ dependencies {
 
 }
 
-apply from: './nexus-push-core.gradle'
+//apply from: './nexus-push-core.gradle'
