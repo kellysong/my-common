@@ -98,6 +98,37 @@ public class FileTestActivity extends BaseActivity {
         });
     }
 
+
+    public void btnDownload2(View view) {
+        String url = "http://iot.seekink.com/profile/prismlink/apk/xt_user_prismLink_V2.4.0.apk";
+        File file = new File(DOWNLOAD_PATH, "test.apk");
+        ll_msg.removeAllViews();
+        ViewHolder viewHolder = createViewHolder(-1);
+        ll_msg.addView(viewHolder.view);
+
+        RxHttpUtils.getInstance().download(url, file,0, new FileCallback<File>() {
+
+
+            @Override
+            public void onProgress(int progress, long total, long speed, int id) {
+                viewHolder.mProgress.setText(progress + "%");
+                viewHolder.mFileSize.setText(FileUtils.formatFileSize(total));
+                viewHolder.mRate.setText(FileUtils.formatFileSize(speed) + "/s");
+            }
+
+            @Override
+            public void onCompleted(File file) {
+                showMsg("文件下载完成：" + file.getAbsolutePath());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showMsg("文件下载异常:" + e.getMessage());
+                LogUtils.e(e);
+            }
+        });
+    }
+
     private ViewHolder createViewHolder(int index) {
         ViewHolder viewHolder = new ViewHolder(this, index);
         return viewHolder;

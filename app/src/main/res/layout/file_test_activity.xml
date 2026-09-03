@@ -15,6 +15,11 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="btnDownload2"
+        android:text="下载2"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="btnUpload"
         android:text="上传"/>
     <TextView
