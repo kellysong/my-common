@@ -109,10 +109,10 @@ public class ShortcutUtils {
             PendingIntent shortcutCallbackIntent;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, ShortcutReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
-            } else {
                 shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, ShortcutReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT |
                         PendingIntent.FLAG_IMMUTABLE);
+            } else {
+                shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, ShortcutReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
             }
 
             boolean b = shortcutManager.requestPinShortcut(shortcutInfo, shortcutCallbackIntent.getIntentSender());

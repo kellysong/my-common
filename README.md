@@ -71,7 +71,7 @@ app: 是测试示例，包含MVC、MVP、MVVM、MVI架构示例
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
      // 可选 - Kotlin MVVM support for base-core-ktx
-        implementation 'com.github.kellysong.my-common:base-core-ktx:3.0.0'
+    implementation 'com.github.kellysong.my-common:base-core-ktx:3.0.0'
 
 更新日志：  [点我](更新说明.md)
 
