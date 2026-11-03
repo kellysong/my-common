@@ -353,16 +353,19 @@ public final class HttpLoggingInterceptor2 implements Interceptor {
             RequestBody partBody;
             for (int i = 0, size = parts.size(); i < size; i++) {
                 partBody = parts.get(i).body();
-                if (null != partBody) {
-                    flag = true;
-                    if (sb.length() > 0) {
-                        sb.append(",");
-                    }
-
-                    if (isPlainText(partBody.contentType())) {
-                        sb.append(readContent(partBody));
-                    } else {
-                        sb.append("other-param-type=").append(partBody.contentType());
+                if (partBody != null) {
+                    MediaType partType = partBody.contentType();
+                    if (partType != null) {
+                        String type = partType.toString().toLowerCase();
+                        if (isBinaryContentType(type)) {
+                            // 二进制文件类型 → 标记为文件
+                            sb.append("file-param").append(i).append("=").append(partType);
+                            flag = true;
+                        } else if (isPlainText(partType)) {// 文本类型
+                            sb.append("param-").append(i).append("=").append(readContent(partBody));
+                        } else {
+                            sb.append("unknown-param").append(i).append("=").append(partType);
+                        }
                     }
                 }
             }
@@ -402,18 +405,90 @@ public final class HttpLoggingInterceptor2 implements Interceptor {
 
     /**
      * 判断响应体是否有文件,过滤显示，防止下载卡顿
-     * @param response
-     * @param responseBody
-     * @param temp
-     * @return
+     * 支持多种识别方式：Content-Disposition、URL后缀、Content-Type
+     *
+     * @param response     响应对象
+     * @param responseBody 响应体
+     * @param temp         临时日志缓冲区
+     * @return true 表示是文件，跳过响应体打印
      */
     private boolean responseBodyHasFile(Response response, ResponseBody responseBody, StringBuilder temp) {
-        String header = response.header("Content-Disposition");
-        if (!TextUtils.isEmpty(header) && header.contains("attachment")) {
-            temp.append("===== Content is file. =====");
+        // 检查 Content-Disposition（标准方式）
+        String disposition = response.header("Content-Disposition");
+        if (!TextUtils.isEmpty(disposition) && disposition.contains("attachment")) {
+            temp.append("===== Content is file (by Content-Disposition). =====");
+            return true;
+        }
+
+        // 检查 URL 是否包含常见文件后缀
+        String url = response.request().url().toString();
+        if (isFileUrl(url)) {
+            temp.append("===== Content is file (by URL suffix). =====");
+            return true;
+        }
+
+        // 检查 Content-Type 是否为二进制或APK类型
+        MediaType contentType = responseBody.contentType();
+        if (contentType != null) {
+            String type = contentType.toString().toLowerCase();
+            if (isBinaryContentType(type)) {
+                temp.append("===== Content is binary file (by Content-Type: " + type + "). =====");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 判断 URL 是否指向文件下载
+     */
+    private boolean isFileUrl(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+        // 常见文件扩展名
+        String[] fileExtensions = {
+                ".apk", ".zip", ".rar", ".7z", ".tar", ".gz",
+                ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
+                ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp",
+                ".mp4", ".avi", ".mkv", ".flv", ".mov",
+                ".mp3", ".wav", ".flac", ".aac",
+                ".exe", ".dmg", ".pkg", ".deb", ".rpm"
+        };
+        String lowerUrl = url.toLowerCase();
+        for (String ext : fileExtensions) {
+            if (lowerUrl.contains(ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断 Content-Type 是否为二进制/文件类型
+     */
+    private boolean isBinaryContentType(String type) {
+        // 应用安装包
+        if (type.contains("application/vnd.android.package-archive")) {
+            return true;
+        }
+        // 二进制流（下载APK时常见）
+        if (type.contains("application/octet-stream")) {
+            return true;
+        }
+        if (type.contains("application/zip") || type.contains("application/x-zip-compressed")) {
+            return true;
+        }
+        if (type.contains("application/pdf")) {
+            return true;
+        }
+        // 其他二进制类型
+        if (type.startsWith("application/") && !type.contains("json") && !type.contains("xml") && !type.contains("text")) {
             return true;
         }
         return false;
     }
+
 }
 

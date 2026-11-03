@@ -39,7 +39,7 @@ ext {
             eventbus                     : "3.1.1",
             glide                        : "4.11.0",
             baseRecyclerViewAdapterHelper: "3.0.6",
-            leakcanary                   : "2.7",
+            leakcanary                   : "2.13",
     ]
 
 
