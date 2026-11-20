@@ -25,3 +25,8 @@
 # base-core-ktx
 
 
+# Kotlin 协程（Retrofit suspend/await 依赖）
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
+-dontwarn kotlinx.coroutines.**

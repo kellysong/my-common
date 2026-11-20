@@ -30,7 +30,7 @@
 # Retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature-keepattributes Exceptions
+-keepattributes Signature, Exceptions
 
 #Rxjava RxAndroid
 -dontwarn rx.*
@@ -40,13 +40,6 @@ long producerIndex;
 long consumerIndex;
 }
 
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
-rx.internal.util.atomic.LinkedQueueNode producerNode;
-rx.internal.util.atomic.LinkedQueueNode consumerNode;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
-rx.internal.util.atomic.LinkedQueueNode consumerNode;
-}
 
 
 # Glide
@@ -58,7 +51,7 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
 # for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 # Gson 2.8.1
 ##---------------Begin: proguard configuration for Gson  ----------
@@ -70,7 +63,7 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
 # -keepattributes *Annotation*
 
 # Gson specific classes
--keep class sun.misc.Unsafe { *; }
+#--keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }
 
 # Application classes that will be serialized/deserialized over Gson
@@ -136,8 +129,8 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
 *;
 }
 -keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
--keep public class * extends com.chad.library.adapter.base.BaseViewHolder
--keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
+-keep public class * extends com.chad.library.adapter.base.viewholder.BaseViewHolder
+-keepclassmembers  class **$** extends com.chad.library.adapter.base.viewholder.BaseViewHolder {
      <init>(...);
 }
 
@@ -170,15 +163,8 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
 -keep class okhttp3.** { *; }
 -keep interface okhttp3.** { *; }
 
-# Kotlin 协程（Retrofit suspend/await 依赖）
--keepclassmembers class kotlinx.coroutines.** {
-    volatile <fields>;
-}
--dontwarn kotlinx.coroutines.**
 
-# Room（AGP8/R8 下避免反射退化）
--keep class * extends androidx.room.RoomDatabase
--dontwarn androidx.room.**‘
+
 # base-core
 -keep class com.sjl.core.entity.**{*;}
 -keep class cn.feng.skin.manager.entity.**{*;}
