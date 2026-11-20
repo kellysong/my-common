@@ -141,7 +141,44 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
      <init>(...);
 }
 
+#补充
 
+# 混淆编译gson TypeToken 序列化反序列化报错
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+-keepattributes Signature
+-keep class com.google.gson.** { *; }
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Retrofit 2.9（R8 full mode 必须保留带注解的接口方法，否则运行时反射查找失败/降级）
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations, AnnotationDefault, InnerClasses, EnclosingMethod, Exceptions
+-keepclasseswithmembers,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+-dontwarn retrofit2.**
+-dontnote retrofit2.Platform
+-keep class retrofit2.** { *; }
+-keepclassmembers class * {
+    @retrofit2.http.* <methods>;
+}
+
+# OkHttp（避免 R8 full mode 下 Platform/内省相关类被移除）
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+
+# Kotlin 协程（Retrofit suspend/await 依赖）
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
+-dontwarn kotlinx.coroutines.**
+
+# Room（AGP8/R8 下避免反射退化）
+-keep class * extends androidx.room.RoomDatabase
+-dontwarn androidx.room.**‘
 # base-core
 -keep class com.sjl.core.entity.**{*;}
 -keep class cn.feng.skin.manager.entity.**{*;}
